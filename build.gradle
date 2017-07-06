@@ -2,9 +2,28 @@ group 'com.labstack'
 version '0.0.1'
 
 apply plugin: 'java'
-apply plugin: 'maven-publish'
+apply plugin: 'maven'
+apply plugin: 'signing'
 
 sourceCompatibility = 1.8
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+signing {
+    sign configurations.archives
+}
 
 repositories {
     mavenCentral()
@@ -16,14 +35,42 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-        }
-    }
+uploadArchives {
     repositories {
-        maven {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2") {
+                authentication(userName: sonatypeUsername, password: sonatypePassword)
+            }
+
+            pom.project {
+                name 'labstack-java'
+                packaging 'jar'
+                description 'Official Java client library for the LabStack web API'
+                url 'https://labstack.com'
+
+                scm {
+                    url 'scm:git@github.com:labstack/labstack-java.git'
+                    connection 'scm:git@github.com:labstack/labstack-java.git'
+                    developerConnection 'scm:git@github.com:labstack/labstack-java.git'
+                }
+
+                licenses {
+                    license {
+                        name 'MIT License'
+                        url 'http://opensource.org/licenses/MIT'
+                        distribution 'repo'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'vishr'
+                        name 'Vishal Rana'
+                    }
+                }
+            }
         }
     }
 }

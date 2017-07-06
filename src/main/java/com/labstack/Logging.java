@@ -33,6 +33,10 @@ public class Logging {
     }
 
     private void dispatch() throws Exception {
+        if (logs.size() == 0) {
+            return;
+        }
+
         Moshi moshi = new Moshi.Builder().build();
         Type type = Types.newParameterizedType(List.class, Log.class);
         JsonAdapter<List<Log>> jsonAdapter = moshi.adapter(type);

@@ -8,9 +8,11 @@ import okhttp3.*;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class Logging {
     private OkHttpClient okHttp;
+    private Timer timer;
     private List<Log> logs = Collections.synchronizedList(new ArrayList());
     private String appId;
     private String appName;
@@ -79,10 +81,6 @@ public class Logging {
         this.dispatchInterval = dispatchInterval;
     }
 
-    public int getDispatchInterval() {
-        return dispatchInterval;
-    }
-
     public void debug(String format, Object... args) {
         log(DEBUG, format, args);
     }
@@ -102,6 +100,21 @@ public class Logging {
     public void log(String level, String format, Object... args) {
         if (LEVELS.get(level) < LEVELS.get(this.level)) {
             return;
+        }
+
+        if (timer == null) {
+            timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    try {
+                        // TODO: Make it async
+                        dispatch();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, TimeUnit.SECONDS.toMillis(dispatchInterval));
         }
 
         String message = String.format(format, args);

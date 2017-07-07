@@ -18,15 +18,7 @@ public class Client {
 
     public Client(String apiKey) {
          okHttp = new OkHttpClient.Builder()
-                .addInterceptor(new Interceptor() {
-                    @Override
-                    public Response intercept(Chain chain) throws IOException {
-                        Request compressedRequest = chain.request().newBuilder()
-                                .header("Authorization", "Bearer " + apiKey)
-                                .build();
-                        return chain.proceed(compressedRequest);
-                    }
-                })
+                .addInterceptor(new APIInterceptor(apiKey))
                 .build();
     }
 
@@ -46,12 +38,22 @@ public class Client {
         logging.setLevel(Logging.INFO);
         logging.setBatchSize(60);
         logging.setDispatchInterval(60);
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-            }
-        }, TimeUnit.SECONDS.toMillis(logging.getDispatchInterval()));
         return logging;
+    }
+}
+
+class APIInterceptor implements Interceptor {
+    private String apiKey;
+
+    public APIInterceptor(String apiKey) {
+        this.apiKey = apiKey;
+    }
+
+    @Override
+    public Response intercept(okhttp3.Interceptor.Chain chain) throws IOException {
+        Request compressedRequest = chain.request().newBuilder()
+                .header("Authorization", "Bearer " + apiKey)
+                .build();
+        return chain.proceed(compressedRequest);
     }
 }

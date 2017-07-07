@@ -34,9 +34,13 @@ public class Logging {
         LEVELS.put("ERROR", 4);
     }
 
+    protected Logging() {
+    }
+
     private void dispatch() throws Exception {
         if (logs.size() == 0) {
             return;
+
         }
 
         Moshi moshi = new Moshi.Builder().build();

@@ -10,7 +10,7 @@ import java.lang.reflect.Type;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class Logging {
+public final class Logging {
     private OkHttpClient okHttp;
     private Timer timer;
     private List<Log> logs = Collections.synchronizedList(new ArrayList());
@@ -122,7 +122,7 @@ public class Logging {
         }
 
         String message = String.format(format, args);
-        Log log = new Log(appId, appName, tags, this.level, message);
+        Log log = new Log(appId, appName, tags, level, message);
         logs.add(log);
 
         // Dispatch batch

@@ -104,7 +104,7 @@ public class Logging {
 
         if (timer == null) {
             timer = new Timer();
-            timer.schedule(new TimerTask() {
+            timer.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
                     try {
@@ -114,7 +114,7 @@ public class Logging {
                         e.printStackTrace();
                     }
                 }
-            }, TimeUnit.SECONDS.toMillis(dispatchInterval));
+            }, 0, TimeUnit.SECONDS.toMillis(dispatchInterval));
         }
 
         String message = String.format(format, args);

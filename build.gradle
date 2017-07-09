@@ -1,5 +1,5 @@
 group 'com.labstack'
-version '0.0.4'
+version '0.1.0'
 
 apply plugin: 'java'
 apply plugin: 'maven-publish'
@@ -33,6 +33,29 @@ publishing {
             from components.java
             artifact sourceJar
             artifact javadocJar
+
+            pom.withXml {
+                asNode().with() {
+                    appendNode('name', 'labstack-java')
+                    appendNode('description', 'Official Java client library for the LabStack web API')
+                    appendNode('url', 'https://labstack.com')
+                    appendNode('scm').with {
+                        appendNode('url', 'https://github.com/labstack/labstack-java.git')
+                    }
+                    appendNode('developers').with {
+                        appendNode('developer').with {
+                            appendNode('id', 'vishr')
+                            appendNode('name', 'Vishal Rana')
+                        }
+                    }
+                    appendNode('licenses').with {
+                        appendNode('license').with {
+                            appendNode('name', 'MIT License')
+                            appendNode('url', 'https://github.com/labstack/labstack-java/blob/master/LICENSE')
+                        }
+                    }
+                }
+            }
         }
     }
 }

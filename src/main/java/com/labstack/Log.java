@@ -1,24 +1,167 @@
 package com.labstack;
 
 import com.squareup.moshi.Json;
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
+import com.squareup.moshi.Types;
+import okhttp3.*;
 
+import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
-public class Log {
+public final class Log {
+    protected OkHttpClient okHttp;
+    private Timer timer;
+    private List<LogEntry> entries = Collections.synchronizedList(new ArrayList());
+    private String appId;
+    private String appName;
+    private String[] tags;
+    private Level level;
+    private int batchSize;
+    private int dispatchInterval;
+    private static final Map<Level, Integer> LEVELS = new HashMap<>();
+
+    public enum Level {
+        DEBUG, INFO, WARN, ERROR, FATAL, OFF
+    }
+
+    static {
+        LEVELS.put(Level.DEBUG, 1);
+        LEVELS.put(Level.INFO, 2);
+        LEVELS.put(Level.WARN, 3);
+        LEVELS.put(Level.ERROR, 4);
+        LEVELS.put(Level.FATAL, 5);
+        LEVELS.put(Level.OFF, 6);
+    }
+
+    protected Log() {
+    }
+
+    private void dispatch() throws Exception {
+        if (entries.size() == 0) {
+            return;
+        }
+
+        Moshi moshi = new Moshi.Builder().build();
+        Type type = Types.newParameterizedType(List.class, LogEntry.class);
+        JsonAdapter<List<LogEntry>> jsonAdapter = moshi.adapter(type);
+        String json = jsonAdapter.toJson(entries);
+        Request request = new Request.Builder()
+                .url(Client.API_URL + "/log")
+                .post(RequestBody.create(Client.MEDIA_TYPE_JSON, json))
+                .build();
+        Response response = okHttp.newCall(request).execute();
+        if (response.code() != 204) {
+            throw new Exception(String.format("log: error dispatching entries, status=%d, message=%v", response.code(), response.body()));
+        }
+    }
+
+    public void setAppId(String appId) {
+        this.appId = appId;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
+
+    public void setTags(String[] tags) {
+        this.tags = tags;
+    }
+
+    public void setLevel(Level level) {
+        this.level = level;
+    }
+
+    public void setBatchSize(int batchSize) {
+        this.batchSize = batchSize;
+    }
+
+    public void setDispatchInterval(int dispatchInterval) {
+        this.dispatchInterval = dispatchInterval;
+    }
+
+    // Logs a message with DEBUG level.
+    public void debug(String format, Object... args) {
+        log(Level.DEBUG, format, args);
+    }
+
+    // Logs a message with INFO level.
+    public void info(String format, Object... args) {
+        log(Level.INFO, format, args);
+    }
+
+    // Logs a message with WARN level.
+    public void warn(String format, Object... args) {
+        log(Level.WARN, format, args);
+    }
+
+    // Logs a message with ERROR level.
+    public void error(String format, Object... args) {
+        log(Level.ERROR, format, args);
+    }
+
+    // Logs a message with FATAL level.
+    public void fatal(String format, Object... args) {
+        log(Level.FATAL, format, args);
+    }
+
+    // Logs a message with log level.
+    public void log(Level level, String format, Object... args) {
+        if (level.compareTo(this.level) < 0) {
+            return;
+        }
+//        if (LEVELS.get(level) < LEVELS.get(this.level)) {
+//            return;
+//        }
+
+        if (timer == null) {
+            timer = new Timer();
+            timer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    try {
+                        // TODO: Make it async
+                        dispatch();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, 0, TimeUnit.SECONDS.toMillis(dispatchInterval));
+        }
+
+        String message = String.format(format, args);
+        LogEntry entry = new LogEntry(appId, appName, tags, level, message);
+        entries.add(entry);
+
+        // Dispatch batch
+        if (entries.size() >= batchSize) {
+            try {
+                // TODO: Make it async
+                dispatch();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            entries.clear();
+        }
+    }
+}
+
+class LogEntry {
     private String time;
     @Json(name = "app_id")
     private String appId;
     @Json(name = "app_name")
     private String appName;
     private String[] tags;
-    private String level;
+    private Log.Level level;
     private String message;
 
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZ");
 
-    public Log(String appId, String appName, String[] tags, String level, String message) {
+    public LogEntry(String appId, String appName, String[] tags, Log.Level level, String message) {
         time = dateFormat.format(new Date());
         this.appId = appId;
         this.appName = appName;

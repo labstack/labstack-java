@@ -3,10 +3,6 @@ package com.labstack;
 import okhttp3.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 
 public class Client {
     private OkHttpClient okHttp;
@@ -30,15 +26,15 @@ public class Client {
         this.appName = appName;
     }
 
-    public Logging Logging() {
-        Logging logging = new Logging();
-        logging.setOkHttp(okHttp);
-        logging.setAppId(appId);
-        logging.setAppName(appName);
-        logging.setLevel(Logging.INFO);
-        logging.setBatchSize(60);
-        logging.setDispatchInterval(60);
-        return logging;
+    public Log Log() {
+        Log log = new Log();
+        log.okHttp = okHttp;
+        log.setAppId(appId);
+        log.setAppName(appName);
+        log.setLevel(Log.Level.INFO);
+        log.setBatchSize(60);
+        log.setDispatchInterval(60);
+        return log;
     }
 }
 
@@ -57,3 +53,4 @@ class APIInterceptor implements Interceptor {
         return chain.proceed(compressedRequest);
     }
 }
+

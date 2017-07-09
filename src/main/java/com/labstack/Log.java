@@ -22,19 +22,9 @@ public final class Log {
     private Level level;
     private int batchSize;
     private int dispatchInterval;
-    private static final Map<Level, Integer> LEVELS = new HashMap<>();
 
     public enum Level {
         DEBUG, INFO, WARN, ERROR, FATAL, OFF
-    }
-
-    static {
-        LEVELS.put(Level.DEBUG, 1);
-        LEVELS.put(Level.INFO, 2);
-        LEVELS.put(Level.WARN, 3);
-        LEVELS.put(Level.ERROR, 4);
-        LEVELS.put(Level.FATAL, 5);
-        LEVELS.put(Level.OFF, 6);
     }
 
     protected Log() {
@@ -57,6 +47,7 @@ public final class Log {
         if (response.code() != 204) {
             throw new Exception(String.format("log: error dispatching entries, status=%d, message=%v", response.code(), response.body()));
         }
+        entries.clear();
     }
 
     public void setAppId(String appId) {
@@ -113,9 +104,6 @@ public final class Log {
         if (level.compareTo(this.level) < 0) {
             return;
         }
-//        if (LEVELS.get(level) < LEVELS.get(this.level)) {
-//            return;
-//        }
 
         if (timer == null) {
             timer = new Timer();
@@ -144,7 +132,6 @@ public final class Log {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            entries.clear();
         }
     }
 }

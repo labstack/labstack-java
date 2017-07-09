@@ -1,5 +1,5 @@
 group 'com.labstack'
-version '0.1.0'
+version '0.1.1'
 
 apply plugin: 'java'
 apply plugin: 'maven-publish'
@@ -37,7 +37,7 @@ publishing {
             pom.withXml {
                 asNode().with() {
                     appendNode('name', 'labstack-java')
-                    appendNode('description', 'Official Java client library for the LabStack web API')
+                    appendNode('description', 'Official Java client library for the LabStack REST API')
                     appendNode('url', 'https://labstack.com')
                     appendNode('scm').with {
                         appendNode('url', 'https://github.com/labstack/labstack-java.git')

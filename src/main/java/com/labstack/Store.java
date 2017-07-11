@@ -2,12 +2,11 @@ package com.labstack;
 
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
-import com.squareup.moshi.Types;
+import com.squareup.moshi.Rfc3339DateJsonAdapter;
 import okhttp3.*;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
+import java.util.Date;
 
 /**
  * Defines the LabStack store service.
@@ -15,7 +14,7 @@ import java.util.concurrent.ExecutionException;
 @SuppressWarnings("Duplicates")
 public final class Store {
     protected OkHttpClient okHttp;
-    private Moshi moshi = new Moshi.Builder().build();
+    private Moshi moshi = new Moshi.Builder().add(Date.class, new Rfc3339DateJsonAdapter().nullSafe()).build();
     private JsonAdapter<StoreEntry> entryJsonAdapter = moshi.adapter(StoreEntry.class);
     private JsonAdapter<StoreQueryResponse> queryResponseJsonAdapter = moshi.adapter(StoreQueryResponse.class);
     private JsonAdapter<LabstackException> exceptionJsonAdapter = moshi.adapter(LabstackException.class);
@@ -57,7 +56,7 @@ public final class Store {
         }
     }
 
-    public StoreQueryResponse query() throws  LabstackException {
+    public StoreQueryResponse query() throws LabstackException {
         Request request = new Request.Builder()
                 .url(Client.API_URL + "/store")
                 .get()

@@ -26,6 +26,9 @@ public class Client {
         this.appName = appName;
     }
 
+    /**
+     * @return Log service.
+     */
     public Log Log() {
         Log log = new Log();
         log.okHttp = okHttp;
@@ -35,6 +38,15 @@ public class Client {
         log.setBatchSize(60);
         log.setDispatchInterval(60);
         return log;
+    }
+
+    /**
+     * @return Store service.
+     */
+    public Store Store() {
+        Store store = new Store();
+        store.okHttp = okHttp;
+        return store;
     }
 }
 

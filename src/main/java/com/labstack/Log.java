@@ -12,6 +12,9 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Defines the LabStack log service.
+ */
 public final class Log {
     protected OkHttpClient okHttp;
     private Timer timer;
@@ -45,7 +48,7 @@ public final class Log {
                 .build();
         Response response = okHttp.newCall(request).execute();
         if (response.code() != 204) {
-            throw new Exception(String.format("log: error dispatching entries, status=%d, message=%v", response.code(), response.body()));
+            throw new Exception(String.format("log: error dispatching entries, status=%d, message=%v", response.code(), response.body().string()));
         }
         entries.clear();
     }
@@ -148,7 +151,7 @@ class LogEntry {
 
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZ");
 
-    public LogEntry(String appId, String appName, String[] tags, Log.Level level, String message) {
+    protected LogEntry(String appId, String appName, String[] tags, Log.Level level, String message) {
         time = dateFormat.format(new Date());
         this.appId = appId;
         this.appName = appName;

@@ -2,17 +2,18 @@ package com.labstack;
 
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
+import com.squareup.moshi.Rfc3339DateJsonAdapter;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import javax.xml.bind.DatatypeConverter;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,9 +21,8 @@ import java.util.List;
  */
 public class Email {
     protected OkHttpClient okHttp;
-    private Moshi moshi = new Moshi.Builder().build();
+    private Moshi moshi = new Moshi.Builder().add(Date.class, new Rfc3339DateJsonAdapter().nullSafe()).build();
     private JsonAdapter<EmailMessage> messageJsonAdapter = moshi.adapter(EmailMessage.class);
-    private JsonAdapter<EmailStatus> statusJsonAdapter = moshi.adapter(EmailStatus.class);
     private JsonAdapter<EmailException> exceptionJsonAdapter = moshi.adapter(EmailException.class);
 
     private void addFile(List<String> files, List<EmailFile> emailFiles) throws IOException {
@@ -35,18 +35,19 @@ public class Email {
         }
     }
 
-    public EmailStatus send(EmailMessage message) throws EmailException {
+    public EmailMessage send(EmailMessage message) throws EmailException {
         try {
             addFile(message.inlines, message.inlineFiles);
             addFile(message.attachments, message.attachmentFiles);
             String json = messageJsonAdapter.toJson(message);
+            System.out.println(json);
             Request request = new Request.Builder()
                     .url(Client.API_URL + "/email")
                     .post(RequestBody.create(Client.MEDIA_TYPE_JSON, json))
                     .build();
             Response response = okHttp.newCall(request).execute();
             if (response.isSuccessful()) {
-                return statusJsonAdapter.fromJson(response.body().source());
+                return messageJsonAdapter.fromJson(response.body().source());
             }
             throw exceptionJsonAdapter.fromJson(response.body().source());
         } catch (IOException e) {

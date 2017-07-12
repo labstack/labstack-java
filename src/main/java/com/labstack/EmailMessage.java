@@ -3,6 +3,7 @@ package com.labstack;
 import com.squareup.moshi.Json;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,6 +20,14 @@ public class EmailMessage {
     protected List<EmailFile> attachmentFiles = new ArrayList<>();
     protected transient List<String> inlines = new ArrayList<>();
     protected transient List<String> attachments = new ArrayList<>();
+    private boolean submitted;
+    private boolean delivered;
+    private boolean clicked;
+    private boolean bounced;
+    @Json(name = "created_at")
+    private Date createdAt;
+    @Json(name = "updated_at")
+    private Date updatedAt;
 
     public String getFrom() {
         return from;
@@ -50,6 +59,30 @@ public class EmailMessage {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public boolean isSubmitted() {
+        return submitted;
+    }
+
+    public boolean isDelivered() {
+        return delivered;
+    }
+
+    public boolean isClicked() {
+        return clicked;
+    }
+
+    public boolean isBounced() {
+        return bounced;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
     }
 
     public void addInline(String file) {

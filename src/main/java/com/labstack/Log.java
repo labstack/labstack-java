@@ -17,6 +17,8 @@ import java.util.concurrent.TimeUnit;
  */
 public final class Log {
     protected OkHttpClient okHttp;
+    private Moshi moshi = new Moshi.Builder().build();
+    private JsonAdapter<List<LogEntry>> entriesJsonAdapter = moshi.adapter(Types.newParameterizedType(List.class, LogEntry.class));
     private Timer timer;
     private List<LogEntry> entries = Collections.synchronizedList(new ArrayList());
     private String appId;
@@ -38,10 +40,7 @@ public final class Log {
             return;
         }
 
-        Moshi moshi = new Moshi.Builder().build();
-        Type type = Types.newParameterizedType(List.class, LogEntry.class);
-        JsonAdapter<List<LogEntry>> jsonAdapter = moshi.adapter(type);
-        String json = jsonAdapter.toJson(entries);
+        String json = entriesJsonAdapter.toJson(entries);
         Request request = new Request.Builder()
                 .url(Client.API_URL + "/log")
                 .post(RequestBody.create(Client.MEDIA_TYPE_JSON, json))

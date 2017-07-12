@@ -17,12 +17,12 @@ public final class Store {
     private Moshi moshi = new Moshi.Builder().add(Date.class, new Rfc3339DateJsonAdapter().nullSafe()).build();
     private JsonAdapter<StoreEntry> entryJsonAdapter = moshi.adapter(StoreEntry.class);
     private JsonAdapter<StoreQueryResponse> queryResponseJsonAdapter = moshi.adapter(StoreQueryResponse.class);
-    private JsonAdapter<LabstackException> exceptionJsonAdapter = moshi.adapter(LabstackException.class);
+    private JsonAdapter<StoreException> exceptionJsonAdapter = moshi.adapter(StoreException.class);
 
     protected Store() {
     }
 
-    public StoreEntry insert(String key, Object value) throws LabstackException {
+    public StoreEntry insert(String key, Object value) throws StoreException {
         StoreEntry entry = new StoreEntry(key, value);
         String json = entryJsonAdapter.toJson(entry);
         Request request = new Request.Builder()
@@ -36,11 +36,11 @@ public final class Store {
             }
             throw exceptionJsonAdapter.fromJson(response.body().source());
         } catch (IOException e) {
-            throw new LabstackException(0, e.getMessage());
+            throw new StoreException(0, e.getMessage());
         }
     }
 
-    public StoreEntry get(String key) throws LabstackException {
+    public StoreEntry get(String key) throws StoreException {
         Request request = new Request.Builder()
                 .url(Client.API_URL + "/store/" + key)
                 .get()
@@ -52,11 +52,11 @@ public final class Store {
             }
             throw exceptionJsonAdapter.fromJson(response.body().source());
         } catch (IOException e) {
-            throw new LabstackException(0, e.getMessage());
+            throw new StoreException(0, e.getMessage());
         }
     }
 
-    public StoreQueryResponse query() throws LabstackException {
+    public StoreQueryResponse query() throws StoreException {
         Request request = new Request.Builder()
                 .url(Client.API_URL + "/store")
                 .get()
@@ -68,7 +68,7 @@ public final class Store {
             }
             throw exceptionJsonAdapter.fromJson(response.body().source());
         } catch (IOException e) {
-            throw new LabstackException(0, e.getMessage());
+            throw new StoreException(0, e.getMessage());
         }
     }
 
@@ -89,11 +89,11 @@ public final class Store {
             }
             throw exceptionJsonAdapter.fromJson(response.body().source());
         } catch (IOException e) {
-            throw new LabstackException(0, e.getMessage());
+            throw new StoreException(0, e.getMessage());
         }
     }
 
-    public void update(String key, Object value) throws LabstackException {
+    public void update(String key, Object value) throws StoreException {
         StoreEntry entry = new StoreEntry(key, value);
         String json = entryJsonAdapter.toJson(entry);
         Request request = new Request.Builder()
@@ -106,7 +106,7 @@ public final class Store {
                 throw exceptionJsonAdapter.fromJson(response.body().source());
             }
         } catch (IOException e) {
-            throw new LabstackException(0, e.getMessage());
+            throw new StoreException(0, e.getMessage());
         }
     }
 
@@ -121,7 +121,7 @@ public final class Store {
                 throw exceptionJsonAdapter.fromJson(response.body().source());
             }
         } catch (IOException e) {
-            throw new LabstackException(0, e.getMessage());
+            throw new StoreException(0, e.getMessage());
         }
     }
 }

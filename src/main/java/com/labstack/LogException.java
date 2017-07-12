@@ -1,13 +1,13 @@
 package com.labstack;
 
 /**
- * Defines the LabStack exception.
+ * Defines the log exception.
  */
-public class LabstackException extends RuntimeException {
+public class LogException extends RuntimeException {
     private int code;
     private String message;
 
-    public LabstackException(int code, String message) {
+    public LogException(int code, String message) {
         this.code = code;
         this.message = message;
     }

@@ -6,6 +6,7 @@ import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
 import okhttp3.*;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -19,6 +20,7 @@ public final class Log {
     protected OkHttpClient okHttp;
     private Moshi moshi = new Moshi.Builder().build();
     private JsonAdapter<List<LogEntry>> entriesJsonAdapter = moshi.adapter(Types.newParameterizedType(List.class, LogEntry.class));
+    private JsonAdapter<LogException> exceptionJsonAdapter = moshi.adapter(LogException.class);
     private Timer timer;
     private List<LogEntry> entries = Collections.synchronizedList(new ArrayList());
     private String appId;
@@ -35,7 +37,7 @@ public final class Log {
     protected Log() {
     }
 
-    private void dispatch() throws Exception {
+    private void dispatch() throws LogException {
         if (entries.size() == 0) {
             return;
         }
@@ -45,9 +47,13 @@ public final class Log {
                 .url(Client.API_URL + "/log")
                 .post(RequestBody.create(Client.MEDIA_TYPE_JSON, json))
                 .build();
-        Response response = okHttp.newCall(request).execute();
-        if (response.code() != 204) {
-            throw new Exception(String.format("log: error dispatching entries, status=%d, message=%v", response.code(), response.body().string()));
+        try {
+            Response response = okHttp.newCall(request).execute();
+            if (!response.isSuccessful()) {
+                throw exceptionJsonAdapter.fromJson(response.body().source());
+            }
+        } catch (IOException e) {
+            throw new LogException(0, e.getMessage());
         }
         entries.clear();
     }

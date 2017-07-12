@@ -31,7 +31,7 @@ public final class Store {
                 .build();
         try {
             Response response = okHttp.newCall(request).execute();
-            if (response.code() == 201) {
+            if (response.isSuccessful()) {
                 return entryJsonAdapter.fromJson(response.body().source());
             }
             throw exceptionJsonAdapter.fromJson(response.body().source());
@@ -47,7 +47,7 @@ public final class Store {
                 .build();
         try {
             Response response = okHttp.newCall(request).execute();
-            if (response.code() == 200) {
+            if (response.isSuccessful()) {
                 return entryJsonAdapter.fromJson(response.body().source());
             }
             throw exceptionJsonAdapter.fromJson(response.body().source());
@@ -63,7 +63,7 @@ public final class Store {
                 .build();
         try {
             Response response = okHttp.newCall(request).execute();
-            if (response.code() == 200) {
+            if (response.isSuccessful()) {
                 return queryResponseJsonAdapter.fromJson(response.body().source());
             }
             throw exceptionJsonAdapter.fromJson(response.body().source());
@@ -84,7 +84,7 @@ public final class Store {
                 .build();
         try {
             Response response = okHttp.newCall(request).execute();
-            if (response.code() == 200) {
+            if (response.isSuccessful()) {
                 return queryResponseJsonAdapter.fromJson(response.body().source());
             }
             throw exceptionJsonAdapter.fromJson(response.body().source());
@@ -102,7 +102,7 @@ public final class Store {
                 .build();
         try {
             Response response = okHttp.newCall(request).execute();
-            if (response.code() != 204) {
+            if (!response.isSuccessful()) {
                 throw exceptionJsonAdapter.fromJson(response.body().source());
             }
         } catch (IOException e) {
@@ -117,7 +117,7 @@ public final class Store {
                 .build();
         try {
             Response response = okHttp.newCall(request).execute();
-            if (response.code() != 204) {
+            if (!response.isSuccessful()) {
                 throw exceptionJsonAdapter.fromJson(response.body().source());
             }
         } catch (IOException e) {

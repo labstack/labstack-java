@@ -27,6 +27,15 @@ public class Client {
     }
 
     /**
+     * @return Email service.
+     */
+    public Email Email() {
+        Email email = new Email();
+        email.okHttp = okHttp;
+        return email;
+    }
+
+    /**
      * @return Log service.
      */
     public Log Log() {

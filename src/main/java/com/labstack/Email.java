@@ -25,11 +25,11 @@ public class Email {
     private JsonAdapter<EmailMessage> messageJsonAdapter = moshi.adapter(EmailMessage.class);
     private JsonAdapter<EmailException> exceptionJsonAdapter = moshi.adapter(EmailException.class);
 
-    private void addFile(List<String> files, List<EmailFile> emailFiles) throws IOException {
+    private void addFiles(List<String> files, List<EmailFile> emailFiles) throws IOException {
         for (String file : files) {
             Path path = Paths.get(file);
-            String content = DatatypeConverter.printBase64Binary(Files.readAllBytes(path));
             String type = Files.probeContentType(path);
+            String content = DatatypeConverter.printBase64Binary(Files.readAllBytes(path));
             EmailFile emailFile = new EmailFile(path.getFileName().toString(), type, content);
             emailFiles.add(emailFile);
         }
@@ -37,10 +37,8 @@ public class Email {
 
     public EmailMessage send(EmailMessage message) throws EmailException {
         try {
-            addFile(message.inlines, message.inlineFiles);
-            addFile(message.attachments, message.attachmentFiles);
+            message.addFiles();
             String json = messageJsonAdapter.toJson(message);
-            System.out.println(json);
             Request request = new Request.Builder()
                     .url(Client.API_URL + "/email")
                     .post(RequestBody.create(Client.MEDIA_TYPE_JSON, json))

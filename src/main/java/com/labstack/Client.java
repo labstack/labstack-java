@@ -13,7 +13,7 @@ public class Client {
     public static final MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
 
     public Client(String apiKey) {
-         okHttp = new OkHttpClient.Builder()
+        okHttp = new OkHttpClient.Builder()
                 .addInterceptor(new APIInterceptor(apiKey))
                 .build();
     }

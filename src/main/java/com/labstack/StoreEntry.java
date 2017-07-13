@@ -1,13 +1,12 @@
 package com.labstack;
 
 import com.squareup.moshi.Json;
-import com.sun.istack.internal.Nullable;
 
 import java.util.Date;
 
 /**
  * Defines a store entry
-*/
+ */
 public class StoreEntry {
     private String key;
     private Object value;

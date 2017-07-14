@@ -15,24 +15,22 @@ import java.util.List;
  * Defines the email message.
  */
 public class EmailMessage {
+    private String time;
     private String from;
     private String to;
     private String subject;
     private String body;
+    private String status;
     @Json(name = "inlines")
     protected List<EmailFile> inlineFiles = new ArrayList<>();
     @Json(name = "attachments")
     protected List<EmailFile> attachmentFiles = new ArrayList<>();
     protected transient List<String> inlines = new ArrayList<>();
     protected transient List<String> attachments = new ArrayList<>();
-    private boolean submitted;
-    private boolean delivered;
-    private boolean clicked;
-    private boolean bounced;
-    @Json(name = "created_at")
-    private Date createdAt;
-    @Json(name = "updated_at")
-    private Date updatedAt;
+
+    public String getTime() {
+        return time;
+    }
 
     public String getFrom() {
         return from;
@@ -66,28 +64,8 @@ public class EmailMessage {
         this.body = body;
     }
 
-    public boolean isSubmitted() {
-        return submitted;
-    }
-
-    public boolean isDelivered() {
-        return delivered;
-    }
-
-    public boolean isClicked() {
-        return clicked;
-    }
-
-    public boolean isBounced() {
-        return bounced;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
+    public String getStatus() {
+        return status;
     }
 
     protected void addFiles() throws IOException {

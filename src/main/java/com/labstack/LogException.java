@@ -8,8 +8,8 @@ public class LogException extends RuntimeException {
     private String message;
 
     public LogException(int code, String message) {
+        super(message);
         this.code = code;
-        this.message = message;
     }
 
     public int getCode() {
@@ -17,7 +17,7 @@ public class LogException extends RuntimeException {
     }
 
     @Override
-    public String getMessage() {
-        return message;
+    public String toString() {
+        return String.format("log error, code=%d, message=%s", code, message);
     }
 }

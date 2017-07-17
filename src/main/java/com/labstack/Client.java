@@ -14,7 +14,7 @@ public class Client {
 
     public Client(String apiKey) {
         okHttp = new OkHttpClient.Builder()
-                .addInterceptor(new APIInterceptor(apiKey))
+                .addInterceptor(new Interceptor(apiKey))
                 .build();
     }
 
@@ -59,10 +59,10 @@ public class Client {
     }
 }
 
-class APIInterceptor implements Interceptor {
+class Interceptor implements okhttp3.Interceptor {
     private String apiKey;
 
-    public APIInterceptor(String apiKey) {
+    public Interceptor(String apiKey) {
         this.apiKey = apiKey;
     }
 

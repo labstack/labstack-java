@@ -8,7 +8,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -16,44 +15,34 @@ import java.util.List;
  */
 public class EmailMessage {
     private String time;
-    private String from;
     private String to;
+    private String from;
     private String subject;
     private String body;
-    private String status;
     @Json(name = "inlines")
-    protected List<EmailFile> inlineFiles = new ArrayList<>();
+    private List<EmailFile> inlineFiles = new ArrayList<>();
     @Json(name = "attachments")
-    protected List<EmailFile> attachmentFiles = new ArrayList<>();
-    protected transient List<String> inlines = new ArrayList<>();
-    protected transient List<String> attachments = new ArrayList<>();
+    private List<EmailFile> attachmentFiles = new ArrayList<>();
+    private transient List<String> inlines = new ArrayList<>();
+    private transient List<String> attachments = new ArrayList<>();
+    private String status;
 
-    public String getTime() {
-        return time;
-    }
-
-    public String getFrom() {
-        return from;
-    }
-
-    public void setFrom(String from) {
+    public EmailMessage(String to, String from, String subject) {
+        this.to = to;
         this.from = from;
+        this.subject = subject;
     }
 
     public String getTo() {
         return to;
     }
 
-    public void setTo(String to) {
-        this.to = to;
+    public String getFrom() {
+        return from;
     }
 
     public String getSubject() {
         return subject;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
     }
 
     public String getBody() {
@@ -93,12 +82,11 @@ class EmailFile {
 
     public static EmailFile fromPath(String path) throws IOException {
         Path p = Paths.get(path);
-        return new EmailFile(p.getFileName().toString(), Files.probeContentType(p), DatatypeConverter.printBase64Binary(Files.readAllBytes(p)));
+        return new EmailFile(p.getFileName().toString(), DatatypeConverter.printBase64Binary(Files.readAllBytes(p)));
     }
 
-    public EmailFile(String name, String type, String content) {
+    private EmailFile(String name, String content) {
         this.name = name;
-        this.type = type;
         this.content = content;
     }
 }

@@ -156,7 +156,7 @@ class LogEntry {
     private Log.Level level;
     private String message;
 
-    private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZ");
+    private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
     protected LogEntry(String appId, String appName, String[] tags, Log.Level level, String message) {
         time = dateFormat.format(new Date());

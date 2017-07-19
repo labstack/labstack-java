@@ -8,7 +8,7 @@
 ## Progress
 
 - [ ] Cube
-- [ ] Email
-- [ ] Log
+- [x] Email
+- [x] Log
 - [ ] MQTT
-- [ ] Store
+- [x] Store

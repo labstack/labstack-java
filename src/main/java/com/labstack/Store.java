@@ -57,26 +57,22 @@ public final class Store {
     }
 
     public StoreQueryResponse query() throws StoreException {
-        Request request = new Request.Builder()
-                .url(Client.API_URL + "/store")
-                .get()
-                .build();
-        try {
-            Response response = okHttp.newCall(request).execute();
-            if (response.isSuccessful()) {
-                return queryResponseJsonAdapter.fromJson(response.body().source());
-            }
-            throw exceptionJsonAdapter.fromJson(response.body().source());
-        } catch (IOException e) {
-            throw new StoreException(0, e.getMessage());
-        }
+        return query("", 0, 0);
     }
 
-    public StoreQueryResponse query(StoreQueryParams params) throws Exception {
+    public StoreQueryResponse query(String filters) throws StoreException {
+        return query(filters, 0, 0);
+    }
+
+    public StoreQueryResponse query(String filters, int limit) throws StoreException {
+        return query(filters, limit, 0);
+    }
+
+    public StoreQueryResponse query(String filters, int limit, int offset) throws StoreException {
         String url = HttpUrl.parse(Client.API_URL + "/store").newBuilder()
-                .addQueryParameter("filters", params.getFilters())
-                .addQueryParameter("limit", Integer.toString(params.getLimit()))
-                .addQueryParameter("offset", Integer.toString(params.getOffset()))
+                .addQueryParameter("filters", filters)
+                .addQueryParameter("limit", Integer.toString(limit))
+                .addQueryParameter("offset", Integer.toString(offset))
                 .build().toString();
         Request request = new Request.Builder()
                 .url(url)

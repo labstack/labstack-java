@@ -85,7 +85,7 @@ class EmailFile {
         return new EmailFile(p.getFileName().toString(), DatatypeConverter.printBase64Binary(Files.readAllBytes(p)));
     }
 
-    private EmailFile(String name, String content) {
+    protected EmailFile(String name, String content) {
         this.name = name;
         this.content = content;
     }

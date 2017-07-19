@@ -28,9 +28,8 @@ public class Email {
     private void addFiles(List<String> files, List<EmailFile> emailFiles) throws IOException {
         for (String file : files) {
             Path path = Paths.get(file);
-            String type = Files.probeContentType(path);
             String content = DatatypeConverter.printBase64Binary(Files.readAllBytes(path));
-            EmailFile emailFile = new EmailFile(path.getFileName().toString(), type, content);
+            EmailFile emailFile = new EmailFile(path.getFileName().toString(), content);
             emailFiles.add(emailFile);
         }
     }

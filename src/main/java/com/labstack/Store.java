@@ -56,18 +56,6 @@ public final class Store {
         }
     }
 
-    public StoreQueryResponse query() throws StoreException {
-        return query("", 0, 0);
-    }
-
-    public StoreQueryResponse query(String filters) throws StoreException {
-        return query(filters, 0, 0);
-    }
-
-    public StoreQueryResponse query(String filters, int limit) throws StoreException {
-        return query(filters, limit, 0);
-    }
-
     public StoreQueryResponse query(String filters, int limit, int offset) throws StoreException {
         String url = HttpUrl.parse(Client.API_URL + "/store").newBuilder()
                 .addQueryParameter("filters", filters)

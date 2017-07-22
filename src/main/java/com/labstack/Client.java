@@ -46,7 +46,7 @@ public class Client {
         log.okHttp = okHttp;
         log.setAppId(appId);
         log.setAppName(appName);
-        log.setLevel(Log.Level.INFO);
+        log.setLevel(Level.INFO);
         log.setBatchSize(60);
         log.setDispatchInterval(60);
         return log;

@@ -32,10 +32,6 @@ public final class Log {
     private int batchSize;
     private int dispatchInterval;
 
-    public enum Level {
-        DEBUG, INFO, WARN, ERROR, FATAL, OFF
-    }
-
     protected Log() {
     }
 
@@ -153,12 +149,12 @@ class LogEntry {
     @Json(name = "app_name")
     private String appName;
     private String[] tags;
-    private Log.Level level;
+    private Level level;
     private String message;
 
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
-    protected LogEntry(String appId, String appName, String[] tags, Log.Level level, String message) {
+    protected LogEntry(String appId, String appName, String[] tags, Level level, String message) {
         time = dateFormat.format(new Date());
         this.appId = appId;
         this.appName = appName;

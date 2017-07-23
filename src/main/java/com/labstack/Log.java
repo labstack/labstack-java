@@ -116,12 +116,12 @@ public final class Log {
             timer.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
-                    try {
-                        // TODO: Make it async
-                        dispatch();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                try {
+                    // TODO: Make it async
+                    dispatch();
+                } catch (LogException e) {
+                    System.out.printf("log error: code=%d, message=%s", e.getCode(), e.getMessage());
+                }
                 }
             }, 0, TimeUnit.SECONDS.toMillis(dispatchInterval));
         }
@@ -135,8 +135,8 @@ public final class Log {
             try {
                 // TODO: Make it async
                 dispatch();
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (LogException e) {
+                System.out.printf("log error: code=%d, message=%s", e.getCode(), e.getMessage());
             }
         }
     }

@@ -5,7 +5,6 @@ package com.labstack;
  */
 public class LogException extends RuntimeException {
     private int code;
-    private String message;
 
     public LogException(int code, String message) {
         super(message);
@@ -14,10 +13,5 @@ public class LogException extends RuntimeException {
 
     public int getCode() {
         return code;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("log error, code=%d, message=%s", code, message);
     }
 }

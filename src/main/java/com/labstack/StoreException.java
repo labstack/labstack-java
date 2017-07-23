@@ -5,7 +5,6 @@ package com.labstack;
  */
 public class StoreException extends RuntimeException {
     private int code;
-    private String message;
 
     public StoreException(int code, String message) {
         super(message);
@@ -14,10 +13,5 @@ public class StoreException extends RuntimeException {
 
     public int getCode() {
         return code;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("store error, code=%d, message=%s", code, message);
     }
 }

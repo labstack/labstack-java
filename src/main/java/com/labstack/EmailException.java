@@ -5,7 +5,6 @@ package com.labstack;
  */
 public class EmailException extends RuntimeException {
     private int code;
-    private String message;
 
     public EmailException(int code, String message) {
         super(message);
@@ -14,10 +13,5 @@ public class EmailException extends RuntimeException {
 
     public int getCode() {
         return code;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("email error, code=%d, message=%s", code, message);
     }
 }

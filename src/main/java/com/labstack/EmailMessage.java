@@ -13,6 +13,7 @@ import java.util.List;
 /**
  * Defines the email message.
  */
+@SuppressWarnings("Duplicates")
 public class EmailMessage {
     private String time;
     private String to;
@@ -57,12 +58,21 @@ public class EmailMessage {
         return status;
     }
 
-    protected void addFiles() throws IOException {
-        for (String path : inlines) {
-            inlineFiles.add(EmailFile.fromPath(path));
+    protected void addInlines() throws IOException {
+        for (String inline : inlines) {
+            Path path = Paths.get(inline);
+            String content = DatatypeConverter.printBase64Binary(Files.readAllBytes(path));
+            EmailFile emailFile = new EmailFile(path.getFileName().toString(), content);
+            inlineFiles.add(emailFile);
         }
-        for (String path : attachments) {
-            attachmentFiles.add(EmailFile.fromPath(path));
+    }
+
+    protected void addAttachments() throws IOException {
+        for (String attachment : attachments) {
+            Path path = Paths.get(attachment);
+            String content = DatatypeConverter.printBase64Binary(Files.readAllBytes(path));
+            EmailFile emailFile = new EmailFile(path.getFileName().toString(), content);
+            attachmentFiles.add(emailFile);
         }
     }
 

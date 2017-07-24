@@ -52,8 +52,9 @@ public final class Log {
             }
         } catch (IOException e) {
             throw new LogException(0, e.getMessage());
+        } finally {
+            entries.clear();
         }
-        entries.clear();
     }
 
     public void setAppId(String appId) {
@@ -116,12 +117,12 @@ public final class Log {
             timer.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
-                try {
-                    // TODO: Make it async
-                    dispatch();
-                } catch (LogException e) {
-                    System.out.printf("log error: code=%d, message=%s", e.getCode(), e.getMessage());
-                }
+                    try {
+                        // TODO: Make it async
+                        dispatch();
+                    } catch (LogException e) {
+                        System.out.printf("log error: code=%d, message=%s", e.getCode(), e.getMessage());
+                    }
                 }
             }, 0, TimeUnit.SECONDS.toMillis(dispatchInterval));
         }

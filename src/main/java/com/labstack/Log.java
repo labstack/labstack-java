@@ -1,8 +1,6 @@
 package com.labstack;
 
-import com.squareup.moshi.Json;
 import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -10,8 +8,6 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -20,14 +16,12 @@ import java.util.concurrent.TimeUnit;
  */
 public final class Log {
     protected OkHttpClient okHttp;
-    private Moshi moshi = new Moshi.Builder().build();
-    private JsonAdapter<List<LogEntry>> entriesJsonAdapter = moshi.adapter(Types.newParameterizedType(List.class, LogEntry.class));
-    private JsonAdapter<LogException> exceptionJsonAdapter = moshi.adapter(LogException.class);
+    private JsonAdapter<List<Map<String, Object>>> entriesJsonAdapter = Client.moshi.adapter(Types.newParameterizedType(List.class, Map.class));
+    private JsonAdapter<LogException> exceptionJsonAdapter = Client.moshi.adapter(LogException.class);
     private Timer timer;
-    private List<LogEntry> entries = Collections.synchronizedList(new ArrayList());
+    private List<Map<String, Object>> entries = Collections.synchronizedList(new ArrayList());
     private String appId;
     private String appName;
-    private String[] tags;
     private Level level;
     private int batchSize;
     private int dispatchInterval;
@@ -65,10 +59,6 @@ public final class Log {
         this.appName = appName;
     }
 
-    public void setTags(String[] tags) {
-        this.tags = tags;
-    }
-
     public void setLevel(Level level) {
         this.level = level;
     }
@@ -82,32 +72,32 @@ public final class Log {
     }
 
     // Logs a message with DEBUG level.
-    public void debug(String format, Object... args) {
-        log(Level.DEBUG, format, args);
+    public void debug(Fields fields) {
+        log(Level.DEBUG, fields);
     }
 
     // Logs a message with INFO level.
-    public void info(String format, Object... args) {
-        log(Level.INFO, format, args);
+    public void info(Fields fields) {
+        log(Level.INFO, fields);
     }
 
     // Logs a message with WARN level.
-    public void warn(String format, Object... args) {
-        log(Level.WARN, format, args);
+    public void warn(String format, Fields fields) {
+        log(Level.WARN, fields);
     }
 
     // Logs a message with ERROR level.
-    public void error(String format, Object... args) {
-        log(Level.ERROR, format, args);
+    public void error(String format, Fields fields) {
+        log(Level.ERROR, fields);
     }
 
     // Logs a message with FATAL level.
-    public void fatal(String format, Object... args) {
-        log(Level.FATAL, format, args);
+    public void fatal(String format, Fields fields) {
+        log(Level.FATAL, fields);
     }
 
     // Logs a message with log level.
-    public void log(Level level, String format, Object... args) {
+    public void log(Level level, Fields fields) {
         if (level.compareTo(this.level) < 0) {
             return;
         }
@@ -127,9 +117,11 @@ public final class Log {
             }, 0, TimeUnit.SECONDS.toMillis(dispatchInterval));
         }
 
-        String message = String.format(format, args);
-        LogEntry entry = new LogEntry(appId, appName, tags, level, message);
-        entries.add(entry);
+        fields.add("time", Client.dateFormat.format(new Date()))
+                .add("app_id", appId)
+                .add("app_name", appName)
+                .add("level", level);
+        entries.add(fields.data);
 
         // Dispatch batch
         if (entries.size() >= batchSize) {
@@ -143,24 +135,3 @@ public final class Log {
     }
 }
 
-class LogEntry {
-    private String time;
-    @Json(name = "app_id")
-    private String appId;
-    @Json(name = "app_name")
-    private String appName;
-    private String[] tags;
-    private Level level;
-    private String message;
-
-    private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-
-    protected LogEntry(String appId, String appName, String[] tags, Level level, String message) {
-        time = dateFormat.format(new Date());
-        this.appId = appId;
-        this.appName = appName;
-        this.tags = tags;
-        this.level = level;
-        this.message = message;
-    }
-}

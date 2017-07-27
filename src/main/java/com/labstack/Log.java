@@ -82,17 +82,17 @@ public final class Log {
     }
 
     // Logs a message with WARN level.
-    public void warn(String format, Fields fields) {
+    public void warn(Fields fields) {
         log(Level.WARN, fields);
     }
 
     // Logs a message with ERROR level.
-    public void error(String format, Fields fields) {
+    public void error(Fields fields) {
         log(Level.ERROR, fields);
     }
 
     // Logs a message with FATAL level.
-    public void fatal(String format, Fields fields) {
+    public void fatal(Fields fields) {
         log(Level.FATAL, fields);
     }
 

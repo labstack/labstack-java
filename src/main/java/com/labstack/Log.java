@@ -20,9 +20,8 @@ public final class Log {
     private JsonAdapter<LogException> exceptionJsonAdapter = Client.moshi.adapter(LogException.class);
     private Timer timer;
     private List<Map<String, Object>> entries = Collections.synchronizedList(new ArrayList());
-    private String appId;
-    private String appName;
     private Level level;
+    private Fields fields = new Fields();
     private int batchSize;
     private int dispatchInterval;
 
@@ -51,16 +50,12 @@ public final class Log {
         }
     }
 
-    public void setAppId(String appId) {
-        this.appId = appId;
-    }
-
-    public void setAppName(String appName) {
-        this.appName = appName;
-    }
-
     public void setLevel(Level level) {
         this.level = level;
+    }
+
+    public void setFields(Fields fields) {
+        this.fields = fields;
     }
 
     public void setBatchSize(int batchSize) {
@@ -118,9 +113,8 @@ public final class Log {
         }
 
         fields.add("time", Client.dateFormat.format(new Date()))
-                .add("app_id", appId)
-                .add("app_name", appName)
                 .add("level", level);
+        fields.data.putAll(this.fields.data);
         entries.add(fields.data);
 
         // Dispatch batch

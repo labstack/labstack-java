@@ -13,8 +13,7 @@ import java.text.SimpleDateFormat;
 
 public class Client {
     private OkHttpClient okHttp;
-    private String appId;
-    private String appName;
+
     protected static Moshi moshi = new Moshi.Builder().build();
     protected static JsonAdapter<SearchParameters> paramsJsonAdapter = moshi.adapter(SearchParameters.class);
     protected static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
@@ -26,14 +25,6 @@ public class Client {
         okHttp = new OkHttpClient.Builder()
                 .addInterceptor(new Interceptor(apiKey))
                 .build();
-    }
-
-    public void setAppId(String appId) {
-        this.appId = appId;
-    }
-
-    public void setAppName(String appName) {
-        this.appName = appName;
     }
 
     /**

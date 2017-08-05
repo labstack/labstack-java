@@ -16,7 +16,7 @@ public class Mqtt {
         options.setUserName(accountId);
         options.setPassword(apiKey.toCharArray());
         try {
-            mqtt = new MqttAsyncClient(Client.MQTT_BROKER, clientId);
+            mqtt = new MqttAsyncClient(Client.MQTT_BROKER, clientId, null);
             mqtt.setCallback(new MqttCallback() {
                 @Override
                 public void connectionLost(Throwable cause) {

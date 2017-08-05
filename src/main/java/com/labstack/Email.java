@@ -15,10 +15,14 @@ import java.util.Date;
  * Defines the LabStack email service.
  */
 public class Email {
-    protected OkHttpClient okHttp;
+    private OkHttpClient okHttp;
     private Moshi moshi = new Moshi.Builder().add(Date.class, new Rfc3339DateJsonAdapter().nullSafe()).build();
     private JsonAdapter<EmailMessage> messageJsonAdapter = moshi.adapter(EmailMessage.class);
     private JsonAdapter<EmailException> exceptionJsonAdapter = moshi.adapter(EmailException.class);
+
+    protected Email(OkHttpClient okHttp) {
+        this.okHttp = okHttp;
+    }
 
     public EmailMessage send(EmailMessage message) throws EmailException {
         try {

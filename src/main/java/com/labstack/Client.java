@@ -12,6 +12,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 public class Client {
+    private String accountId;
+    private String apiKey;
     private OkHttpClient okHttp;
 
     protected static Moshi moshi = new Moshi.Builder().build();
@@ -20,8 +22,11 @@ public class Client {
 
     public static final String API_URL = "https://api.labstack.com";
     public static final MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
+    public static final String MQTT_BROKER = "tcp://iot.labstack.com:1883";
 
-    public Client(String apiKey) {
+    public Client(String accountId, String apiKey) {
+        this.accountId = accountId;
+        this.apiKey = apiKey;
         okHttp = new OkHttpClient.Builder()
                 .addInterceptor(new Interceptor(apiKey))
                 .build();
@@ -31,9 +36,7 @@ public class Client {
      * @return Email service.
      */
     public Email Email() {
-        Email email = new Email();
-        email.okHttp = okHttp;
-        return email;
+        return new Email(okHttp);
     }
 
     /**
@@ -46,6 +49,10 @@ public class Client {
         log.setBatchSize(60);
         log.setDispatchInterval(60);
         return log;
+    }
+
+    public Mqtt Mqtt() throws MqttException {
+        return new Mqtt(accountId, apiKey);
     }
 
     /**

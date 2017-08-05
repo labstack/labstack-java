@@ -22,6 +22,7 @@ public class Client {
 
     public static final String API_URL = "https://api.labstack.com";
     public static final MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
+//    public static final String MQTT_BROKER = "ssl://iot.labstack.com:8883";
     public static final String MQTT_BROKER = "tcp://iot.labstack.com:1883";
 
     public Client(String accountId, String apiKey) {
@@ -51,8 +52,8 @@ public class Client {
         return log;
     }
 
-    public Mqtt Mqtt() throws MqttException {
-        return new Mqtt(accountId, apiKey);
+    public Mqtt Mqtt(String clientId) throws MqttException {
+        return new Mqtt(accountId, apiKey, clientId);
     }
 
     /**

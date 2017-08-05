@@ -8,7 +8,7 @@ public class Mqtt {
 
     protected MqttAsyncClient mqtt;
 
-    protected Mqtt(final String accountId, String apiKey) {
+    protected Mqtt(String accountId, String apiKey, String clientId) {
         this.accountId = accountId;
         MqttConnectOptions options = new MqttConnectOptions();
         options.setAutomaticReconnect(true);
@@ -16,7 +16,7 @@ public class Mqtt {
         options.setUserName(accountId);
         options.setPassword(apiKey.toCharArray());
         try {
-            mqtt = new MqttAsyncClient(Client.MQTT_BROKER, MqttClient.generateClientId());
+            mqtt = new MqttAsyncClient(Client.MQTT_BROKER, clientId);
             mqtt.setCallback(new MqttCallback() {
                 @Override
                 public void connectionLost(Throwable cause) {
@@ -24,7 +24,7 @@ public class Mqtt {
 
                 @Override
                 public void messageArrived(String topic, MqttMessage message) throws Exception {
-                    topic = topic.replace(accountId + "/", "");
+                    topic = topic.replace(Mqtt.this.accountId + "/", "");
                     Mqtt.this.handler.handle(topic, message.getPayload());
                 }
 
@@ -35,7 +35,6 @@ public class Mqtt {
             IMqttToken token = mqtt.connect(options);
             token.waitForCompletion();
         } catch (org.eclipse.paho.client.mqttv3.MqttException e) {
-            System.out.println(e.getReasonCode());
             throw new MqttException(e.getReasonCode(), e.getMessage());
         }
     }

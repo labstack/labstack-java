@@ -39,10 +39,10 @@ public class Mqtt {
         }
     }
 
-    public void publish(String topic, byte[] message) throws MqttException {
+    public void publish(String topic, byte[] payload) throws MqttException {
         try {
             topic = String.format("%s/%s", accountId, topic);
-            mqtt.publish(topic, new MqttMessage(message));
+            mqtt.publish(topic, new MqttMessage(payload));
         } catch (org.eclipse.paho.client.mqttv3.MqttException e) {
             throw new MqttException(e.getReasonCode(), e.getMessage());
         }

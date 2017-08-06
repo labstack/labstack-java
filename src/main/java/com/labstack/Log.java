@@ -112,7 +112,7 @@ public final class Log {
             }, 0, TimeUnit.SECONDS.toMillis(dispatchInterval));
         }
 
-        fields.add("time", Client.dateFormat.format(new Date()))
+        fields.add("time", Client.dateFormatter.format(new Date()))
                 .add("level", level);
         fields.data.putAll(this.fields.data);
         entries.add(fields.data);

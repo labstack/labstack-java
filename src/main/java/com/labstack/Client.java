@@ -6,6 +6,7 @@ import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -21,7 +22,8 @@ public class Client {
 
     protected static Moshi moshi = new Moshi.Builder().build();
     protected static JsonAdapter<SearchParameters> paramsJsonAdapter = moshi.adapter(SearchParameters.class);
-    // We could have used `yyyy-MM-dd'T'HH:mm:ss.SSSXXX` but on Android 6 and below it doesn't work.
+    // TODO: We could have used `yyyy-MM-dd'T'HH:mm:ss.SSSXXX` but on Android 6 and below it doesn't work.
+    // Remove when labstack-android is released.
     protected static final DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ") {
         @Override
         public StringBuffer format(Date date, StringBuffer toAppendTo, FieldPosition pos) {
@@ -40,12 +42,8 @@ public class Client {
 
     public static final String API_URL = "https://api.labstack.com";
     public static final MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
-//    public static final String MQTT_BROKER = "ssl://iot.labstack.com:8883";
+    //    public static final String MQTT_BROKER = "ssl://iot.labstack.com:8883";
     public static final String MQTT_BROKER = "tcp://iot.labstack.com:1883";
-
-    public static void print() {
-        System.out.println(dateFormatter.format(new Date()));
-    }
 
     public Client(String accountId, String apiKey) {
         this.accountId = accountId;
@@ -75,7 +73,12 @@ public class Client {
     }
 
     public Mqtt Mqtt(String clientId) throws MqttException {
-        return new Mqtt(accountId, apiKey, clientId);
+        try {
+            MqttAsyncClient client = new MqttAsyncClient(Client.MQTT_BROKER, clientId, null);
+            return new Mqtt(accountId, apiKey, clientId, client);
+        } catch (org.eclipse.paho.client.mqttv3.MqttException e) {
+            throw new MqttException(e.getReasonCode(), e.getMessage());
+        }
     }
 
     /**

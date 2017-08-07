@@ -1,5 +1,5 @@
 group 'com.labstack'
-version '0.6.5'
+version '0.6.7'
 
 apply plugin: 'java'
 apply plugin: 'maven-publish'
@@ -9,17 +9,13 @@ targetCompatibility = JavaVersion.VERSION_1_7
 
 repositories {
     mavenCentral()
-    maven {
-        // TODO: Remove me when stable version is released.
-        url "https://repo.eclipse.org/content/repositories/paho-snapshots/"
-    }
 }
 
 dependencies {
     compile 'com.squareup.okhttp3:okhttp:3.8.1'
     compile 'com.squareup.moshi:moshi:1.5.0'
     compile 'com.squareup.moshi:moshi-adapters:1.5.0'
-    compile 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.1-SNAPSHOT'
+    compile 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.1'
     testCompile 'junit:junit:4.12'
 }
 

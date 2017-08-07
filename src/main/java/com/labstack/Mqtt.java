@@ -4,8 +4,9 @@ import org.eclipse.paho.client.mqttv3.*;
 
 public class Mqtt {
     private String accountId;
-    private MqttMessageHandler handler;
     private IMqttAsyncClient client;
+    private MqttMessageHandler messageHandler;
+    private MqttConnectHandler connectHandler;
 
     protected Mqtt(String accountId, String apiKey, String clientId, IMqttAsyncClient client) throws org.eclipse.paho.client.mqttv3.MqttException {
         this.accountId = accountId;
@@ -23,7 +24,9 @@ public class Mqtt {
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
                 topic = topic.replace(Mqtt.this.accountId + "/", "");
-                Mqtt.this.handler.handle(topic, message.getPayload());
+                if (Mqtt.this.messageHandler != null) {
+                    Mqtt.this.messageHandler.handle(topic, message.getPayload());
+                }
             }
 
             @Override
@@ -32,10 +35,20 @@ public class Mqtt {
 
             @Override
             public void connectComplete(boolean reconnect, String serverURI) {
+                if (Mqtt.this.connectHandler != null) {
+                    Mqtt.this.connectHandler.handle(reconnect, serverURI);
+                }
             }
         });
-        IMqttToken token = client.connect(options);
-        token.waitForCompletion();
+        client.connect(options);
+    }
+
+    public void onMessage(MqttMessageHandler handler) {
+        messageHandler = handler;
+    }
+
+    public void onConnect(MqttConnectHandler handler) {
+        connectHandler = handler;
     }
 
     public void publish(String topic, byte[] payload) throws MqttException {
@@ -57,12 +70,6 @@ public class Mqtt {
             throw new MqttException(e.getReasonCode(), e.getMessage());
         }
     }
-
-    public void onMessage(MqttMessageHandler handler) {
-        this.handler = handler;
-    }
-
-    ;
 
     public void disconnect() throws MqttException {
         try {

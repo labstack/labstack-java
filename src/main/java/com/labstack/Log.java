@@ -11,10 +11,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Defines the LabStack log service.
- */
-public final class Log {
+public class Log {
     protected OkHttpClient okHttp;
     private JsonAdapter<List<Map<String, Object>>> entriesJsonAdapter = Client.moshi.adapter(Types.newParameterizedType(List.class, Map.class));
     private JsonAdapter<LogException> exceptionJsonAdapter = Client.moshi.adapter(LogException.class);

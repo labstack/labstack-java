@@ -10,18 +10,12 @@ import okhttp3.Response;
 import java.io.IOException;
 import java.util.Map;
 
-/**
- * Defines the LabStack store service.
- */
 @SuppressWarnings("Duplicates")
-public final class Store {
+public class Store {
     protected OkHttpClient okHttp;
     private JsonAdapter<Map<String, Object>> documentJsonAdapter = Client.moshi.adapter(Types.newParameterizedType(Map.class, String.class, Object.class));
     private JsonAdapter<StoreSearchResponse> searchResponseJsonAdapter = Client.moshi.adapter(StoreSearchResponse.class);
     private JsonAdapter<StoreException> exceptionJsonAdapter = Client.moshi.adapter(StoreException.class);
-
-    protected Store() {
-    }
 
     public Document insert(String collection, Document document) throws StoreException {
         String json = documentJsonAdapter.toJson(document.data);

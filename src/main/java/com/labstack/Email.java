@@ -11,9 +11,6 @@ import okhttp3.Response;
 import java.io.IOException;
 import java.util.Date;
 
-/**
- * Defines the LabStack email service.
- */
 public class Email {
     private OkHttpClient okHttp;
     private Moshi moshi = new Moshi.Builder().add(Date.class, new Rfc3339DateJsonAdapter().nullSafe()).build();

@@ -6,6 +6,7 @@ import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.eclipse.paho.client.mqttv3.IMqttAsyncClient;
 import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
 
 import java.io.IOException;
@@ -53,17 +54,25 @@ public class Client {
                 .build();
     }
 
+    public String getAccountId() {
+        return accountId;
+    }
+
+    public String getApiKey() {
+        return apiKey;
+    }
+
     /**
      * @return Email service.
      */
-    public Email Email() {
+    public Email email() {
         return new Email(okHttp);
     }
 
     /**
      * @return Log service.
      */
-    public Log Log() {
+    public Log log() {
         Log log = new Log();
         log.okHttp = okHttp;
         log.setLevel(Level.INFO);
@@ -72,9 +81,9 @@ public class Client {
         return log;
     }
 
-    public Mqtt Mqtt(String clientId) throws MqttException {
+    public Mqtt mqtt(String clientId) throws MqttException {
         try {
-            MqttAsyncClient client = new MqttAsyncClient(Client.MQTT_BROKER, clientId, null);
+            IMqttAsyncClient client = new MqttAsyncClient(Client.MQTT_BROKER, clientId, null);
             return new Mqtt(accountId, apiKey, clientId, client);
         } catch (org.eclipse.paho.client.mqttv3.MqttException e) {
             throw new MqttException(e.getReasonCode(), e.getMessage());
@@ -84,7 +93,7 @@ public class Client {
     /**
      * @return Store service.
      */
-    public Store Store() {
+    public Store store() {
         Store store = new Store();
         store.okHttp = okHttp;
         return store;

@@ -1,14 +1,24 @@
 group 'com.labstack'
-version '0.6.7'
 
 apply plugin: 'java'
-apply plugin: 'maven-publish'
+apply plugin: 'com.novoda.bintray-release'
+//apply plugin: 'maven-publish'
 
 sourceCompatibility = JavaVersion.VERSION_1_7
 targetCompatibility = JavaVersion.VERSION_1_7
 
 repositories {
     mavenCentral()
+}
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.novoda:bintray-release:0.5.0'
+    }
 }
 
 dependencies {
@@ -29,36 +39,45 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc.destinationDir
 }
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-            artifact sourceJar
-            artifact javadocJar
+//publishing {
+//    publications {
+//        mavenJava(MavenPublication) {
+//            from components.java
+//            artifact sourceJar
+//            artifact javadocJar
+//
+//            pom.withXml {
+//                asNode().with() {
+//                    appendNode('name', 'labstack-java')
+//                    appendNode('description', 'Official Java client library for the LabStack platform')
+//                    appendNode('url', 'https://labstack.com')
+//                    appendNode('scm').with {
+//                        appendNode('url', 'https://github.com/labstack/labstack-java.git')
+//                    }
+//                    appendNode('developers').with {
+//                        appendNode('developer').with {
+//                            appendNode('id', 'vishr')
+//                            appendNode('name', 'Vishal Rana')
+//                        }
+//                    }
+//                    appendNode('licenses').with {
+//                        appendNode('license').with {
+//                            appendNode('name', 'MIT License')
+//                            appendNode('url', 'https://github.com/labstack/labstack-java/blob/master/LICENSE')
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
 
-            pom.withXml {
-                asNode().with() {
-                    appendNode('name', 'labstack-java')
-                    appendNode('description', 'Official Java client library for the LabStack REST API')
-                    appendNode('url', 'https://labstack.com')
-                    appendNode('scm').with {
-                        appendNode('url', 'https://github.com/labstack/labstack-java.git')
-                    }
-                    appendNode('developers').with {
-                        appendNode('developer').with {
-                            appendNode('id', 'vishr')
-                            appendNode('name', 'Vishal Rana')
-                        }
-                    }
-                    appendNode('licenses').with {
-                        appendNode('license').with {
-                            appendNode('name', 'MIT License')
-                            appendNode('url', 'https://github.com/labstack/labstack-java/blob/master/LICENSE')
-                        }
-                    }
-                }
-            }
-        }
-    }
+publish {
+    userOrg = 'labstack'
+    groupId = 'com.labstack'
+    artifactId = 'labstack-java'
+    publishVersion = '0.6.9'
+    desc = 'Official Java client library for the LabStack platform'
+    website = 'https://github.com/labstack/labstack-android'
 }
 

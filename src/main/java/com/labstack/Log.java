@@ -115,7 +115,7 @@ public class Log {
         entries.add(fields.data);
 
         // Dispatch batch
-        if (entries.size() >= batchSize || level == Level.FATAL) {
+        if (level == Level.FATAL || entries.size() >= batchSize) {
             try {
                 // TODO: Make it async
                 dispatch();

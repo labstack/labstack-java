@@ -17,9 +17,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Client {
-    private String accountId;
-    private String apiKey;
-    private OkHttpClient okHttp;
+    protected String accountId;
+    protected String apiKey;
+    protected OkHttpClient okHttp;
 
     protected static Moshi moshi = new Moshi.Builder().build();
     protected static JsonAdapter<SearchParameters> paramsJsonAdapter = moshi.adapter(SearchParameters.class);
@@ -54,14 +54,6 @@ public class Client {
                 .build();
     }
 
-    public String getAccountId() {
-        return accountId;
-    }
-
-    public String getApiKey() {
-        return apiKey;
-    }
-
     /**
      * @return Email service.
      */
@@ -73,13 +65,13 @@ public class Client {
      * @return Log service.
      */
     public Log log() {
-        return new Log(okHttp);
+        return new Log(this);
     }
 
     public Mqtt mqtt(String clientId) throws MqttException {
         try {
-            IMqttAsyncClient client = new MqttAsyncClient(Client.MQTT_BROKER, clientId, null);
-            return new Mqtt(accountId, apiKey, clientId, client);
+            IMqttAsyncClient mqttClient = new MqttAsyncClient(Client.MQTT_BROKER, clientId);
+            return new Mqtt(this, mqttClient, clientId);
         } catch (org.eclipse.paho.client.mqttv3.MqttException e) {
             throw new MqttException(e.getReasonCode(), e.getMessage());
         }

@@ -22,8 +22,8 @@ public class Log {
     private int batchSize;
     private int dispatchInterval;
 
-    protected Log(OkHttpClient okHttp) {
-        this.okHttp = okHttp;
+    protected Log(Client client) {
+        this.okHttp = client.okHttp;
         level = Level.INFO;
         batchSize = 60;
         dispatchInterval = 60;

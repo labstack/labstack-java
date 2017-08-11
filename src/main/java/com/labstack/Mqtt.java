@@ -4,19 +4,19 @@ import org.eclipse.paho.client.mqttv3.*;
 
 public class Mqtt {
     private String accountId;
-    private IMqttAsyncClient client;
+    private IMqttAsyncClient mqttClient;
     private MqttMessageHandler messageHandler;
     private MqttConnectHandler connectHandler;
 
-    protected Mqtt(String accountId, String apiKey, String clientId, IMqttAsyncClient client) throws org.eclipse.paho.client.mqttv3.MqttException {
-        this.accountId = accountId;
-        this.client = client;
+    protected Mqtt(Client client, IMqttAsyncClient mqttClient, String clientId) throws org.eclipse.paho.client.mqttv3.MqttException {
+        this.accountId = client.accountId;
+        this.mqttClient = mqttClient;
         MqttConnectOptions options = new MqttConnectOptions();
         options.setAutomaticReconnect(true);
         options.setCleanSession(true);
         options.setUserName(accountId);
-        options.setPassword(apiKey.toCharArray());
-        client.setCallback(new MqttCallbackExtended() {
+        options.setPassword(client.apiKey.toCharArray());
+        mqttClient.setCallback(new MqttCallbackExtended() {
             @Override
             public void connectionLost(Throwable cause) {
             }
@@ -40,7 +40,7 @@ public class Mqtt {
                 }
             }
         });
-        client.connect(options);
+        mqttClient.connect(options);
     }
 
     public void onMessage(MqttMessageHandler handler) {
@@ -54,8 +54,8 @@ public class Mqtt {
     public void publish(String topic, byte[] payload) throws MqttException {
         try {
             topic = String.format("%s/%s", accountId, topic);
-            if (client.isConnected()) {
-                client.publish(topic, new MqttMessage(payload));
+            if (mqttClient.isConnected()) {
+                mqttClient.publish(topic, new MqttMessage(payload));
             }
         } catch (org.eclipse.paho.client.mqttv3.MqttException e) {
             throw new MqttException(e.getReasonCode(), e.getMessage());
@@ -65,7 +65,7 @@ public class Mqtt {
     public void subscribe(String topic) {
         topic = String.format("%s/%s", accountId, topic);
         try {
-            client.subscribe(topic, 0);
+            mqttClient.subscribe(topic, 0);
         } catch (org.eclipse.paho.client.mqttv3.MqttException e) {
             throw new MqttException(e.getReasonCode(), e.getMessage());
         }
@@ -73,7 +73,7 @@ public class Mqtt {
 
     public void disconnect() throws MqttException {
         try {
-            client.disconnect();
+            mqttClient.disconnect();
         } catch (org.eclipse.paho.client.mqttv3.MqttException e) {
             throw new MqttException(e.getReasonCode(), e.getMessage());
         }

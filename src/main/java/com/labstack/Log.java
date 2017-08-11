@@ -22,10 +22,14 @@ public class Log {
     private int batchSize;
     private int dispatchInterval;
 
-    protected Log() {
+    protected Log(OkHttpClient okHttp) {
+        this.okHttp = okHttp;
+        level = Level.INFO;
+        batchSize = 60;
+        dispatchInterval = 60;
     }
 
-    private void dispatch() throws LogException {
+    protected void dispatch() throws LogException {
         if (entries.size() == 0) {
             return;
         }
@@ -89,7 +93,7 @@ public class Log {
     }
 
     // Logs a message with log level.
-    public void log(Level level, Fields fields) {
+    private void log(Level level, Fields fields) {
         if (level.compareTo(this.level) < 0) {
             return;
         }

@@ -73,12 +73,7 @@ public class Client {
      * @return Log service.
      */
     public Log log() {
-        Log log = new Log();
-        log.okHttp = okHttp;
-        log.setLevel(Level.INFO);
-        log.setBatchSize(60);
-        log.setDispatchInterval(60);
-        return log;
+        return new Log(okHttp);
     }
 
     public Mqtt mqtt(String clientId) throws MqttException {

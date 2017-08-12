@@ -2,10 +2,7 @@ package com.labstack;
 
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Types;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import okhttp3.*;
 
 import java.io.IOException;
 import java.util.*;
@@ -29,7 +26,7 @@ public class Log {
         dispatchInterval = 60;
     }
 
-    protected void dispatch() throws LogException {
+    private void dispatch(final LogCallback callback) throws LogException {
         if (entries.size() == 0) {
             return;
         }
@@ -39,15 +36,36 @@ public class Log {
                 .url(Client.API_URL + "/log")
                 .post(RequestBody.create(Client.MEDIA_TYPE_JSON, json))
                 .build();
-        try {
-            Response response = okHttp.newCall(request).execute();
-            if (!response.isSuccessful()) {
-                throw exceptionJsonAdapter.fromJson(response.body().source());
+        Call call = okHttp.newCall(request);
+
+        if (callback == null) {
+            try {
+                Response response = call.execute();
+                if (!response.isSuccessful()) {
+                    throw exceptionJsonAdapter.fromJson(response.body().source());
+                }
+            } catch (IOException e) {
+                throw new LogException(0, e.getMessage());
+            } finally {
+                entries.clear();
             }
-        } catch (IOException e) {
-            throw new LogException(0, e.getMessage());
-        } finally {
-            entries.clear();
+        } else {
+            call.enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    entries.clear();
+                    callback.onError(new LogException(0, e.getMessage()));
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    entries.clear();
+                    if (!response.isSuccessful()) {
+                        callback.onError(exceptionJsonAdapter.fromJson(response.body().source()));
+                    }
+                    callback.onSuccess();
+                }
+            });
         }
     }
 
@@ -67,33 +85,48 @@ public class Log {
         this.dispatchInterval = dispatchInterval;
     }
 
-    // Logs a message with DEBUG level.
     public void debug(Fields fields) {
         log(Level.DEBUG, fields);
     }
 
-    // Logs a message with INFO level.
+    public void debug(Fields fields, LogCallback callback) {
+        log(Level.DEBUG, fields, callback);
+    }
+
     public void info(Fields fields) {
         log(Level.INFO, fields);
     }
 
-    // Logs a message with WARN level.
+    public void info(Fields fields, LogCallback callback) {
+        log(Level.INFO, fields, callback);
+    }
+
     public void warn(Fields fields) {
         log(Level.WARN, fields);
     }
 
-    // Logs a message with ERROR level.
+    public void warn(Fields fields, LogCallback callback) {
+        log(Level.WARN, fields, callback);
+    }
+
     public void error(Fields fields) {
         log(Level.ERROR, fields);
     }
 
-    // Logs a message with FATAL level.
+    public void error(Fields fields, LogCallback callback) {
+        log(Level.ERROR, fields, callback);
+    }
+
     public void fatal(Fields fields) {
         log(Level.FATAL, fields);
     }
 
+    public void fatal(Fields fields, LogCallback callback) {
+        log(Level.FATAL, fields, callback);
+    }
+
     // Logs a message with log level.
-    private void log(Level level, Fields fields) {
+    private void log(final Level level, Fields fields, final LogCallback callback) {
         if (level.compareTo(this.level) < 0) {
             return;
         }
@@ -105,7 +138,7 @@ public class Log {
                 public void run() {
                     try {
                         // TODO: Make it async
-                        dispatch();
+                        dispatch(callback);
                     } catch (LogException e) {
                         System.out.printf("log error: code=%d, message=%s", e.getCode(), e.getMessage());
                     }
@@ -119,14 +152,16 @@ public class Log {
         entries.add(fields.data);
 
         // Dispatch batch
-        if (level == Level.FATAL || entries.size() >= batchSize) {
-            try {
-                // TODO: Make it async
-                dispatch();
-            } catch (LogException e) {
-                System.out.printf("log error: code=%d, message=%s", e.getCode(), e.getMessage());
-            }
+        if (level == Level.FATAL || entries.size() >= batchSize) try {
+            // TODO: Make it async
+            dispatch(callback);
+        } catch (LogException e) {
+            System.out.printf("log error: code=%d, message=%s", e.getCode(), e.getMessage());
         }
+    }
+
+    private void log(final Level level, Fields fields) {
+        log(level, fields, null);
     }
 }
 

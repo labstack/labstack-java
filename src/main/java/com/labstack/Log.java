@@ -9,10 +9,10 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class Log {
-    protected OkHttpClient okHttp;
+    private OkHttpClient okHttp;
+    private Timer timer;
     private JsonAdapter<List<Map<String, Object>>> entriesJsonAdapter = Client.moshi.adapter(Types.newParameterizedType(List.class, Map.class));
     private JsonAdapter<LogException> exceptionJsonAdapter = Client.moshi.adapter(LogException.class);
-    private Timer timer;
     private List<Map<String, Object>> entries = Collections.synchronizedList(new ArrayList());
     private Level level;
     private Fields fields = new Fields();

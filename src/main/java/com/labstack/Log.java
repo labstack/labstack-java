@@ -5,10 +5,12 @@ import com.squareup.moshi.Types;
 import okhttp3.*;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class Log {
+public class Log implements Thread.UncaughtExceptionHandler {
     private OkHttpClient okHttp;
     private Timer timer;
     private JsonAdapter<List<Map<String, Object>>> entriesJsonAdapter = Client.moshi.adapter(Types.newParameterizedType(List.class, Map.class));
@@ -18,12 +20,23 @@ public class Log {
     private Fields fields = new Fields();
     private int batchSize;
     private int dispatchInterval;
+    protected Thread.UncaughtExceptionHandler defaultUncaughtExceptionHandle;
 
     protected Log(Client client) {
         this.okHttp = client.okHttp;
         level = Level.INFO;
         batchSize = 60;
         dispatchInterval = 60;
+
+        defaultUncaughtExceptionHandle = Thread.getDefaultUncaughtExceptionHandler();
+        Thread.setDefaultUncaughtExceptionHandler(this);
+    }
+
+    protected static String getStackTrace(Throwable throwable) {
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter printWriter = new PrintWriter(stringWriter);
+        throwable.printStackTrace(printWriter);
+        return stringWriter.toString();
     }
 
     private void dispatch(final LogCallback callback) throws LogException {
@@ -153,7 +166,6 @@ public class Log {
 
         // Dispatch batch
         if (level == Level.FATAL || entries.size() >= batchSize) try {
-            // TODO: Make it async
             dispatch(callback);
         } catch (LogException e) {
             System.out.printf("log error: code=%d, message=%s", e.getCode(), e.getMessage());
@@ -162,6 +174,13 @@ public class Log {
 
     private void log(final Level level, Fields fields) {
         log(level, fields, null);
+    }
+
+    public void uncaughtException(Thread thread, Throwable throwable) {
+        fatal(new Fields()
+                .add("message", throwable.getMessage())
+                .add("stack_trace", getStackTrace(throwable)));
+        defaultUncaughtExceptionHandle.uncaughtException(thread, throwable);
     }
 }
 

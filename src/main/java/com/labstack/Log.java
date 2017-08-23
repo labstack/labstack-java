@@ -159,7 +159,7 @@ public class Log implements Thread.UncaughtExceptionHandler {
             }, 0, TimeUnit.SECONDS.toMillis(dispatchInterval));
         }
 
-        fields.add("time", Client.dateFormatter.format(new Date()))
+        fields.add("time", new Date())
                 .add("level", level);
         fields.data.putAll(this.fields.data);
         entries.add(fields.data);

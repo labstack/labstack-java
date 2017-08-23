@@ -2,6 +2,7 @@ package com.labstack;
 
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
+import com.squareup.moshi.Rfc3339DateJsonAdapter;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -20,30 +21,11 @@ public class Client {
     protected String accountId;
     protected String apiKey;
     protected OkHttpClient okHttp;
-
-    protected static Moshi moshi = new Moshi.Builder().build();
+    protected static Moshi moshi = new Moshi.Builder().add(Date.class, new Rfc3339DateJsonAdapter()).build();
     protected static JsonAdapter<SearchParameters> paramsJsonAdapter = moshi.adapter(SearchParameters.class);
-    // TODO: We could have used `yyyy-MM-dd'T'HH:mm:ss.SSSXXX` but on Android 6 and below it doesn't work.
-    // Remove when labstack-android is released.
-    protected static final DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ") {
-        @Override
-        public StringBuffer format(Date date, StringBuffer toAppendTo, FieldPosition pos) {
-            StringBuffer rfcFormat = super.format(date, toAppendTo, pos);
-            return rfcFormat.insert(rfcFormat.length() - 2, ":");
-        }
-
-        @Override
-        public Date parse(String text, ParsePosition pos) {
-            if (text.length() > 3) {
-                text = text.substring(0, text.length() - 3) + text.substring(text.length() - 2);
-            }
-            return super.parse(text, pos);
-        }
-    };
-
     public static final String API_URL = "https://api.labstack.com";
     public static final MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
-    //    public static final String MQTT_BROKER = "ssl://iot.labstack.com:8883";
+    // public static final String MQTT_BROKER = "ssl://iot.labstack.com:8883";
     public static final String MQTT_BROKER = "tcp://iot.labstack.com:1883";
 
     public Client(String accountId, String apiKey) {

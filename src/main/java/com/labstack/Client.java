@@ -9,6 +9,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import org.eclipse.paho.client.mqttv3.IMqttAsyncClient;
 import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
+import org.eclipse.paho.client.mqttv3.MqttException;
 
 import java.io.IOException;
 import java.util.Date;
@@ -46,11 +47,11 @@ public class Client {
         return new Log(this);
     }
 
-    public Connect mqtt(String clientId) throws ConnectException {
+    public Connect connect(String clientId) throws ConnectException {
         try {
             IMqttAsyncClient mqttClient = new MqttAsyncClient(Client.MQTT_BROKER, clientId);
             return new Connect(this, mqttClient, clientId);
-        } catch (org.eclipse.paho.client.mqttv3.MqttException e) {
+        } catch (MqttException e) {
             throw new ConnectException(e.getReasonCode(), e.getMessage());
         }
     }

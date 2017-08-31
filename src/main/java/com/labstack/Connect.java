@@ -4,19 +4,19 @@ import org.eclipse.paho.client.mqttv3.*;
 
 public class Connect {
     private String accountId;
-    private IMqttAsyncClient mqttClient;
+    private IMqttAsyncClient client;
     private ConnectMessageHandler messageHandler;
     private ConnectConnectionHandler connectHandler;
 
-    protected Connect(String accountId, String apiKey, IMqttAsyncClient mqttClient) throws MqttException {
+    protected Connect(String accountId, String apiKey, IMqttAsyncClient client) throws MqttException {
         this.accountId = accountId;
-        this.mqttClient = mqttClient;
+        this.client = client;
         MqttConnectOptions options = new MqttConnectOptions();
         options.setAutomaticReconnect(true);
         options.setCleanSession(true);
         options.setUserName(accountId);
         options.setPassword(apiKey.toCharArray());
-        mqttClient.setCallback(new MqttCallbackExtended() {
+        client.setCallback(new MqttCallbackExtended() {
             @Override
             public void connectionLost(Throwable cause) {
             }
@@ -40,7 +40,7 @@ public class Connect {
                 }
             }
         });
-        mqttClient.connect(options);
+        client.connect(options);
     }
 
     public void onMessage(ConnectMessageHandler handler) {
@@ -54,8 +54,8 @@ public class Connect {
     public void publish(String topic, byte[] payload) throws ConnectException {
         try {
             topic = String.format("%s/%s", accountId, topic);
-            if (mqttClient.isConnected()) {
-                mqttClient.publish(topic, new MqttMessage(payload));
+            if (client.isConnected()) {
+                client.publish(topic, new MqttMessage(payload));
             }
         } catch (MqttException e) {
             throw new ConnectException(e.getReasonCode(), e.getMessage());
@@ -65,7 +65,7 @@ public class Connect {
     public void subscribe(String topic) {
         topic = String.format("%s/%s", accountId, topic);
         try {
-            mqttClient.subscribe(topic, 0);
+            client.subscribe(topic, 0);
         } catch (MqttException e) {
             throw new ConnectException(e.getReasonCode(), e.getMessage());
         }
@@ -73,7 +73,7 @@ public class Connect {
 
     public void disconnect() throws ConnectException {
         try {
-            mqttClient.disconnect();
+            client.disconnect();
         } catch (MqttException e) {
             throw new ConnectException(e.getReasonCode(), e.getMessage());
         }

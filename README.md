@@ -1,14 +1,43 @@
-# LabStack Java Client
+<a href="https://labstack.com"><img height="80" src="https://cdn.labstack.com/images/labstack-logo.svg"></a>
 
+## Java Client
 
-[![Forum](https://img.shields.io/badge/community-forum-00afd1.svg?style=flat-square)](https://forum.labstack.com)
-[![Twitter](https://img.shields.io/badge/twitter-@labstack-55acee.svg?style=flat-square)](https://twitter.com/labstack)
-[![License](http://img.shields.io/badge/license-mit-blue.svg?style=flat-square)](https://raw.githubusercontent.com/labstack/labstack-go/master/LICENSE)
+## Installation
 
-## Progress
+```groovy
+repositories {
+    jcenter()
+}
 
-- [ ] Cube
-- [x] Email
-- [x] Log
-- [ ] MQTT
-- [x] Store
+dependencies {
+    compile 'com.labstack:labstack-java:0.6.30'
+}
+```
+
+## Quick Start
+
+[Sign up](https://labstack.com/signup) to get an API key
+
+Create a file `Main.java` with the following content:
+
+```java
+package main;
+
+import com.labstack.Client;
+import com.labstack.Document;
+import com.labstack.Store;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        Client client = new Client("<ACCOUNT_ID>", "<API_KEY>");
+        Store store = client.store();
+        Document document = store.insert("users", new Document()
+               .add("name", "Jack")
+               .add("location", "Disney"));
+    }
+}
+```
+
+From IntelliJ run Main.main()
+
+## [Docs](https://labstack.com/docs) | [Forum](https://forum.labstack.com)

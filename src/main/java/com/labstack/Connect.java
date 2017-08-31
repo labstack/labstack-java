@@ -8,14 +8,14 @@ public class Connect {
     private ConnectMessageHandler messageHandler;
     private ConnectConnectionHandler connectHandler;
 
-    protected Connect(Client client, IMqttAsyncClient mqttClient, String clientId) throws org.eclipse.paho.client.mqttv3.MqttException {
-        this.accountId = client.accountId;
+    protected Connect(String accountId, String apiKey, IMqttAsyncClient mqttClient) throws MqttException {
+        this.accountId = accountId;
         this.mqttClient = mqttClient;
         MqttConnectOptions options = new MqttConnectOptions();
         options.setAutomaticReconnect(true);
         options.setCleanSession(true);
         options.setUserName(accountId);
-        options.setPassword(client.apiKey.toCharArray());
+        options.setPassword(apiKey.toCharArray());
         mqttClient.setCallback(new MqttCallbackExtended() {
             @Override
             public void connectionLost(Throwable cause) {
@@ -57,7 +57,7 @@ public class Connect {
             if (mqttClient.isConnected()) {
                 mqttClient.publish(topic, new MqttMessage(payload));
             }
-        } catch (org.eclipse.paho.client.mqttv3.MqttException e) {
+        } catch (MqttException e) {
             throw new ConnectException(e.getReasonCode(), e.getMessage());
         }
     }
@@ -66,7 +66,7 @@ public class Connect {
         topic = String.format("%s/%s", accountId, topic);
         try {
             mqttClient.subscribe(topic, 0);
-        } catch (org.eclipse.paho.client.mqttv3.MqttException e) {
+        } catch (MqttException e) {
             throw new ConnectException(e.getReasonCode(), e.getMessage());
         }
     }
@@ -74,7 +74,7 @@ public class Connect {
     public void disconnect() throws ConnectException {
         try {
             mqttClient.disconnect();
-        } catch (org.eclipse.paho.client.mqttv3.MqttException e) {
+        } catch (MqttException e) {
             throw new ConnectException(e.getReasonCode(), e.getMessage());
         }
     }

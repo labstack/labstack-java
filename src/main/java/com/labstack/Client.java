@@ -50,7 +50,7 @@ public class Client {
     public Connect connect(String clientId) throws ConnectException {
         try {
             IMqttAsyncClient mqttClient = new MqttAsyncClient(Client.MQTT_BROKER, clientId);
-            return new Connect(this, mqttClient, clientId);
+            return new Connect(this.accountId, this.apiKey, mqttClient);
         } catch (MqttException e) {
             throw new ConnectException(e.getReasonCode(), e.getMessage());
         }

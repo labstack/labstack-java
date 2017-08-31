@@ -1,5 +1,5 @@
 package com.labstack;
 
-public interface MqttMessageHandler {
+public interface ConnectMessageHandler {
     void handle(String topic, byte[] payload);
 }

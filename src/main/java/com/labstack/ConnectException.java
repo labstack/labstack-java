@@ -3,10 +3,10 @@ package com.labstack;
 /**
  * Defines the log exception.
  */
-public class MqttException extends RuntimeException {
+public class ConnectException extends RuntimeException {
     private int code;
 
-    public MqttException(int code, String message) {
+    public ConnectException(int code, String message) {
         super(message);
         this.code = code;
     }

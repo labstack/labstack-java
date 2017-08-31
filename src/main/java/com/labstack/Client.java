@@ -11,10 +11,6 @@ import org.eclipse.paho.client.mqttv3.IMqttAsyncClient;
 import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.FieldPosition;
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Client {
@@ -50,12 +46,12 @@ public class Client {
         return new Log(this);
     }
 
-    public Mqtt mqtt(String clientId) throws MqttException {
+    public Connect mqtt(String clientId) throws ConnectException {
         try {
             IMqttAsyncClient mqttClient = new MqttAsyncClient(Client.MQTT_BROKER, clientId);
-            return new Mqtt(this, mqttClient, clientId);
+            return new Connect(this, mqttClient, clientId);
         } catch (org.eclipse.paho.client.mqttv3.MqttException e) {
-            throw new MqttException(e.getReasonCode(), e.getMessage());
+            throw new ConnectException(e.getReasonCode(), e.getMessage());
         }
     }
 

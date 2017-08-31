@@ -2,13 +2,13 @@ package com.labstack;
 
 import org.eclipse.paho.client.mqttv3.*;
 
-public class Mqtt {
+public class Connect {
     private String accountId;
     private IMqttAsyncClient mqttClient;
-    private MqttMessageHandler messageHandler;
-    private MqttConnectHandler connectHandler;
+    private ConnectMessageHandler messageHandler;
+    private ConnectConnectionHandler connectHandler;
 
-    protected Mqtt(Client client, IMqttAsyncClient mqttClient, String clientId) throws org.eclipse.paho.client.mqttv3.MqttException {
+    protected Connect(Client client, IMqttAsyncClient mqttClient, String clientId) throws org.eclipse.paho.client.mqttv3.MqttException {
         this.accountId = client.accountId;
         this.mqttClient = mqttClient;
         MqttConnectOptions options = new MqttConnectOptions();
@@ -23,9 +23,9 @@ public class Mqtt {
 
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
-                topic = topic.replace(Mqtt.this.accountId + "/", "");
-                if (Mqtt.this.messageHandler != null) {
-                    Mqtt.this.messageHandler.handle(topic, message.getPayload());
+                topic = topic.replace(Connect.this.accountId + "/", "");
+                if (Connect.this.messageHandler != null) {
+                    Connect.this.messageHandler.handle(topic, message.getPayload());
                 }
             }
 
@@ -35,30 +35,30 @@ public class Mqtt {
 
             @Override
             public void connectComplete(boolean reconnect, String serverURI) {
-                if (Mqtt.this.connectHandler != null) {
-                    Mqtt.this.connectHandler.handle(reconnect, serverURI);
+                if (Connect.this.connectHandler != null) {
+                    Connect.this.connectHandler.handle(reconnect, serverURI);
                 }
             }
         });
         mqttClient.connect(options);
     }
 
-    public void onMessage(MqttMessageHandler handler) {
+    public void onMessage(ConnectMessageHandler handler) {
         messageHandler = handler;
     }
 
-    public void onConnect(MqttConnectHandler handler) {
+    public void onConnect(ConnectConnectionHandler handler) {
         connectHandler = handler;
     }
 
-    public void publish(String topic, byte[] payload) throws MqttException {
+    public void publish(String topic, byte[] payload) throws ConnectException {
         try {
             topic = String.format("%s/%s", accountId, topic);
             if (mqttClient.isConnected()) {
                 mqttClient.publish(topic, new MqttMessage(payload));
             }
         } catch (org.eclipse.paho.client.mqttv3.MqttException e) {
-            throw new MqttException(e.getReasonCode(), e.getMessage());
+            throw new ConnectException(e.getReasonCode(), e.getMessage());
         }
     }
 
@@ -67,15 +67,15 @@ public class Mqtt {
         try {
             mqttClient.subscribe(topic, 0);
         } catch (org.eclipse.paho.client.mqttv3.MqttException e) {
-            throw new MqttException(e.getReasonCode(), e.getMessage());
+            throw new ConnectException(e.getReasonCode(), e.getMessage());
         }
     }
 
-    public void disconnect() throws MqttException {
+    public void disconnect() throws ConnectException {
         try {
             mqttClient.disconnect();
         } catch (org.eclipse.paho.client.mqttv3.MqttException e) {
-            throw new MqttException(e.getReasonCode(), e.getMessage());
+            throw new ConnectException(e.getReasonCode(), e.getMessage());
         }
     }
 }

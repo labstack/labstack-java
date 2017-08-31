@@ -1,5 +1,5 @@
 package com.labstack;
 
-public interface MqttConnectHandler {
+public interface ConnectConnectionHandler {
     void handle(boolean reconnect, String serverURI);
 }

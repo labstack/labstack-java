@@ -62,8 +62,11 @@ public class Queue {
         }
     }
 
-    public void subscribe(String topic) {
+    public void subscribe(String topic, boolean shared) {
         topic = String.format("%s/%s", accountId, topic);
+        if (shared) {
+            topic = "$queue/" + topic;
+        }
         try {
             client.subscribe(topic, 0);
         } catch (MqttException e) {

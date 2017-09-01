@@ -3,10 +3,10 @@ package com.labstack;
 /**
  * Defines the log exception.
  */
-public class ConnectException extends RuntimeException {
+public class QueueException extends RuntimeException {
     private int code;
 
-    public ConnectException(int code, String message) {
+    public QueueException(int code, String message) {
         super(message);
         this.code = code;
     }

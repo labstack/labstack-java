@@ -5,8 +5,8 @@ import org.eclipse.paho.client.mqttv3.*;
 public class Connect {
     private String accountId;
     private IMqttAsyncClient client;
-    private ConnectMessageHandler messageHandler;
     private ConnectConnectionHandler connectHandler;
+    private ConnectMessageHandler messageHandler;
 
     protected Connect(String accountId, String apiKey, IMqttAsyncClient client) throws MqttException {
         this.accountId = accountId;
@@ -36,19 +36,19 @@ public class Connect {
             @Override
             public void connectComplete(boolean reconnect, String serverURI) {
                 if (Connect.this.connectHandler != null) {
-                    Connect.this.connectHandler.handle(reconnect, serverURI);
+                    Connect.this.connectHandler.handle();
                 }
             }
         });
         client.connect(options);
     }
 
-    public void onMessage(ConnectMessageHandler handler) {
-        messageHandler = handler;
-    }
-
     public void onConnect(ConnectConnectionHandler handler) {
         connectHandler = handler;
+    }
+
+    public void onMessage(ConnectMessageHandler handler) {
+        messageHandler = handler;
     }
 
     public void publish(String topic, byte[] payload) throws ConnectException {

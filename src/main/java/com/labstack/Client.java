@@ -47,12 +47,12 @@ public class Client {
         return new Log(this);
     }
 
-    public Queue queue(String clientId) throws QueueException {
+    public Message message(String clientId) throws MessageException {
         try {
             IMqttAsyncClient mqttClient = new MqttAsyncClient(Client.MQTT_BROKER, clientId);
-            return new Queue(this.accountId, this.apiKey, mqttClient);
+            return new Message(this.accountId, this.apiKey, mqttClient);
         } catch (MqttException e) {
-            throw new QueueException(e.getReasonCode(), e.getMessage());
+            throw new MessageException(e.getReasonCode(), e.getMessage());
         }
     }
 

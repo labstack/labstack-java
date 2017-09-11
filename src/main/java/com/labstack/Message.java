@@ -2,13 +2,13 @@ package com.labstack;
 
 import org.eclipse.paho.client.mqttv3.*;
 
-public class Queue {
+public class Message {
     private String accountId;
     private IMqttAsyncClient client;
-    private QueueConnectHandler connectHandler;
-    private QueueMessageHandler messageHandler;
+    private MessageConnectHandler connectHandler;
+    private MessageDataHandler messageHandler;
 
-    protected Queue(String accountId, String apiKey, IMqttAsyncClient client) throws MqttException {
+    protected Message(String accountId, String apiKey, IMqttAsyncClient client) throws MqttException {
         this.accountId = accountId;
         this.client = client;
         MqttConnectOptions options = new MqttConnectOptions();
@@ -23,9 +23,9 @@ public class Queue {
 
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
-                topic = topic.replace(Queue.this.accountId + "/", "");
-                if (Queue.this.messageHandler != null) {
-                    Queue.this.messageHandler.handle(topic, message.getPayload());
+                topic = topic.replace(Message.this.accountId + "/", "");
+                if (Message.this.messageHandler != null) {
+                    Message.this.messageHandler.handle(topic, message.getPayload());
                 }
             }
 
@@ -35,30 +35,30 @@ public class Queue {
 
             @Override
             public void connectComplete(boolean reconnect, String serverURI) {
-                if (Queue.this.connectHandler != null) {
-                    Queue.this.connectHandler.handle();
+                if (Message.this.connectHandler != null) {
+                    Message.this.connectHandler.handle();
                 }
             }
         });
         client.connect(options);
     }
 
-    public void onConnect(QueueConnectHandler handler) {
+    public void onConnect(MessageConnectHandler handler) {
         connectHandler = handler;
     }
 
-    public void onMessage(QueueMessageHandler handler) {
+    public void onMessage(MessageDataHandler handler) {
         messageHandler = handler;
     }
 
-    public void publish(String topic, byte[] payload) throws QueueException {
+    public void publish(String topic, byte[] payload) throws MessageException {
         try {
             topic = String.format("%s/%s", accountId, topic);
             if (client.isConnected()) {
                 client.publish(topic, new MqttMessage(payload));
             }
         } catch (MqttException e) {
-            throw new QueueException(e.getReasonCode(), e.getMessage());
+            throw new MessageException(e.getReasonCode(), e.getMessage());
         }
     }
 
@@ -70,15 +70,15 @@ public class Queue {
         try {
             client.subscribe(topic, 0);
         } catch (MqttException e) {
-            throw new QueueException(e.getReasonCode(), e.getMessage());
+            throw new MessageException(e.getReasonCode(), e.getMessage());
         }
     }
 
-    public void disconnect() throws QueueException {
+    public void disconnect() throws MessageException {
         try {
             client.disconnect();
         } catch (MqttException e) {
-            throw new QueueException(e.getReasonCode(), e.getMessage());
+            throw new MessageException(e.getReasonCode(), e.getMessage());
         }
     }
 }

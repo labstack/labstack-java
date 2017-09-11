@@ -1,5 +1,5 @@
 package com.labstack;
 
-public interface QueueConnectHandler {
+public interface MessageConnectHandler {
     void handle();
 }

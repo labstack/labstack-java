@@ -1,5 +1,5 @@
 package com.labstack;
 
-public interface QueueMessageHandler {
+public interface MessageDataHandler {
     void handle(String topic, byte[] payload);
 }

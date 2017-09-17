@@ -32,7 +32,7 @@ public class Log implements Thread.UncaughtExceptionHandler {
         return stringWriter.toString();
     }
 
-    private void dispatch(Map<String, Object> entry, final LogCallback callback) throws LogException {
+    private void write(Map<String, Object> entry, final LogCallback callback) throws LogException {
         String json = entryJsonAdapter.toJson(entry);
         Request request = new Request.Builder()
                 .url(Client.API_URL + "/log")
@@ -128,7 +128,7 @@ public class Log implements Thread.UncaughtExceptionHandler {
 
         // Write log
         try {
-            dispatch(fields.data, callback);
+            write(fields.data, callback);
         } catch (LogException e) {
             System.out.printf("log error: code=%d, message=%s", e.getCode(), e.getMessage());
         }

@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.labstack:labstack-java:0.6.30'
+    compile 'com.labstack:labstack-java:0.8.0'
 }
 ```
 
@@ -24,20 +24,21 @@ Create a file `Main.java` with the following content:
 package main;
 
 import com.labstack.Client;
-import com.labstack.Document;
-import com.labstack.Store;
+import com.labstack.Jet;
+import com.labstack.JetMessage;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        Client client = new Client("<ACCOUNT_ID>", "<API_KEY>");
-        Store store = client.store();
-        Document document = store.insert("users", new Document()
-               .add("name", "Jack")
-               .add("location", "Disney"));
+        Client client = new Client("ACCOUNT_ID", "<API_KEY>");
+        Jet jet = client.Jet();
+        JetMessage message = new JetMessage("jack@labstack.com", "LabStack", "Hello");
+        message.setBody("Hello");
+        message.addAttachment("walle.png");
+        message = jet.send(message);
     }
 }
 ```
 
 From IntelliJ run Main.main()
 
-## [Docs](https://labstack.com/docs) | [Forum](https://forum.labstack.com)
+## [Documentation](https://labstack.com/docs) | [Forum](https://forum.labstack.com)

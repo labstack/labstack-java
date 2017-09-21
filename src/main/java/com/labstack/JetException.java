@@ -1,12 +1,12 @@
 package com.labstack;
 
 /**
- * Defines the log exception.
+ * Defines the email exception.
  */
-public class LogException extends RuntimeException {
+public class JetException extends RuntimeException {
     private int code;
 
-    public LogException(int code, String message) {
+    public JetException(int code, String message) {
         super(message);
         this.code = code;
     }

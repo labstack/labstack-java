@@ -33,36 +33,18 @@ public class Client {
                 .build();
     }
 
-    /**
-     * @return Email service.
-     */
-    public Email email() {
-        return new Email(okHttp);
+    public Jet jet() {
+        return new Jet(okHttp);
     }
 
-    /**
-     * @return Log service.
-     */
-    public Log log() {
-        return new Log(this);
-    }
 
-    public Message message(String clientId) throws MessageException {
+    public Hub message(String clientId) throws HubException {
         try {
             IMqttAsyncClient mqttClient = new MqttAsyncClient(Client.MQTT_BROKER, clientId);
-            return new Message(this.accountId, this.apiKey, mqttClient);
+            return new Hub(this.accountId, this.apiKey, mqttClient);
         } catch (MqttException e) {
-            throw new MessageException(e.getReasonCode(), e.getMessage());
+            throw new HubException(e.getReasonCode(), e.getMessage());
         }
-    }
-
-    /**
-     * @return Store service.
-     */
-    public Store store() {
-        Store store = new Store();
-        store.okHttp = okHttp;
-        return store;
     }
 }
 

@@ -3,10 +3,10 @@ package com.labstack;
 /**
  * Defines the log exception.
  */
-public class MessageException extends RuntimeException {
+public class HubException extends RuntimeException {
     private int code;
 
-    public MessageException(int code, String message) {
+    public HubException(int code, String message) {
         super(message);
         this.code = code;
     }

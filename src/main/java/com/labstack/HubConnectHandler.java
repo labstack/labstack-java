@@ -1,5 +1,5 @@
 package com.labstack;
 
-public interface MessageConnectHandler {
+public interface HubConnectHandler {
     void handle();
 }

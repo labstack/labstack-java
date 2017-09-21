@@ -11,23 +11,23 @@ import okhttp3.Response;
 import java.io.IOException;
 import java.util.Date;
 
-public class Email {
+public class Jet {
     private OkHttpClient okHttp;
     private Moshi moshi = new Moshi.Builder().add(Date.class, new Rfc3339DateJsonAdapter().nullSafe()).build();
-    private JsonAdapter<EmailMessage> messageJsonAdapter = moshi.adapter(EmailMessage.class);
-    private JsonAdapter<EmailException> exceptionJsonAdapter = moshi.adapter(EmailException.class);
+    private JsonAdapter<JetMessage> messageJsonAdapter = moshi.adapter(JetMessage.class);
+    private JsonAdapter<JetException> exceptionJsonAdapter = moshi.adapter(JetException.class);
 
-    protected Email(OkHttpClient okHttp) {
+    protected Jet(OkHttpClient okHttp) {
         this.okHttp = okHttp;
     }
 
-    public EmailMessage send(EmailMessage message) throws EmailException {
+    public JetMessage send(JetMessage message) throws JetException {
         try {
             message.addInlines();
             message.addAttachments();
             String json = messageJsonAdapter.toJson(message);
             Request request = new Request.Builder()
-                    .url(Client.API_URL + "/email")
+                    .url(Client.API_URL + "/jet/send")
                     .post(RequestBody.create(Client.MEDIA_TYPE_JSON, json))
                     .build();
             Response response = okHttp.newCall(request).execute();
@@ -36,7 +36,7 @@ public class Email {
             }
             throw exceptionJsonAdapter.fromJson(response.body().source());
         } catch (IOException e) {
-            throw new EmailException(0, e.getMessage());
+            throw new JetException(0, e.getMessage());
         }
     }
 }

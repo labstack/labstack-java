@@ -10,25 +10,22 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Defines the email message.
- */
 @SuppressWarnings("Duplicates")
-public class EmailMessage {
+public class JetMessage {
     private String time;
     private String to;
     private String from;
     private String subject;
     private String body;
     @Json(name = "inlines")
-    private List<EmailFile> inlineFiles = new ArrayList<>();
+    private List<JetFile> inlineFiles = new ArrayList<>();
     @Json(name = "attachments")
-    private List<EmailFile> attachmentFiles = new ArrayList<>();
+    private List<JetFile> attachmentFiles = new ArrayList<>();
     private transient List<String> inlines = new ArrayList<>();
     private transient List<String> attachments = new ArrayList<>();
     private String status;
 
-    public EmailMessage(String to, String from, String subject) {
+    public JetMessage(String to, String from, String subject) {
         this.to = to;
         this.from = from;
         this.subject = subject;
@@ -62,8 +59,8 @@ public class EmailMessage {
         for (String inline : inlines) {
             Path path = Paths.get(inline);
             String content = DatatypeConverter.printBase64Binary(Files.readAllBytes(path));
-            EmailFile emailFile = new EmailFile(path.getFileName().toString(), content);
-            inlineFiles.add(emailFile);
+            JetFile jetFile = new JetFile(path.getFileName().toString(), content);
+            inlineFiles.add(jetFile);
         }
     }
 
@@ -71,8 +68,8 @@ public class EmailMessage {
         for (String attachment : attachments) {
             Path path = Paths.get(attachment);
             String content = DatatypeConverter.printBase64Binary(Files.readAllBytes(path));
-            EmailFile emailFile = new EmailFile(path.getFileName().toString(), content);
-            attachmentFiles.add(emailFile);
+            JetFile jetFile = new JetFile(path.getFileName().toString(), content);
+            attachmentFiles.add(jetFile);
         }
     }
 
@@ -85,17 +82,17 @@ public class EmailMessage {
     }
 }
 
-class EmailFile {
+class JetFile {
     private String name;
     private String type;
     private String content;
 
-    public static EmailFile fromPath(String path) throws IOException {
+    public static JetFile fromPath(String path) throws IOException {
         Path p = Paths.get(path);
-        return new EmailFile(p.getFileName().toString(), DatatypeConverter.printBase64Binary(Files.readAllBytes(p)));
+        return new JetFile(p.getFileName().toString(), DatatypeConverter.printBase64Binary(Files.readAllBytes(p)));
     }
 
-    protected EmailFile(String name, String content) {
+    protected JetFile(String name, String content) {
         this.name = name;
         this.content = content;
     }

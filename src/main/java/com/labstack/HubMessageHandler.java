@@ -1,5 +1,5 @@
 package com.labstack;
 
-public interface MessageDataHandler {
+public interface HubMessageHandler {
     void handle(String topic, byte[] data);
 }

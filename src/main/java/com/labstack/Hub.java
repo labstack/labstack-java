@@ -2,13 +2,13 @@ package com.labstack;
 
 import org.eclipse.paho.client.mqttv3.*;
 
-public class Message {
+public class Hub {
     private String accountId;
     private IMqttAsyncClient client;
-    private MessageConnectHandler connectHandler;
-    private MessageDataHandler messageHandler;
+    private HubConnectHandler connectHandler;
+    private HubMessageHandler messageHandler;
 
-    protected Message(String accountId, String apiKey, IMqttAsyncClient client) throws MqttException {
+    protected Hub(String accountId, String apiKey, IMqttAsyncClient client) throws MqttException {
         this.accountId = accountId;
         this.client = client;
         MqttConnectOptions options = new MqttConnectOptions();
@@ -23,9 +23,9 @@ public class Message {
 
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
-                topic = topic.replace(Message.this.accountId + "/", "");
-                if (Message.this.messageHandler != null) {
-                    Message.this.messageHandler.handle(topic, message.getPayload());
+                topic = topic.replace(Hub.this.accountId + "/", "");
+                if (Hub.this.messageHandler != null) {
+                    Hub.this.messageHandler.handle(topic, message.getPayload());
                 }
             }
 
@@ -35,30 +35,30 @@ public class Message {
 
             @Override
             public void connectComplete(boolean reconnect, String serverURI) {
-                if (Message.this.connectHandler != null) {
-                    Message.this.connectHandler.handle();
+                if (Hub.this.connectHandler != null) {
+                    Hub.this.connectHandler.handle();
                 }
             }
         });
         client.connect(options);
     }
 
-    public void onConnect(MessageConnectHandler handler) {
+    public void onConnect(HubConnectHandler handler) {
         connectHandler = handler;
     }
 
-    public void onMessage(MessageDataHandler handler) {
+    public void onMessage(HubMessageHandler handler) {
         messageHandler = handler;
     }
 
-    public void publish(String topic, byte[] payload) throws MessageException {
+    public void publish(String topic, byte[] payload) throws HubException {
         try {
             topic = String.format("%s/%s", accountId, topic);
             if (client.isConnected()) {
                 client.publish(topic, new MqttMessage(payload));
             }
         } catch (MqttException e) {
-            throw new MessageException(e.getReasonCode(), e.getMessage());
+            throw new HubException(e.getReasonCode(), e.getMessage());
         }
     }
 
@@ -70,15 +70,15 @@ public class Message {
         try {
             client.subscribe(topic, 0);
         } catch (MqttException e) {
-            throw new MessageException(e.getReasonCode(), e.getMessage());
+            throw new HubException(e.getReasonCode(), e.getMessage());
         }
     }
 
-    public void disconnect() throws MessageException {
+    public void disconnect() throws HubException {
         try {
             client.disconnect();
         } catch (MqttException e) {
-            throw new MessageException(e.getReasonCode(), e.getMessage());
+            throw new HubException(e.getReasonCode(), e.getMessage());
         }
     }
 }

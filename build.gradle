@@ -4,11 +4,11 @@ apply plugin: 'java'
 apply plugin: 'com.novoda.bintray-release'
 //apply plugin: 'maven-publish'
 
-sourceCompatibility = JavaVersion.VERSION_1_7
-targetCompatibility = JavaVersion.VERSION_1_7
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
-    mavenCentral()
+    jcenter()
 }
 
 buildscript {
@@ -76,8 +76,8 @@ publish {
     userOrg = 'labstack'
     groupId = 'com.labstack'
     artifactId = 'labstack-java'
-    publishVersion = '0.8.0'
-    desc = 'Official Java client library for the LabStack platform'
+    publishVersion = '0.10.0'
+    desc = 'Official Java client library for the LabStack API'
     website = 'https://github.com/labstack/labstack-java'
     licences = ['MIT']
 }

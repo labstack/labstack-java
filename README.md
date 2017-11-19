@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.labstack:labstack-java:0.8.0'
+    compile 'com.labstack:labstack-java:0.10.0'
 }
 ```
 
@@ -29,12 +29,10 @@ import com.labstack.JetMessage;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        Client client = new Client("ACCOUNT_ID", "<API_KEY>");
-        Jet jet = client.Jet();
-        JetMessage message = new JetMessage("jack@labstack.com", "LabStack", "Hello");
-        message.setBody("Hello");
-        message.addAttachment("walle.png");
-        message = jet.send(message);
+        Client client = new Client("<API_KEY>");
+        Barcode.GenerateResponse response = client.barcodeGenerate(new Barcode.GenerateRequest()
+            .setFormat("qr_code")
+            .setContent("https://labstack.com"));
     }
 }
 ```

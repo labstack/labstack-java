@@ -3,47 +3,74 @@ package com.labstack;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Rfc3339DateJsonAdapter;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import org.eclipse.paho.client.mqttv3.IMqttAsyncClient;
-import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
-import org.eclipse.paho.client.mqttv3.MqttException;
+import okhttp3.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
+@SuppressWarnings("Duplicates")
 public class Client {
-    protected String accountId;
-    protected String apiKey;
-    protected OkHttpClient okHttp;
-    protected static Moshi moshi = new Moshi.Builder().add(Date.class, new Rfc3339DateJsonAdapter()).build();
-    protected static JsonAdapter<SearchParameters> paramsJsonAdapter = moshi.adapter(SearchParameters.class);
-    public static final String API_URL = "https://api.labstack.com";
-    public static final MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
-    // public static final String MQTT_BROKER = "ssl://iot.labstack.com:8883";
-    public static final String MQTT_BROKER = "tcp://iot.labstack.com:1883";
+    private String apiKey;
+    private OkHttpClient okHttp;
+    private Moshi moshi = new Moshi.Builder().add(Date.class, new Rfc3339DateJsonAdapter().nullSafe()).build();
+    private static final String API_URL = "https://api.labstack.com";
+    private static final MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
 
-    public Client(String accountId, String apiKey) {
-        this.accountId = accountId;
+    // JSON adapters
+    private JsonAdapter<Image.CompressResponse> imageCompressResponseJsonAdapter = moshi.adapter(Image.CompressResponse.class);
+    private JsonAdapter<Image.ResizeResponse> imageResizeResponseJsonAdapter = moshi.adapter(Image.ResizeResponse.class);
+    private JsonAdapter<ApiException> apiExceptionJsonAdapter = moshi.adapter(ApiException.class);
+
+    public Client(String apiKey) {
         this.apiKey = apiKey;
         okHttp = new OkHttpClient.Builder()
                 .addInterceptor(new Interceptor(apiKey))
                 .build();
     }
 
-    public Jet jet() {
-        return new Jet(okHttp);
+    public Image.CompressResponse ImageCompress(Image.CompressRequest request) {
+        try {
+            File file = new File(request.getFile());
+            RequestBody body = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("file", file.getName(), RequestBody.create(null, file))
+                    .build();
+            Request req = new Request.Builder()
+                    .url(Client.API_URL + "/image/compress")
+                    .post(body)
+                    .build();
+            Response res = okHttp.newCall(req).execute();
+            if (res.isSuccessful()) {
+                return imageCompressResponseJsonAdapter.fromJson(res.body().source());
+            }
+            throw apiExceptionJsonAdapter.fromJson(res.body().source());
+        } catch (IOException e) {
+            throw new ApiException(0, e.getMessage());
+        }
     }
 
-
-    public Hub message(String clientId) throws HubException {
+    public Image.ResizeResponse ImageResize(Image.ResizeRequest request) {
         try {
-            IMqttAsyncClient mqttClient = new MqttAsyncClient(Client.MQTT_BROKER, clientId);
-            return new Hub(this.accountId, this.apiKey, mqttClient);
-        } catch (MqttException e) {
-            throw new HubException(e.getReasonCode(), e.getMessage());
+            File file = new File(request.getFile());
+            RequestBody body = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("file", file.getName(), RequestBody.create(null, file))
+                    .addFormDataPart("width", String.valueOf(request.getWidth()))
+                    .addFormDataPart("height", String.valueOf(request.getHeight()))
+                    .addFormDataPart("crop", String.valueOf(request.isCrop()))
+                    .build();
+            Request req = new Request.Builder()
+                    .url(Client.API_URL + "/image/resize")
+                    .post(body)
+                    .build();
+            Response res = okHttp.newCall(req).execute();
+            if (res.isSuccessful()) {
+                return imageResizeResponseJsonAdapter.fromJson(res.body().source());
+            }
+            throw apiExceptionJsonAdapter.fromJson(res.body().source());
+        } catch (IOException e) {
+            throw new ApiException(0, e.getMessage());
         }
     }
 }
@@ -63,4 +90,23 @@ class Interceptor implements okhttp3.Interceptor {
         return chain.proceed(compressedRequest);
     }
 }
+
+class Download {
+    private String id;
+    private String name;
+    private String url;
+
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+}
+
 

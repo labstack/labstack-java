@@ -1,12 +1,12 @@
 package com.labstack;
 
 /**
- * Defines the email exception.
+ * Defines the api exception.
  */
-public class JetException extends RuntimeException {
+public class ApiException extends RuntimeException {
     private int code;
 
-    public JetException(int code, String message) {
+    public ApiException(int code, String message) {
         super(message);
         this.code = code;
     }

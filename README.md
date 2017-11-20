@@ -23,20 +23,25 @@ Create a file `Main.java` with the following content:
 ```java
 package main;
 
+import com.labstack.ApiException;
+import com.labstack.Barcode;
 import com.labstack.Client;
-import com.labstack.Jet;
-import com.labstack.JetMessage;
 
 public class Main {
     public static void main(String[] args) throws Exception {
         Client client = new Client("<API_KEY>");
-        Barcode.GenerateResponse response = client.barcodeGenerate(new Barcode.GenerateRequest()
-            .setFormat("qr_code")
-            .setContent("https://labstack.com"));
+        try {
+            Barcode.GenerateResponse response = client.barcodeGenerate(new Barcode.GenerateRequest()
+                .setFormat("qr_code")
+                .setContent("https://labstack.com"));
+            client.download(response.getId(), "/tmp/" + response.getName());
+        } catch (ApiException e) {
+            e.printStackTrace();
+        }
     }
 }
 ```
 
 From IntelliJ run Main.main()
 
-## [Documentation](https://labstack.com/docs) | [Forum](https://forum.labstack.com)
+## [API](https://labstack.com/api) | [Forum](https://forum.labstack.com)

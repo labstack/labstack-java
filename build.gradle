@@ -25,7 +25,6 @@ dependencies {
     compile 'com.squareup.okhttp3:okhttp:3.8.1'
     compile 'com.squareup.moshi:moshi:1.5.0'
     compile 'com.squareup.moshi:moshi-adapters:1.5.0'
-    compile 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.1'
     testCompile 'junit:junit:4.12'
 }
 

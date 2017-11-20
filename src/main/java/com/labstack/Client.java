@@ -8,7 +8,6 @@ import okio.BufferedSink;
 import okio.Okio;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Date;
@@ -22,12 +21,20 @@ public class Client {
     private static final MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
 
     // JSON adapters
-    private JsonAdapter<Image.CompressResponse> imageCompressResponseJsonAdapter = moshi.adapter(Image.CompressResponse.class);
+    private JsonAdapter<ApiException> apiExceptionJsonAdapter = moshi.adapter(ApiException.class);
+    private JsonAdapter<Email.VerifyRequest> emailVerifyRequestJsonAdapter = moshi.adapter(Email.VerifyRequest.class);
+    private JsonAdapter<Email.VerifyResponse> emailVerifyResponseJsonAdapter = moshi.adapter(Email.VerifyResponse.class);
     private JsonAdapter<Barcode.GenerateRequest> barcodeGenerateRequestJsonAdapter = moshi.adapter(Barcode.GenerateRequest.class);
     private JsonAdapter<Barcode.GenerateResponse> barcodeGenerateResponseJsonAdapter = moshi.adapter(Barcode.GenerateResponse.class);
     private JsonAdapter<Barcode.ScanResponse> barcodeScanResponseJsonAdapter = moshi.adapter(Barcode.ScanResponse.class);
+    private JsonAdapter<Image.CompressResponse> imageCompressResponseJsonAdapter = moshi.adapter(Image.CompressResponse.class);
     private JsonAdapter<Image.ResizeResponse> imageResizeResponseJsonAdapter = moshi.adapter(Image.ResizeResponse.class);
-    private JsonAdapter<ApiException> apiExceptionJsonAdapter = moshi.adapter(ApiException.class);
+    private JsonAdapter<Text.SentimentRequest> textSentimentRequestJsonAdapter = moshi.adapter(Text.SentimentRequest.class);
+    private JsonAdapter<Text.SentimentResponse> textSentimentResponseJsonAdapter = moshi.adapter(Text.SentimentResponse.class);
+    private JsonAdapter<Text.SpellCheckRequest> textSpellCheckRequestJsonAdapter = moshi.adapter(Text.SpellCheckRequest.class);
+    private JsonAdapter<Text.SpellCheckResponse> textSpellCheckResponseJsonAdapter = moshi.adapter(Text.SpellCheckResponse.class);
+    private JsonAdapter<Text.SummaryRequest> textSummaryRequestJsonAdapter = moshi.adapter(Text.SummaryRequest.class);
+    private JsonAdapter<Text.SummaryResponse> textSummaryResponseJsonAdapter = moshi.adapter(Text.SummaryResponse.class);
 
     public Client(String apiKey) {
         this.apiKey = apiKey;
@@ -46,6 +53,61 @@ public class Client {
                 throw new IOException("Failed to download file: " + response);
             }
             sink.writeAll(response.body().source());
+        } catch (IOException e) {
+            throw new ApiException(0, e.getMessage());
+        }
+    }
+
+    public Barcode.GenerateResponse barcodeGenerate(Barcode.GenerateRequest request) {
+        String json = barcodeGenerateRequestJsonAdapter.toJson(request);
+        Request req = new Request.Builder()
+                .url(API_URL + "/barcode/generate")
+                .post(RequestBody.create(MEDIA_TYPE_JSON, json))
+                .build();
+        try {
+            Response res = okHttp.newCall(req).execute();
+            if (res.isSuccessful()) {
+                return barcodeGenerateResponseJsonAdapter.fromJson(res.body().source());
+            }
+            throw apiExceptionJsonAdapter.fromJson(res.body().source());
+        } catch (IOException e) {
+            throw new ApiException(0, e.getMessage());
+        }
+    }
+
+    public Barcode.ScanResponse barcodeScan(Barcode.ScanRequest request) {
+        try {
+            File file = new File(request.getFile());
+            RequestBody body = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("file", file.getName(), RequestBody.create(null, file))
+                    .build();
+            Request req = new Request.Builder()
+                    .url(API_URL + "/barcode/scan")
+                    .post(body)
+                    .build();
+            Response res = okHttp.newCall(req).execute();
+            if (res.isSuccessful()) {
+                return barcodeScanResponseJsonAdapter.fromJson(res.body().source());
+            }
+            throw apiExceptionJsonAdapter.fromJson(res.body().source());
+        } catch (IOException e) {
+            throw new ApiException(0, e.getMessage());
+        }
+    }
+
+    public Email.VerifyResponse emailVerify(Email.VerifyRequest request) {
+        String json = emailVerifyRequestJsonAdapter.toJson(request);
+        Request req = new Request.Builder()
+                .url(API_URL + "/email/verify")
+                .post(RequestBody.create(MEDIA_TYPE_JSON, json))
+                .build();
+        try {
+            Response res = okHttp.newCall(req).execute();
+            if (res.isSuccessful()) {
+                return emailVerifyResponseJsonAdapter.fromJson(res.body().source());
+            }
+            throw apiExceptionJsonAdapter.fromJson(res.body().source());
         } catch (IOException e) {
             throw new ApiException(0, e.getMessage());
         }
@@ -96,16 +158,16 @@ public class Client {
         }
     }
 
-    public Barcode.GenerateResponse barcodeGenerate(Barcode.GenerateRequest request) {
-        String json = barcodeGenerateRequestJsonAdapter.toJson(request);
+    public Text.SentimentResponse textSentiment(Text.SentimentRequest request) {
+        String json = textSentimentRequestJsonAdapter.toJson(request);
         Request req = new Request.Builder()
-                .url(API_URL + "/barcode/generate")
+                .url(API_URL + "/text/sentiment")
                 .post(RequestBody.create(MEDIA_TYPE_JSON, json))
                 .build();
         try {
             Response res = okHttp.newCall(req).execute();
             if (res.isSuccessful()) {
-                return barcodeGenerateResponseJsonAdapter.fromJson(res.body().source());
+                return textSentimentResponseJsonAdapter.fromJson(res.body().source());
             }
             throw apiExceptionJsonAdapter.fromJson(res.body().source());
         } catch (IOException e) {
@@ -113,20 +175,33 @@ public class Client {
         }
     }
 
-    public Barcode.ScanResponse barcodeScan(Barcode.ScanRequest request) {
+    public Text.SpellCheckResponse textSpellCheck(Text.SpellCheckRequest request) {
+        String json = textSpellCheckRequestJsonAdapter.toJson(request);
+        Request req = new Request.Builder()
+                .url(API_URL + "/text/spell-check")
+                .post(RequestBody.create(MEDIA_TYPE_JSON, json))
+                .build();
         try {
-            File file = new File(request.getFile());
-            RequestBody body = new MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-                    .addFormDataPart("file", file.getName(), RequestBody.create(null, file))
-                    .build();
-            Request req = new Request.Builder()
-                    .url(API_URL + "/barcode/scan")
-                    .post(body)
-                    .build();
             Response res = okHttp.newCall(req).execute();
             if (res.isSuccessful()) {
-                return barcodeScanResponseJsonAdapter.fromJson(res.body().source());
+                return textSpellCheckResponseJsonAdapter.fromJson(res.body().source());
+            }
+            throw apiExceptionJsonAdapter.fromJson(res.body().source());
+        } catch (IOException e) {
+            throw new ApiException(0, e.getMessage());
+        }
+    }
+
+    public Text.SummaryResponse textSummary(Text.SummaryRequest request) {
+        String json = textSummaryRequestJsonAdapter.toJson(request);
+        Request req = new Request.Builder()
+                .url(API_URL + "/text/summary")
+                .post(RequestBody.create(MEDIA_TYPE_JSON, json))
+                .build();
+        try {
+            Response res = okHttp.newCall(req).execute();
+            if (res.isSuccessful()) {
+                return textSummaryResponseJsonAdapter.fromJson(res.body().source());
             }
             throw apiExceptionJsonAdapter.fromJson(res.body().source());
         } catch (IOException e) {

@@ -6,26 +6,14 @@ public class Barcode {
         private String content;
         private String size;
 
-        public String getFormat() {
-            return format;
-        }
-
         public GenerateRequest setFormat(String format) {
             this.format = format;
             return this;
         }
 
-        public String getContent() {
-            return content;
-        }
-
         public GenerateRequest setContent(String content) {
             this.content = content;
             return this;
-        }
-
-        public String getSize() {
-            return size;
         }
 
         public GenerateRequest setSize(String size) {

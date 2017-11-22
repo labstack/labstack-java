@@ -15,11 +15,34 @@ public class Word {
     public static class LookupResponse {
         private List<String> pronunciation;
         private List<String> rhymes;
-        private List<LookupResult> noun;
-        private List<LookupResult> verb;
-        private List<LookupResult> adverb;
-        private List<LookupResult> adjective;
+        private List<LookupResult> nouns;
+        private List<LookupResult> verbs;
+        private List<LookupResult> adverbs;
+        private List<LookupResult> adjectives;
 
+        public List<String> getPronunciation() {
+            return pronunciation;
+        }
+
+        public List<String> getRhymes() {
+            return rhymes;
+        }
+
+        public List<LookupResult> getNouns() {
+            return nouns;
+        }
+
+        public List<LookupResult> getVerbs() {
+            return verbs;
+        }
+
+        public List<LookupResult> getAdverbs() {
+            return adverbs;
+        }
+
+        public List<LookupResult> getAdjectives() {
+            return adjectives;
+        }
     }
 
     public static class LookupResult {

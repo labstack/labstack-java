@@ -21,10 +21,10 @@ public class Dns {
     }
 
     public static class LookupResponse {
-        private List<LookupRecord> records;
+        private List<Record> records;
     }
 
-    public static class LookupRecord {
+    public static class Record {
         private String type;
         private String name;
         // Values - start

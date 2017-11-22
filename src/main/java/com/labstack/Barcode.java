@@ -1,5 +1,7 @@
 package com.labstack;
 
+import com.squareup.moshi.Json;
+
 public class Barcode {
     public static class GenerateRequest {
         private String format;
@@ -41,6 +43,7 @@ public class Barcode {
     public static class ScanResponse {
         private String format;
         private String content;
+        @Json(name = "content_type")
         private String contentType;
 
         public String getFormat() {

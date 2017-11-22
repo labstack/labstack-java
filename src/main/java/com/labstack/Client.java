@@ -27,14 +27,20 @@ public class Client {
     private JsonAdapter<Barcode.GenerateRequest> barcodeGenerateRequestJsonAdapter = moshi.adapter(Barcode.GenerateRequest.class);
     private JsonAdapter<Barcode.GenerateResponse> barcodeGenerateResponseJsonAdapter = moshi.adapter(Barcode.GenerateResponse.class);
     private JsonAdapter<Barcode.ScanResponse> barcodeScanResponseJsonAdapter = moshi.adapter(Barcode.ScanResponse.class);
+    private JsonAdapter<Dns.LookupRequest> dnsLookupRequestJsonAdapter = moshi.adapter(Dns.LookupRequest.class);
+    private JsonAdapter<Dns.LookupResponse> dnsLookupResponseJsonAdapter = moshi.adapter(Dns.LookupResponse.class);
     private JsonAdapter<Image.CompressResponse> imageCompressResponseJsonAdapter = moshi.adapter(Image.CompressResponse.class);
     private JsonAdapter<Image.ResizeResponse> imageResizeResponseJsonAdapter = moshi.adapter(Image.ResizeResponse.class);
+    private JsonAdapter<Pdf.ExtractImageResponse> pdfExtractImageResponseJsonAdapter = moshi.adapter(Pdf.ExtractImageResponse.class);
+    private JsonAdapter<Pdf.ToImageResponse> pdfToImageResponseJsonAdapter = moshi.adapter(Pdf.ToImageResponse.class);
     private JsonAdapter<Text.SentimentRequest> textSentimentRequestJsonAdapter = moshi.adapter(Text.SentimentRequest.class);
     private JsonAdapter<Text.SentimentResponse> textSentimentResponseJsonAdapter = moshi.adapter(Text.SentimentResponse.class);
     private JsonAdapter<Text.SpellCheckRequest> textSpellCheckRequestJsonAdapter = moshi.adapter(Text.SpellCheckRequest.class);
     private JsonAdapter<Text.SpellCheckResponse> textSpellCheckResponseJsonAdapter = moshi.adapter(Text.SpellCheckResponse.class);
     private JsonAdapter<Text.SummaryRequest> textSummaryRequestJsonAdapter = moshi.adapter(Text.SummaryRequest.class);
     private JsonAdapter<Text.SummaryResponse> textSummaryResponseJsonAdapter = moshi.adapter(Text.SummaryResponse.class);
+    private JsonAdapter<Word.LookupRequest> wordLookupRequestJsonAdapter = moshi.adapter(Word.LookupRequest.class);
+    private JsonAdapter<Word.LookupResponse> wordLookupResponseJsonAdapter = moshi.adapter(Word.LookupResponse.class);
 
     public Client(String apiKey) {
         this.apiKey = apiKey;
@@ -96,6 +102,23 @@ public class Client {
         }
     }
 
+    public Dns.LookupResponse dnsLookup(Dns.LookupRequest request) {
+        String json = dnsLookupRequestJsonAdapter.toJson(request);
+        Request req = new Request.Builder()
+                .url(API_URL + "/dns/lookup")
+                .post(RequestBody.create(MEDIA_TYPE_JSON, json))
+                .build();
+        try {
+            Response res = okHttp.newCall(req).execute();
+            if (res.isSuccessful()) {
+                return dnsLookupResponseJsonAdapter.fromJson(res.body().source());
+            }
+            throw apiExceptionJsonAdapter.fromJson(res.body().source());
+        } catch (IOException e) {
+            throw new ApiException(0, e.getMessage());
+        }
+    }
+
     public Email.VerifyResponse emailVerify(Email.VerifyRequest request) {
         String json = emailVerifyRequestJsonAdapter.toJson(request);
         Request req = new Request.Builder()
@@ -127,6 +150,48 @@ public class Client {
             Response res = okHttp.newCall(req).execute();
             if (res.isSuccessful()) {
                 return imageCompressResponseJsonAdapter.fromJson(res.body().source());
+            }
+            throw apiExceptionJsonAdapter.fromJson(res.body().source());
+        } catch (IOException e) {
+            throw new ApiException(0, e.getMessage());
+        }
+    }
+
+    public Pdf.ExtractImageResponse pdfExtractImage(Pdf.ExtractImageRequest request) {
+        try {
+            File file = new File(request.getFile());
+            RequestBody body = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("file", file.getName(), RequestBody.create(null, file))
+                    .build();
+            Request req = new Request.Builder()
+                    .url(API_URL + "/pdf/extract-image")
+                    .post(body)
+                    .build();
+            Response res = okHttp.newCall(req).execute();
+            if (res.isSuccessful()) {
+                return pdfExtractImageResponseJsonAdapter.fromJson(res.body().source());
+            }
+            throw apiExceptionJsonAdapter.fromJson(res.body().source());
+        } catch (IOException e) {
+            throw new ApiException(0, e.getMessage());
+        }
+    }
+
+    public Pdf.ToImageResponse pdfToImage(Pdf.ToImageRequest request) {
+        try {
+            File file = new File(request.getFile());
+            RequestBody body = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("file", file.getName(), RequestBody.create(null, file))
+                    .build();
+            Request req = new Request.Builder()
+                    .url(API_URL + "/pdf/to-image")
+                    .post(body)
+                    .build();
+            Response res = okHttp.newCall(req).execute();
+            if (res.isSuccessful()) {
+                return pdfToImageResponseJsonAdapter.fromJson(res.body().source());
             }
             throw apiExceptionJsonAdapter.fromJson(res.body().source());
         } catch (IOException e) {
@@ -202,6 +267,23 @@ public class Client {
             Response res = okHttp.newCall(req).execute();
             if (res.isSuccessful()) {
                 return textSummaryResponseJsonAdapter.fromJson(res.body().source());
+            }
+            throw apiExceptionJsonAdapter.fromJson(res.body().source());
+        } catch (IOException e) {
+            throw new ApiException(0, e.getMessage());
+        }
+    }
+
+    public Word.LookupResponse wordLookup(Word.LookupRequest request) {
+        String json = wordLookupRequestJsonAdapter.toJson(request);
+        Request req = new Request.Builder()
+                .url(API_URL + "/word/lookup")
+                .post(RequestBody.create(MEDIA_TYPE_JSON, json))
+                .build();
+        try {
+            Response res = okHttp.newCall(req).execute();
+            if (res.isSuccessful()) {
+                return wordLookupResponseJsonAdapter.fromJson(res.body().source());
             }
             throw apiExceptionJsonAdapter.fromJson(res.body().source());
         } catch (IOException e) {

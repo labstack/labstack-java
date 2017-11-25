@@ -1,35 +1,19 @@
 package com.labstack;
 
 public class Pdf {
-    public static class ToImageRequest {
+    public static class ImageRequest {
         private String file;
 
         public String getFile() {
             return file;
         }
 
-        public ToImageRequest setFile(String file) {
+        public ImageRequest setFile(String file) {
             this.file = file;
             return this;
         }
     }
 
-    public static class ToImageResponse extends Download {
-    }
-
-    public static class ExtractImageRequest {
-        private String file;
-
-        public String getFile() {
-            return file;
-        }
-
-        public ExtractImageRequest setFile(String file) {
-            this.file = file;
-            return this;
-        }
-    }
-
-    public static class ExtractImageResponse extends Download {
+    public static class ImageResponse extends Download {
     }
 }

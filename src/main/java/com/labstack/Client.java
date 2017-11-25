@@ -32,16 +32,15 @@ public class Client {
     private JsonAdapter<Dns.LookupResponse> dnsLookupResponseJsonAdapter = moshi.adapter(Dns.LookupResponse.class);
     private JsonAdapter<Image.CompressResponse> imageCompressResponseJsonAdapter = moshi.adapter(Image.CompressResponse.class);
     private JsonAdapter<Image.ResizeResponse> imageResizeResponseJsonAdapter = moshi.adapter(Image.ResizeResponse.class);
-    private JsonAdapter<Pdf.ExtractImageResponse> pdfExtractImageResponseJsonAdapter = moshi.adapter(Pdf.ExtractImageResponse.class);
-    private JsonAdapter<Pdf.ToImageResponse> pdfToImageResponseJsonAdapter = moshi.adapter(Pdf.ToImageResponse.class);
+    private JsonAdapter<Pdf.ImageResponse> pdfImageResponseJsonAdapter = moshi.adapter(Pdf.ImageResponse.class);
     private JsonAdapter<Text.SentimentRequest> textSentimentRequestJsonAdapter = moshi.adapter(Text.SentimentRequest.class);
     private JsonAdapter<Text.SentimentResponse> textSentimentResponseJsonAdapter = moshi.adapter(Text.SentimentResponse.class);
     private JsonAdapter<Text.SpellCheckRequest> textSpellCheckRequestJsonAdapter = moshi.adapter(Text.SpellCheckRequest.class);
     private JsonAdapter<Text.SpellCheckResponse> textSpellCheckResponseJsonAdapter = moshi.adapter(Text.SpellCheckResponse.class);
     private JsonAdapter<Text.SummaryRequest> textSummaryRequestJsonAdapter = moshi.adapter(Text.SummaryRequest.class);
     private JsonAdapter<Text.SummaryResponse> textSummaryResponseJsonAdapter = moshi.adapter(Text.SummaryResponse.class);
-    private JsonAdapter<Webpage.ToPdfRequest> webpageToPdfRequestJsonAdapter = moshi.adapter(Webpage.ToPdfRequest.class);
-    private JsonAdapter<Webpage.ToPdfResponse> webpageToPdfResponseJsonAdapter = moshi.adapter(Webpage.ToPdfResponse.class);
+    private JsonAdapter<Webpage.PdfRequest> webpagePdfRequestJsonAdapter = moshi.adapter(Webpage.PdfRequest.class);
+    private JsonAdapter<Webpage.PdfResponse> webpagePdfResponseJsonAdapter = moshi.adapter(Webpage.PdfResponse.class);
     private JsonAdapter<Word.LookupRequest> wordLookupRequestJsonAdapter = moshi.adapter(Word.LookupRequest.class);
     private JsonAdapter<Word.LookupResponse> wordLookupResponseJsonAdapter = moshi.adapter(Word.LookupResponse.class);
 
@@ -163,7 +162,7 @@ public class Client {
         }
     }
 
-    public Pdf.ExtractImageResponse pdfExtractImage(Pdf.ExtractImageRequest request) {
+    public Pdf.ImageResponse pdfImage(Pdf.ImageRequest request) {
         try {
             File file = new File(request.getFile());
             RequestBody body = new MultipartBody.Builder()
@@ -171,33 +170,12 @@ public class Client {
                     .addFormDataPart("file", file.getName(), RequestBody.create(null, file))
                     .build();
             Request req = new Request.Builder()
-                    .url(API_URL + "/pdf/extract-image")
+                    .url(API_URL + "/pdf/image")
                     .post(body)
                     .build();
             Response res = okHttp.newCall(req).execute();
             if (res.isSuccessful()) {
-                return pdfExtractImageResponseJsonAdapter.fromJson(res.body().source());
-            }
-            throw apiExceptionJsonAdapter.fromJson(res.body().source());
-        } catch (IOException e) {
-            throw new ApiException(0, e.getMessage());
-        }
-    }
-
-    public Pdf.ToImageResponse pdfToImage(Pdf.ToImageRequest request) {
-        try {
-            File file = new File(request.getFile());
-            RequestBody body = new MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-                    .addFormDataPart("file", file.getName(), RequestBody.create(null, file))
-                    .build();
-            Request req = new Request.Builder()
-                    .url(API_URL + "/pdf/to-image")
-                    .post(body)
-                    .build();
-            Response res = okHttp.newCall(req).execute();
-            if (res.isSuccessful()) {
-                return pdfToImageResponseJsonAdapter.fromJson(res.body().source());
+                return pdfImageResponseJsonAdapter.fromJson(res.body().source());
             }
             throw apiExceptionJsonAdapter.fromJson(res.body().source());
         } catch (IOException e) {
@@ -280,16 +258,16 @@ public class Client {
         }
     }
 
-    public Webpage.ToPdfResponse webpageToPdf(Webpage.ToPdfRequest request) {
-        String json = webpageToPdfRequestJsonAdapter.toJson(request);
+    public Webpage.PdfResponse webpagePdf(Webpage.PdfRequest request) {
+        String json = webpagePdfRequestJsonAdapter.toJson(request);
         Request req = new Request.Builder()
-                .url(API_URL + "/webpage/to-pdf")
+                .url(API_URL + "/webpage/pdf")
                 .post(RequestBody.create(MEDIA_TYPE_JSON, json))
                 .build();
         try {
             Response res = okHttp.newCall(req).execute();
             if (res.isSuccessful()) {
-                return webpageToPdfResponseJsonAdapter.fromJson(res.body().source());
+                return webpagePdfResponseJsonAdapter.fromJson(res.body().source());
             }
             throw apiExceptionJsonAdapter.fromJson(res.body().source());
         } catch (IOException e) {

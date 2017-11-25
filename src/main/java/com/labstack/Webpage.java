@@ -1,27 +1,27 @@
 package com.labstack;
 
 public class Webpage {
-    public static class ToPdfRequest {
+    public static class PdfRequest {
         private String url;
         private String size;
         private String layout;
 
-        public ToPdfRequest setUrl(String url) {
+        public PdfRequest setUrl(String url) {
             this.url = url;
             return this;
         }
 
-        public ToPdfRequest setSize(String size) {
+        public PdfRequest setSize(String size) {
             this.size = size;
             return this;
         }
 
-        public ToPdfRequest setLayout(String layout) {
+        public PdfRequest setLayout(String layout) {
             this.layout = layout;
             return this;
         }
     }
 
-    public static class ToPdfResponse extends Download {
+    public static class PdfResponse extends Download {
     }
 }

@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("Duplicates")
 public class Client {
@@ -39,12 +40,17 @@ public class Client {
     private JsonAdapter<Text.SpellCheckResponse> textSpellCheckResponseJsonAdapter = moshi.adapter(Text.SpellCheckResponse.class);
     private JsonAdapter<Text.SummaryRequest> textSummaryRequestJsonAdapter = moshi.adapter(Text.SummaryRequest.class);
     private JsonAdapter<Text.SummaryResponse> textSummaryResponseJsonAdapter = moshi.adapter(Text.SummaryResponse.class);
+    private JsonAdapter<Webpage.ToPdfRequest> webpageToPdfRequestJsonAdapter = moshi.adapter(Webpage.ToPdfRequest.class);
+    private JsonAdapter<Webpage.ToPdfResponse> webpageToPdfResponseJsonAdapter = moshi.adapter(Webpage.ToPdfResponse.class);
     private JsonAdapter<Word.LookupRequest> wordLookupRequestJsonAdapter = moshi.adapter(Word.LookupRequest.class);
     private JsonAdapter<Word.LookupResponse> wordLookupResponseJsonAdapter = moshi.adapter(Word.LookupResponse.class);
 
     public Client(String apiKey) {
         this.apiKey = apiKey;
         okHttp = new OkHttpClient.Builder()
+                .connectTimeout(20, TimeUnit.SECONDS)
+                .writeTimeout(20, TimeUnit.MINUTES)
+                .readTimeout(20, TimeUnit.MINUTES)
                 .addInterceptor(new Interceptor(apiKey))
                 .build();
     }
@@ -267,6 +273,23 @@ public class Client {
             Response res = okHttp.newCall(req).execute();
             if (res.isSuccessful()) {
                 return textSummaryResponseJsonAdapter.fromJson(res.body().source());
+            }
+            throw apiExceptionJsonAdapter.fromJson(res.body().source());
+        } catch (IOException e) {
+            throw new ApiException(0, e.getMessage());
+        }
+    }
+
+    public Webpage.ToPdfResponse webpageToPdf(Webpage.ToPdfRequest request) {
+        String json = webpageToPdfRequestJsonAdapter.toJson(request);
+        Request req = new Request.Builder()
+                .url(API_URL + "/webpage/to-pdf")
+                .post(RequestBody.create(MEDIA_TYPE_JSON, json))
+                .build();
+        try {
+            Response res = okHttp.newCall(req).execute();
+            if (res.isSuccessful()) {
+                return webpageToPdfResponseJsonAdapter.fromJson(res.body().source());
             }
             throw apiExceptionJsonAdapter.fromJson(res.body().source());
         } catch (IOException e) {

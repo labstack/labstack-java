@@ -7,7 +7,7 @@ public class Barcode {
         private String format;
         private String content;
         private int width;
-        private int heigth;
+        private int height;
 
         public GenerateRequest setFormat(String format) {
             this.format = format;
@@ -24,8 +24,8 @@ public class Barcode {
             return this;
         }
 
-        public GenerateRequest setHeigth(int heigth) {
-            this.heigth = heigth;
+        public GenerateRequest setHeight(int height) {
+            this.height = height;
             return this;
         }
     }

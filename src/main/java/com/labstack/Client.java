@@ -28,6 +28,8 @@ public class Client {
     private JsonAdapter<Barcode.GenerateRequest> barcodeGenerateRequestJsonAdapter = moshi.adapter(Barcode.GenerateRequest.class);
     private JsonAdapter<Barcode.GenerateResponse> barcodeGenerateResponseJsonAdapter = moshi.adapter(Barcode.GenerateResponse.class);
     private JsonAdapter<Barcode.ScanResponse> barcodeScanResponseJsonAdapter = moshi.adapter(Barcode.ScanResponse.class);
+    private JsonAdapter<Currency.ExchangeRequest> currencyExchangeRequestJsonAdapter = moshi.adapter(Currency.ExchangeRequest.class);
+    private JsonAdapter<Currency.ExchangeResponse> currencyExchangeResponseJsonAdapter = moshi.adapter(Currency.ExchangeResponse.class);
     private JsonAdapter<Dns.LookupRequest> dnsLookupRequestJsonAdapter = moshi.adapter(Dns.LookupRequest.class);
     private JsonAdapter<Dns.LookupResponse> dnsLookupResponseJsonAdapter = moshi.adapter(Dns.LookupResponse.class);
     private JsonAdapter<Image.CompressResponse> imageCompressResponseJsonAdapter = moshi.adapter(Image.CompressResponse.class);
@@ -100,6 +102,23 @@ public class Client {
             Response res = okHttp.newCall(req).execute();
             if (res.isSuccessful()) {
                 return barcodeScanResponseJsonAdapter.fromJson(res.body().source());
+            }
+            throw apiExceptionJsonAdapter.fromJson(res.body().source());
+        } catch (IOException e) {
+            throw new ApiException(0, e.getMessage());
+        }
+    }
+
+    public Currency.ExchangeResponse currencyExchange(Currency.ExchangeRequest request) {
+        String json = currencyExchangeRequestJsonAdapter.toJson(request);
+        Request req = new Request.Builder()
+                .url(API_URL + "/currency/exchange")
+                .post(RequestBody.create(MEDIA_TYPE_JSON, json))
+                .build();
+        try {
+            Response res = okHttp.newCall(req).execute();
+            if (res.isSuccessful()) {
+                return currencyExchangeResponseJsonAdapter.fromJson(res.body().source());
             }
             throw apiExceptionJsonAdapter.fromJson(res.body().source());
         } catch (IOException e) {

@@ -43,8 +43,8 @@ public class Client {
     private JsonAdapter<Text.SpellCheckResponse> textSpellCheckResponseJsonAdapter = moshi.adapter(Text.SpellCheckResponse.class);
     private JsonAdapter<Text.SummaryRequest> textSummaryRequestJsonAdapter = moshi.adapter(Text.SummaryRequest.class);
     private JsonAdapter<Text.SummaryResponse> textSummaryResponseJsonAdapter = moshi.adapter(Text.SummaryResponse.class);
-    private JsonAdapter<Webpage.PdfRequest> webpagePdfRequestJsonAdapter = moshi.adapter(Webpage.PdfRequest.class);
-    private JsonAdapter<Webpage.PdfResponse> webpagePdfResponseJsonAdapter = moshi.adapter(Webpage.PdfResponse.class);
+    private JsonAdapter<Webpage.PDFRequest> webpagePDFRequestJsonAdapter = moshi.adapter(Webpage.PDFRequest.class);
+    private JsonAdapter<Webpage.PDFResponse> webpagePDFResponseJsonAdapter = moshi.adapter(Webpage.PDFResponse.class);
     private JsonAdapter<Word.LookupRequest> wordLookupRequestJsonAdapter = moshi.adapter(Word.LookupRequest.class);
     private JsonAdapter<Word.LookupResponse> wordLookupResponseJsonAdapter = moshi.adapter(Word.LookupResponse.class);
 
@@ -324,8 +324,8 @@ public class Client {
         }
     }
 
-    public Webpage.PdfResponse webpagePdf(Webpage.PdfRequest request) {
-        String json = webpagePdfRequestJsonAdapter.toJson(request);
+    public Webpage.PDFResponse webpagePDF(Webpage.PDFRequest request) {
+        String json = webpagePDFRequestJsonAdapter.toJson(request);
         Request req = new Request.Builder()
                 .url(API_URL + "/webpage/pdf")
                 .post(RequestBody.create(MEDIA_TYPE_JSON, json))
@@ -333,7 +333,7 @@ public class Client {
         try {
             Response res = okHttp.newCall(req).execute();
             if (res.isSuccessful()) {
-                return webpagePdfResponseJsonAdapter.fromJson(res.body().source());
+                return webpagePDFResponseJsonAdapter.fromJson(res.body().source());
             }
             throw apiExceptionJsonAdapter.fromJson(res.body().source());
         } catch (IOException e) {

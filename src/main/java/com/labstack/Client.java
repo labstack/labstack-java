@@ -22,7 +22,7 @@ public class Client {
     private static final MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
 
     // JSON adapters
-    private JsonAdapter<ApiException> apiExceptionJsonAdapter = moshi.adapter(ApiException.class);
+    private JsonAdapter<APIException> apiExceptionJsonAdapter = moshi.adapter(APIException.class);
     private JsonAdapter<Email.VerifyRequest> emailVerifyRequestJsonAdapter = moshi.adapter(Email.VerifyRequest.class);
     private JsonAdapter<Email.VerifyResponse> emailVerifyResponseJsonAdapter = moshi.adapter(Email.VerifyResponse.class);
     private JsonAdapter<Barcode.GenerateRequest> barcodeGenerateRequestJsonAdapter = moshi.adapter(Barcode.GenerateRequest.class);
@@ -30,11 +30,13 @@ public class Client {
     private JsonAdapter<Barcode.ScanResponse> barcodeScanResponseJsonAdapter = moshi.adapter(Barcode.ScanResponse.class);
     private JsonAdapter<Currency.ExchangeRequest> currencyExchangeRequestJsonAdapter = moshi.adapter(Currency.ExchangeRequest.class);
     private JsonAdapter<Currency.ExchangeResponse> currencyExchangeResponseJsonAdapter = moshi.adapter(Currency.ExchangeResponse.class);
-    private JsonAdapter<Dns.LookupRequest> dnsLookupRequestJsonAdapter = moshi.adapter(Dns.LookupRequest.class);
-    private JsonAdapter<Dns.LookupResponse> dnsLookupResponseJsonAdapter = moshi.adapter(Dns.LookupResponse.class);
+    private JsonAdapter<DNS.LookupRequest> dnsLookupRequestJsonAdapter = moshi.adapter(DNS.LookupRequest.class);
+    private JsonAdapter<DNS.LookupResponse> dnsLookupResponseJsonAdapter = moshi.adapter(DNS.LookupResponse.class);
     private JsonAdapter<Image.CompressResponse> imageCompressResponseJsonAdapter = moshi.adapter(Image.CompressResponse.class);
     private JsonAdapter<Image.ResizeResponse> imageResizeResponseJsonAdapter = moshi.adapter(Image.ResizeResponse.class);
-    private JsonAdapter<Pdf.ImageResponse> pdfImageResponseJsonAdapter = moshi.adapter(Pdf.ImageResponse.class);
+    private JsonAdapter<PDF.CompressResponse> pdfCompressResponseJsonAdapter = moshi.adapter(PDF.CompressResponse.class);
+    private JsonAdapter<PDF.ImageResponse> pdfImageResponseJsonAdapter = moshi.adapter(PDF.ImageResponse.class);
+    private JsonAdapter<PDF.SplitResponse> pdfSplitResponseJsonAdapter = moshi.adapter(PDF.SplitResponse.class);
     private JsonAdapter<Text.SentimentRequest> textSentimentRequestJsonAdapter = moshi.adapter(Text.SentimentRequest.class);
     private JsonAdapter<Text.SentimentResponse> textSentimentResponseJsonAdapter = moshi.adapter(Text.SentimentResponse.class);
     private JsonAdapter<Text.SpellCheckRequest> textSpellCheckRequestJsonAdapter = moshi.adapter(Text.SpellCheckRequest.class);
@@ -67,7 +69,7 @@ public class Client {
             }
             sink.writeAll(response.body().source());
         } catch (IOException e) {
-            throw new ApiException(0, e.getMessage());
+            throw new APIException(0, e.getMessage());
         }
     }
 
@@ -84,7 +86,7 @@ public class Client {
             }
             throw apiExceptionJsonAdapter.fromJson(res.body().source());
         } catch (IOException e) {
-            throw new ApiException(0, e.getMessage());
+            throw new APIException(0, e.getMessage());
         }
     }
 
@@ -105,7 +107,7 @@ public class Client {
             }
             throw apiExceptionJsonAdapter.fromJson(res.body().source());
         } catch (IOException e) {
-            throw new ApiException(0, e.getMessage());
+            throw new APIException(0, e.getMessage());
         }
     }
 
@@ -122,11 +124,11 @@ public class Client {
             }
             throw apiExceptionJsonAdapter.fromJson(res.body().source());
         } catch (IOException e) {
-            throw new ApiException(0, e.getMessage());
+            throw new APIException(0, e.getMessage());
         }
     }
 
-    public Dns.LookupResponse dnsLookup(Dns.LookupRequest request) {
+    public DNS.LookupResponse dnsLookup(DNS.LookupRequest request) {
         String json = dnsLookupRequestJsonAdapter.toJson(request);
         Request req = new Request.Builder()
                 .url(API_URL + "/dns/lookup")
@@ -139,7 +141,7 @@ public class Client {
             }
             throw apiExceptionJsonAdapter.fromJson(res.body().source());
         } catch (IOException e) {
-            throw new ApiException(0, e.getMessage());
+            throw new APIException(0, e.getMessage());
         }
     }
 
@@ -156,7 +158,7 @@ public class Client {
             }
             throw apiExceptionJsonAdapter.fromJson(res.body().source());
         } catch (IOException e) {
-            throw new ApiException(0, e.getMessage());
+            throw new APIException(0, e.getMessage());
         }
     }
 
@@ -177,11 +179,34 @@ public class Client {
             }
             throw apiExceptionJsonAdapter.fromJson(res.body().source());
         } catch (IOException e) {
-            throw new ApiException(0, e.getMessage());
+            throw new APIException(0, e.getMessage());
         }
     }
 
-    public Pdf.ImageResponse pdfImage(Pdf.ImageRequest request) {
+    public PDF.CompressResponse pdfCompress(PDF.CompressRequest request) {
+        try {
+            File file = new File(request.getFile());
+            RequestBody body = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("file", file.getName(), RequestBody.create(null, file))
+                    .addFormDataPart("quality", String.valueOf(request.getQuality()))
+                    .addFormDataPart("dpi", String.valueOf(request.getDpi()))
+                    .build();
+            Request req = new Request.Builder()
+                    .url(API_URL + "/pdf/compress")
+                    .post(body)
+                    .build();
+            Response res = okHttp.newCall(req).execute();
+            if (res.isSuccessful()) {
+                return pdfCompressResponseJsonAdapter.fromJson(res.body().source());
+            }
+            throw apiExceptionJsonAdapter.fromJson(res.body().source());
+        } catch (IOException e) {
+            throw new APIException(0, e.getMessage());
+        }
+    }
+
+    public PDF.ImageResponse pdfImage(PDF.ImageRequest request) {
         try {
             File file = new File(request.getFile());
             RequestBody body = new MultipartBody.Builder()
@@ -198,7 +223,29 @@ public class Client {
             }
             throw apiExceptionJsonAdapter.fromJson(res.body().source());
         } catch (IOException e) {
-            throw new ApiException(0, e.getMessage());
+            throw new APIException(0, e.getMessage());
+        }
+    }
+
+    public PDF.SplitResponse pdfSplit(PDF.SplitRequest request) {
+        try {
+            File file = new File(request.getFile());
+            RequestBody body = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("file", file.getName(), RequestBody.create(null, file))
+                    .addFormDataPart("pages", request.getPages())
+                    .build();
+            Request req = new Request.Builder()
+                    .url(API_URL + "/pdf/split")
+                    .post(body)
+                    .build();
+            Response res = okHttp.newCall(req).execute();
+            if (res.isSuccessful()) {
+                return pdfSplitResponseJsonAdapter.fromJson(res.body().source());
+            }
+            throw apiExceptionJsonAdapter.fromJson(res.body().source());
+        } catch (IOException e) {
+            throw new APIException(0, e.getMessage());
         }
     }
 
@@ -222,7 +269,7 @@ public class Client {
             }
             throw apiExceptionJsonAdapter.fromJson(res.body().source());
         } catch (IOException e) {
-            throw new ApiException(0, e.getMessage());
+            throw new APIException(0, e.getMessage());
         }
     }
 
@@ -239,7 +286,7 @@ public class Client {
             }
             throw apiExceptionJsonAdapter.fromJson(res.body().source());
         } catch (IOException e) {
-            throw new ApiException(0, e.getMessage());
+            throw new APIException(0, e.getMessage());
         }
     }
 
@@ -256,7 +303,7 @@ public class Client {
             }
             throw apiExceptionJsonAdapter.fromJson(res.body().source());
         } catch (IOException e) {
-            throw new ApiException(0, e.getMessage());
+            throw new APIException(0, e.getMessage());
         }
     }
 
@@ -273,7 +320,7 @@ public class Client {
             }
             throw apiExceptionJsonAdapter.fromJson(res.body().source());
         } catch (IOException e) {
-            throw new ApiException(0, e.getMessage());
+            throw new APIException(0, e.getMessage());
         }
     }
 
@@ -290,7 +337,7 @@ public class Client {
             }
             throw apiExceptionJsonAdapter.fromJson(res.body().source());
         } catch (IOException e) {
-            throw new ApiException(0, e.getMessage());
+            throw new APIException(0, e.getMessage());
         }
     }
 
@@ -307,7 +354,7 @@ public class Client {
             }
             throw apiExceptionJsonAdapter.fromJson(res.body().source());
         } catch (IOException e) {
-            throw new ApiException(0, e.getMessage());
+            throw new APIException(0, e.getMessage());
         }
     }
 }

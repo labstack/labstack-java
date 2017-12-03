@@ -4,7 +4,7 @@ import com.squareup.moshi.Json;
 
 import java.util.List;
 
-public class Dns {
+public class DNS {
     public static class LookupRequest {
         private String domain;
         private String type;

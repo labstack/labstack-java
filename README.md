@@ -23,7 +23,7 @@ Create a file `Main.java` with the following content:
 ```java
 package main;
 
-import com.labstack.ApiException;
+import com.labstack.APIException;
 import com.labstack.Barcode;
 import com.labstack.Client;
 
@@ -35,7 +35,7 @@ public class Main {
                 .setFormat("qr_code")
                 .setContent("https://labstack.com"));
             client.download(response.getId(), "/tmp/" + response.getName());
-        } catch (ApiException e) {
+        } catch (APIException e) {
             e.printStackTrace();
         }
     }

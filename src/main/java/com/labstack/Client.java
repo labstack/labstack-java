@@ -189,8 +189,6 @@ public class Client {
             RequestBody body = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
                     .addFormDataPart("file", file.getName(), RequestBody.create(null, file))
-                    .addFormDataPart("quality", String.valueOf(request.getQuality()))
-                    .addFormDataPart("dpi", String.valueOf(request.getDpi()))
                     .build();
             Request req = new Request.Builder()
                     .url(API_URL + "/pdf/compress")

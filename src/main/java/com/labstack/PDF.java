@@ -3,8 +3,6 @@ package com.labstack;
 public class PDF {
     public static class CompressRequest {
         private String file;
-        private int quality;
-        private int dpi;
 
         public String getFile() {
             return file;
@@ -12,24 +10,6 @@ public class PDF {
 
         public CompressRequest setFile(String file) {
             this.file = file;
-            return this;
-        }
-
-        public int getQuality() {
-            return quality;
-        }
-
-        public CompressRequest setQuality(int quality) {
-            this.quality = quality;
-            return this;
-        }
-
-        public int getDpi() {
-            return dpi;
-        }
-
-        public CompressRequest setDpi(int dpi) {
-            this.dpi = dpi;
             return this;
         }
     }

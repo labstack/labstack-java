@@ -15,11 +15,6 @@ public class PDF {
     }
 
     public static class CompressResponse extends Download {
-        private int size;
-
-        public int getSize() {
-            return size;
-        }
     }
 
     public static class ImageRequest {

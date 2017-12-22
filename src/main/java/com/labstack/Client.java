@@ -34,6 +34,7 @@ public class Client {
     private JsonAdapter<DNS.LookupResponse> dnsLookupResponseJsonAdapter = moshi.adapter(DNS.LookupResponse.class);
     private JsonAdapter<Image.CompressResponse> imageCompressResponseJsonAdapter = moshi.adapter(Image.CompressResponse.class);
     private JsonAdapter<Image.ResizeResponse> imageResizeResponseJsonAdapter = moshi.adapter(Image.ResizeResponse.class);
+    private JsonAdapter<Image.WatermarkResponse> imageWatermarkResponseJsonAdapter = moshi.adapter(Image.WatermarkResponse.class);
     private JsonAdapter<PDF.CompressResponse> pdfCompressResponseJsonAdapter = moshi.adapter(PDF.CompressResponse.class);
     private JsonAdapter<PDF.ImageResponse> pdfImageResponseJsonAdapter = moshi.adapter(PDF.ImageResponse.class);
     private JsonAdapter<PDF.SplitResponse> pdfSplitResponseJsonAdapter = moshi.adapter(PDF.SplitResponse.class);
@@ -247,6 +248,34 @@ public class Client {
         }
     }
 
+    public Image.WatermarkResponse imageResize(Image.WatermarkRequest request) {
+        try {
+            File file = new File(request.getFile());
+            RequestBody body = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("file", file.getName(), RequestBody.create(null, file))
+                    .addFormDataPart("text", request.getText())
+                    .addFormDataPart("font", request.getFont())
+                    .addFormDataPart("size", String.valueOf(request.getSize()))
+                    .addFormDataPart("color", request.getColor())
+                    .addFormDataPart("opacity", String.valueOf(request.getOpacity()))
+                    .addFormDataPart("position", request.getPosition())
+                    .addFormDataPart("margin", String.valueOf(request.getMargin()))
+                    .build();
+            Request req = new Request.Builder()
+                    .url(API_URL + "/image/watermark")
+                    .post(body)
+                    .build();
+            Response res = okHttp.newCall(req).execute();
+            if (res.isSuccessful()) {
+                return imageWatermarkResponseJsonAdapter.fromJson(res.body().source());
+            }
+            throw apiExceptionJsonAdapter.fromJson(res.body().source());
+        } catch (IOException e) {
+            throw new APIException(0, e.getMessage());
+        }
+    }
+
     public Image.ResizeResponse imageResize(Image.ResizeRequest request) {
         try {
             File file = new File(request.getFile());
@@ -255,7 +284,7 @@ public class Client {
                     .addFormDataPart("file", file.getName(), RequestBody.create(null, file))
                     .addFormDataPart("width", String.valueOf(request.getWidth()))
                     .addFormDataPart("height", String.valueOf(request.getHeight()))
-                    .addFormDataPart("crop", String.valueOf(request.isCrop()))
+                    .addFormDataPart("format", String.valueOf(request.getFormat()))
                     .build();
             Request req = new Request.Builder()
                     .url(API_URL + "/image/resize")
@@ -376,6 +405,7 @@ class Interceptor implements okhttp3.Interceptor {
 class Download {
     private String id;
     private String name;
+    private long size;
     private String url;
 
     public String getId() {
@@ -384,6 +414,10 @@ class Download {
 
     public String getName() {
         return name;
+    }
+
+    public long getSize() {
+        return size;
     }
 
     public String getUrl() {

@@ -20,7 +20,7 @@ public class DNS {
         }
     }
 
-    public static class LookupResponse {
+    public static class LookupResponse extends Response {
         private List<Record> records;
     }
 

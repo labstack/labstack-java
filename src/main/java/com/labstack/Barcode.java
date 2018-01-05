@@ -46,7 +46,7 @@ public class Barcode {
         }
     }
 
-    public static class ScanResponse {
+    public static class ScanResponse extends Response {
         private String format;
         private String content;
         @Json(name = "content_type")

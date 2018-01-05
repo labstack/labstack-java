@@ -10,7 +10,7 @@ public class Email {
         }
     }
 
-    public static class VerifyResponse {
+    public static class VerifyResponse extends Response {
         private Boolean syntax;
         private Boolean disposable;
         private Boolean domain;

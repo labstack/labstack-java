@@ -12,7 +12,7 @@ public class Text {
         }
     }
 
-    public static class SentimentResponse {
+    public static class SentimentResponse extends Response {
         private float subjectivity;
         private float polarity;
 
@@ -34,7 +34,7 @@ public class Text {
         }
     }
 
-    public static class SpellcheckResponse {
+    public static class SpellcheckResponse extends Response {
         private List<SpellcheckMisspelled> misspelled;
 
         public List<SpellcheckMisspelled> getMisspelled() {
@@ -87,7 +87,7 @@ public class Text {
         }
     }
 
-    public static class SummaryResponse {
+    public static class SummaryResponse extends Response {
         private String summary;
 
         public String getSummary() {

@@ -12,7 +12,7 @@ public class Word {
         }
     }
 
-    public static class LookupResponse {
+    public static class LookupResponse extends Response {
         private List<String> pronunciation;
         private List<String> rhymes;
         private List<LookupResult> nouns;

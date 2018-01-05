@@ -25,24 +25,24 @@ public class Text {
         }
     }
 
-    public static class SpellCheckRequest {
+    public static class SpellcheckRequest {
         private String text;
 
-        public SpellCheckRequest setText(String text) {
+        public SpellcheckRequest setText(String text) {
             this.text = text;
             return this;
         }
     }
 
-    public static class SpellCheckResponse {
-        private List<SpellCheckMisspelled> misspelled;
+    public static class SpellcheckResponse {
+        private List<SpellcheckMisspelled> misspelled;
 
-        public List<SpellCheckMisspelled> getMisspelled() {
+        public List<SpellcheckMisspelled> getMisspelled() {
             return misspelled;
         }
     }
 
-    public static class SpellCheckMisspelled {
+    public static class SpellcheckMisspelled {
         private String word;
         private int offset;
         private List<String> suggestions;

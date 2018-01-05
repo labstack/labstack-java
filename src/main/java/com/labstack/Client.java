@@ -40,8 +40,8 @@ public class Client {
     private JsonAdapter<PDF.SplitResponse> pdfSplitResponseJsonAdapter = moshi.adapter(PDF.SplitResponse.class);
     private JsonAdapter<Text.SentimentRequest> textSentimentRequestJsonAdapter = moshi.adapter(Text.SentimentRequest.class);
     private JsonAdapter<Text.SentimentResponse> textSentimentResponseJsonAdapter = moshi.adapter(Text.SentimentResponse.class);
-    private JsonAdapter<Text.SpellCheckRequest> textSpellCheckRequestJsonAdapter = moshi.adapter(Text.SpellCheckRequest.class);
-    private JsonAdapter<Text.SpellCheckResponse> textSpellCheckResponseJsonAdapter = moshi.adapter(Text.SpellCheckResponse.class);
+    private JsonAdapter<Text.SpellcheckRequest> textSpellcheckRequestJsonAdapter = moshi.adapter(Text.SpellcheckRequest.class);
+    private JsonAdapter<Text.SpellcheckResponse> textSpellcheckResponseJsonAdapter = moshi.adapter(Text.SpellcheckResponse.class);
     private JsonAdapter<Text.SummaryRequest> textSummaryRequestJsonAdapter = moshi.adapter(Text.SummaryRequest.class);
     private JsonAdapter<Text.SummaryResponse> textSummaryResponseJsonAdapter = moshi.adapter(Text.SummaryResponse.class);
     private JsonAdapter<Webpage.PDFRequest> webpagePDFRequestJsonAdapter = moshi.adapter(Webpage.PDFRequest.class);
@@ -317,16 +317,16 @@ public class Client {
         }
     }
 
-    public Text.SpellCheckResponse textSpellCheck(Text.SpellCheckRequest request) {
-        String json = textSpellCheckRequestJsonAdapter.toJson(request);
+    public Text.SpellcheckResponse textSpellcheck(Text.SpellcheckRequest request) {
+        String json = textSpellcheckRequestJsonAdapter.toJson(request);
         Request req = new Request.Builder()
-                .url(API_URL + "/text/spell-check")
+                .url(API_URL + "/text/spellcheck")
                 .post(RequestBody.create(MEDIA_TYPE_JSON, json))
                 .build();
         try {
             Response res = okHttp.newCall(req).execute();
             if (res.isSuccessful()) {
-                return textSpellCheckResponseJsonAdapter.fromJson(res.body().source());
+                return textSpellcheckResponseJsonAdapter.fromJson(res.body().source());
             }
             throw apiExceptionJsonAdapter.fromJson(res.body().source());
         } catch (IOException e) {

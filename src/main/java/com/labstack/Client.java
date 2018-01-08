@@ -28,8 +28,8 @@ public class Client {
     private JsonAdapter<Barcode.GenerateRequest> barcodeGenerateRequestJsonAdapter = moshi.adapter(Barcode.GenerateRequest.class);
     private JsonAdapter<Barcode.GenerateResponse> barcodeGenerateResponseJsonAdapter = moshi.adapter(Barcode.GenerateResponse.class);
     private JsonAdapter<Barcode.ScanResponse> barcodeScanResponseJsonAdapter = moshi.adapter(Barcode.ScanResponse.class);
-    private JsonAdapter<Currency.ExchangeRequest> currencyExchangeRequestJsonAdapter = moshi.adapter(Currency.ExchangeRequest.class);
-    private JsonAdapter<Currency.ExchangeResponse> currencyExchangeResponseJsonAdapter = moshi.adapter(Currency.ExchangeResponse.class);
+    private JsonAdapter<Currency.ConvertRequest> currencyConvertRequestJsonAdapter = moshi.adapter(Currency.ConvertRequest.class);
+    private JsonAdapter<Currency.ConvertResponse> currencyConvertResponseJsonAdapter = moshi.adapter(Currency.ConvertResponse.class);
     private JsonAdapter<DNS.LookupRequest> dnsLookupRequestJsonAdapter = moshi.adapter(DNS.LookupRequest.class);
     private JsonAdapter<DNS.LookupResponse> dnsLookupResponseJsonAdapter = moshi.adapter(DNS.LookupResponse.class);
     private JsonAdapter<Image.CompressResponse> imageCompressResponseJsonAdapter = moshi.adapter(Image.CompressResponse.class);
@@ -112,16 +112,16 @@ public class Client {
         }
     }
 
-    public Currency.ExchangeResponse currencyExchange(Currency.ExchangeRequest request) {
-        String json = currencyExchangeRequestJsonAdapter.toJson(request);
+    public Currency.ConvertResponse currencyConvert(Currency.ConvertRequest request) {
+        String json = currencyConvertRequestJsonAdapter.toJson(request);
         Request req = new Request.Builder()
-                .url(API_URL + "/currency/exchange")
+                .url(API_URL + "/currency/convert")
                 .post(RequestBody.create(MEDIA_TYPE_JSON, json))
                 .build();
         try {
             Response res = okHttp.newCall(req).execute();
             if (res.isSuccessful()) {
-                return currencyExchangeResponseJsonAdapter.fromJson(res.body().source());
+                return currencyConvertResponseJsonAdapter.fromJson(res.body().source());
             }
             throw apiExceptionJsonAdapter.fromJson(res.body().source());
         } catch (IOException e) {

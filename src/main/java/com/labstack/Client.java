@@ -64,7 +64,7 @@ public class Client {
             Request request = new Request.Builder()
                     .url(Client.API_URL + "/download/" + id)
                     .build();
-            okhttp3.Response response = okHttp.newCall(request).execute();
+            Response response = okHttp.newCall(request).execute();
             if (!response.isSuccessful()) {
                 throw new IOException("Failed to download file: " + response);
             }
@@ -81,7 +81,7 @@ public class Client {
                 .post(RequestBody.create(MEDIA_TYPE_JSON, json))
                 .build();
         try {
-            okhttp3.Response res = okHttp.newCall(req).execute();
+            Response res = okHttp.newCall(req).execute();
             if (res.isSuccessful()) {
                 return barcodeGenerateResponseJsonAdapter.fromJson(res.body().source());
             }
@@ -102,7 +102,7 @@ public class Client {
                     .url(API_URL + "/barcode/scan")
                     .post(body)
                     .build();
-            okhttp3.Response res = okHttp.newCall(req).execute();
+            Response res = okHttp.newCall(req).execute();
             if (res.isSuccessful()) {
                 return barcodeScanResponseJsonAdapter.fromJson(res.body().source());
             }
@@ -119,7 +119,7 @@ public class Client {
                 .post(RequestBody.create(MEDIA_TYPE_JSON, json))
                 .build();
         try {
-            okhttp3.Response res = okHttp.newCall(req).execute();
+            Response res = okHttp.newCall(req).execute();
             if (res.isSuccessful()) {
                 return currencyExchangeResponseJsonAdapter.fromJson(res.body().source());
             }
@@ -136,7 +136,7 @@ public class Client {
                 .post(RequestBody.create(MEDIA_TYPE_JSON, json))
                 .build();
         try {
-            okhttp3.Response res = okHttp.newCall(req).execute();
+            Response res = okHttp.newCall(req).execute();
             if (res.isSuccessful()) {
                 return dnsLookupResponseJsonAdapter.fromJson(res.body().source());
             }
@@ -153,7 +153,7 @@ public class Client {
                 .post(RequestBody.create(MEDIA_TYPE_JSON, json))
                 .build();
         try {
-            okhttp3.Response res = okHttp.newCall(req).execute();
+            Response res = okHttp.newCall(req).execute();
             if (res.isSuccessful()) {
                 return emailVerifyResponseJsonAdapter.fromJson(res.body().source());
             }
@@ -174,7 +174,7 @@ public class Client {
                     .url(API_URL + "/image/compress")
                     .post(body)
                     .build();
-            okhttp3.Response res = okHttp.newCall(req).execute();
+            Response res = okHttp.newCall(req).execute();
             if (res.isSuccessful()) {
                 return imageCompressResponseJsonAdapter.fromJson(res.body().source());
             }
@@ -195,7 +195,7 @@ public class Client {
                     .url(API_URL + "/pdf/compress")
                     .post(body)
                     .build();
-            okhttp3.Response res = okHttp.newCall(req).execute();
+            Response res = okHttp.newCall(req).execute();
             if (res.isSuccessful()) {
                 return pdfCompressResponseJsonAdapter.fromJson(res.body().source());
             }
@@ -216,7 +216,7 @@ public class Client {
                     .url(API_URL + "/pdf/image")
                     .post(body)
                     .build();
-            okhttp3.Response res = okHttp.newCall(req).execute();
+            Response res = okHttp.newCall(req).execute();
             if (res.isSuccessful()) {
                 return pdfImageResponseJsonAdapter.fromJson(res.body().source());
             }
@@ -238,7 +238,7 @@ public class Client {
                     .url(API_URL + "/pdf/split")
                     .post(body)
                     .build();
-            okhttp3.Response res = okHttp.newCall(req).execute();
+            Response res = okHttp.newCall(req).execute();
             if (res.isSuccessful()) {
                 return pdfSplitResponseJsonAdapter.fromJson(res.body().source());
             }
@@ -266,7 +266,7 @@ public class Client {
                     .url(API_URL + "/image/watermark")
                     .post(body)
                     .build();
-            okhttp3.Response res = okHttp.newCall(req).execute();
+            Response res = okHttp.newCall(req).execute();
             if (res.isSuccessful()) {
                 return imageWatermarkResponseJsonAdapter.fromJson(res.body().source());
             }
@@ -290,7 +290,7 @@ public class Client {
                     .url(API_URL + "/image/resize")
                     .post(body)
                     .build();
-            okhttp3.Response res = okHttp.newCall(req).execute();
+            Response res = okHttp.newCall(req).execute();
             if (res.isSuccessful()) {
                 return imageResizeResponseJsonAdapter.fromJson(res.body().source());
             }
@@ -307,7 +307,7 @@ public class Client {
                 .post(RequestBody.create(MEDIA_TYPE_JSON, json))
                 .build();
         try {
-            okhttp3.Response res = okHttp.newCall(req).execute();
+            Response res = okHttp.newCall(req).execute();
             if (res.isSuccessful()) {
                 return textSentimentResponseJsonAdapter.fromJson(res.body().source());
             }
@@ -324,7 +324,7 @@ public class Client {
                 .post(RequestBody.create(MEDIA_TYPE_JSON, json))
                 .build();
         try {
-            okhttp3.Response res = okHttp.newCall(req).execute();
+            Response res = okHttp.newCall(req).execute();
             if (res.isSuccessful()) {
                 return textSpellcheckResponseJsonAdapter.fromJson(res.body().source());
             }
@@ -341,7 +341,7 @@ public class Client {
                 .post(RequestBody.create(MEDIA_TYPE_JSON, json))
                 .build();
         try {
-            okhttp3.Response res = okHttp.newCall(req).execute();
+            Response res = okHttp.newCall(req).execute();
             if (res.isSuccessful()) {
                 return textSummaryResponseJsonAdapter.fromJson(res.body().source());
             }
@@ -358,7 +358,7 @@ public class Client {
                 .post(RequestBody.create(MEDIA_TYPE_JSON, json))
                 .build();
         try {
-            okhttp3.Response res = okHttp.newCall(req).execute();
+            Response res = okHttp.newCall(req).execute();
             if (res.isSuccessful()) {
                 return webpagePDFResponseJsonAdapter.fromJson(res.body().source());
             }
@@ -375,7 +375,7 @@ public class Client {
                 .post(RequestBody.create(MEDIA_TYPE_JSON, json))
                 .build();
         try {
-            okhttp3.Response res = okHttp.newCall(req).execute();
+            Response res = okHttp.newCall(req).execute();
             if (res.isSuccessful()) {
                 return wordLookupResponseJsonAdapter.fromJson(res.body().source());
             }
@@ -394,7 +394,7 @@ class Interceptor implements okhttp3.Interceptor {
     }
 
     @Override
-    public okhttp3.Response intercept(Chain chain) throws IOException {
+    public Response intercept(Chain chain) throws IOException {
         Request compressedRequest = chain.request().newBuilder()
                 .header("Authorization", "Bearer " + apiKey)
                 .build();
@@ -402,19 +402,15 @@ class Interceptor implements okhttp3.Interceptor {
     }
 }
 
-class Response {
+class Download {
     private String id;
-
-    public String getId() {
-        return id;
-    }
-}
-
-class Download extends Response {
     private String name;
     private long size;
     private String url;
 
+    public String getId() {
+        return id;
+    }
 
     public String getName() {
         return name;

@@ -75,7 +75,7 @@ publish {
     userOrg = 'labstack'
     groupId = 'com.labstack'
     artifactId = 'labstack-java'
-    publishVersion = '0.18.1'
+    publishVersion = '0.18.2'
     desc = 'Official Java client library for the LabStack API'
     website = 'https://github.com/labstack/labstack-java'
     licences = ['MIT']

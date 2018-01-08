@@ -15,7 +15,7 @@ public class Currency {
         }
     }
 
-    public static class ExchangeResponse extends Response {
+    public static class ExchangeResponse {
         private Map<String, Double> rates;
         @Json(name = "updated_at")
         private Date updatedAt;

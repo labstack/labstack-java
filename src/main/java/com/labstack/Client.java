@@ -1,8 +1,6 @@
 package com.labstack;
 
-import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.Moshi;
-import com.squareup.moshi.Rfc3339DateJsonAdapter;
+import com.squareup.moshi.*;
 import okhttp3.*;
 import okio.BufferedSink;
 import okio.Okio;
@@ -11,20 +9,23 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("Duplicates")
 public class Client {
     private String apiKey;
     private OkHttpClient okHttp;
-    private Moshi moshi = new Moshi.Builder().add(Date.class, new Rfc3339DateJsonAdapter().nullSafe()).build();
+    private Moshi moshi = new Moshi.Builder()
+            .add(Date.class, new Rfc3339DateJsonAdapter().nullSafe())
+            .add(new Properties.JsonAdapter())
+            .build();
     private static final String API_URL = "https://api.labstack.com";
     private static final MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
 
     // JSON adapters
     private JsonAdapter<APIException> apiExceptionJsonAdapter = moshi.adapter(APIException.class);
-    private JsonAdapter<Email.VerifyRequest> emailVerifyRequestJsonAdapter = moshi.adapter(Email.VerifyRequest.class);
-    private JsonAdapter<Email.VerifyResponse> emailVerifyResponseJsonAdapter = moshi.adapter(Email.VerifyResponse.class);
     private JsonAdapter<Barcode.GenerateRequest> barcodeGenerateRequestJsonAdapter = moshi.adapter(Barcode.GenerateRequest.class);
     private JsonAdapter<Barcode.GenerateResponse> barcodeGenerateResponseJsonAdapter = moshi.adapter(Barcode.GenerateResponse.class);
     private JsonAdapter<Barcode.ScanResponse> barcodeScanResponseJsonAdapter = moshi.adapter(Barcode.ScanResponse.class);
@@ -32,6 +33,12 @@ public class Client {
     private JsonAdapter<Currency.ConvertResponse> currencyConvertResponseJsonAdapter = moshi.adapter(Currency.ConvertResponse.class);
     private JsonAdapter<DNS.LookupRequest> dnsLookupRequestJsonAdapter = moshi.adapter(DNS.LookupRequest.class);
     private JsonAdapter<DNS.LookupResponse> dnsLookupResponseJsonAdapter = moshi.adapter(DNS.LookupResponse.class);
+    private JsonAdapter<Email.VerifyRequest> emailVerifyRequestJsonAdapter = moshi.adapter(Email.VerifyRequest.class);
+    private JsonAdapter<Email.VerifyResponse> emailVerifyResponseJsonAdapter = moshi.adapter(Email.VerifyResponse.class);
+    private JsonAdapter<Geocode.AddressRequest> geocodeAddressRequestJsonAdapter = moshi.adapter(Geocode.AddressRequest.class);
+    private JsonAdapter<Geocode.IPRequest> geocodeIPRequestJsonAdapter = moshi.adapter(Geocode.IPRequest.class);
+    private JsonAdapter<Geocode.ReverseRequest> geocodeReverseRequestJsonAdapter = moshi.adapter(Geocode.ReverseRequest.class);
+    private JsonAdapter<Geocode.Response> geocodeResponseJsonAdapter = moshi.adapter(Geocode.Response.class);
     private JsonAdapter<Image.CompressResponse> imageCompressResponseJsonAdapter = moshi.adapter(Image.CompressResponse.class);
     private JsonAdapter<Image.ResizeResponse> imageResizeResponseJsonAdapter = moshi.adapter(Image.ResizeResponse.class);
     private JsonAdapter<Image.WatermarkResponse> imageWatermarkResponseJsonAdapter = moshi.adapter(Image.WatermarkResponse.class);
@@ -156,6 +163,57 @@ public class Client {
             Response res = okHttp.newCall(req).execute();
             if (res.isSuccessful()) {
                 return emailVerifyResponseJsonAdapter.fromJson(res.body().source());
+            }
+            throw apiExceptionJsonAdapter.fromJson(res.body().source());
+        } catch (IOException e) {
+            throw new APIException(0, e.getMessage());
+        }
+    }
+
+    public Geocode.Response geocodeAddress(Geocode.AddressRequest request) {
+        String json = geocodeAddressRequestJsonAdapter.toJson(request);
+        Request req = new Request.Builder()
+                .url(API_URL + "/geocode/address")
+                .post(RequestBody.create(MEDIA_TYPE_JSON, json))
+                .build();
+        try {
+            Response res = okHttp.newCall(req).execute();
+            if (res.isSuccessful()) {
+                return geocodeResponseJsonAdapter.fromJson(res.body().source());
+            }
+            throw apiExceptionJsonAdapter.fromJson(res.body().source());
+        } catch (IOException e) {
+            throw new APIException(0, e.getMessage());
+        }
+    }
+
+    public Geocode.Response geocodeIP(Geocode.IPRequest request) {
+        String json = geocodeIPRequestJsonAdapter.toJson(request);
+        Request req = new Request.Builder()
+                .url(API_URL + "/geocode/ip")
+                .post(RequestBody.create(MEDIA_TYPE_JSON, json))
+                .build();
+        try {
+            Response res = okHttp.newCall(req).execute();
+            if (res.isSuccessful()) {
+                return geocodeResponseJsonAdapter.fromJson(res.body().source());
+            }
+            throw apiExceptionJsonAdapter.fromJson(res.body().source());
+        } catch (IOException e) {
+            throw new APIException(0, e.getMessage());
+        }
+    }
+
+    public Geocode.Response geocodeReverse(Geocode.ReverseRequest request) {
+        String json = geocodeReverseRequestJsonAdapter.toJson(request);
+        Request req = new Request.Builder()
+                .url(API_URL + "/geocode/reverse")
+                .post(RequestBody.create(MEDIA_TYPE_JSON, json))
+                .build();
+        try {
+            Response res = okHttp.newCall(req).execute();
+            if (res.isSuccessful()) {
+                return geocodeResponseJsonAdapter.fromJson(res.body().source());
             }
             throw apiExceptionJsonAdapter.fromJson(res.body().source());
         } catch (IOException e) {
@@ -424,5 +482,4 @@ class Download {
         return url;
     }
 }
-
 

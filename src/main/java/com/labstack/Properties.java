@@ -8,7 +8,7 @@ import java.util.Map;
 public class Properties {
     private Map<String, Object> map;
 
-    public Properties(Map<String, Object> map) {
+    private Properties(Map<String, Object> map) {
         this.map = map;
     }
 
@@ -51,4 +51,3 @@ public class Properties {
         }
     }
 }
-

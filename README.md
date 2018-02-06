@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.labstack:labstack-java:0.10.0'
+    compile 'com.labstack:labstack-java:0.20.0'
 }
 ```
 
@@ -29,7 +29,7 @@ import com.labstack.Client;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        Client client = new Client("<API_KEY>");
+        Client client = new Client("<ACCOUNT_ID>", "<API_KEY>");
         try {
             Barcode.GenerateResponse response = client.barcodeGenerate(new Barcode.GenerateRequest()
                 .setFormat("qr_code")

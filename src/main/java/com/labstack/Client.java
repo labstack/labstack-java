@@ -1,6 +1,8 @@
 package com.labstack;
 
-import com.squareup.moshi.*;
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
+import com.squareup.moshi.Rfc3339DateJsonAdapter;
 import okhttp3.*;
 import okio.BufferedSink;
 import okio.Okio;
@@ -9,12 +11,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("Duplicates")
 public class Client {
+    private String accountID;
     private String apiKey;
     private OkHttpClient okHttp;
     private Moshi moshi = new Moshi.Builder()
@@ -56,7 +57,8 @@ public class Client {
     private JsonAdapter<Word.LookupRequest> wordLookupRequestJsonAdapter = moshi.adapter(Word.LookupRequest.class);
     private JsonAdapter<Word.LookupResponse> wordLookupResponseJsonAdapter = moshi.adapter(Word.LookupResponse.class);
 
-    public Client(String apiKey) {
+    public Client(String accountID, String apiKey) {
+        this.accountID = accountID;
         this.apiKey = apiKey;
         okHttp = new OkHttpClient.Builder()
                 .connectTimeout(20, TimeUnit.SECONDS)

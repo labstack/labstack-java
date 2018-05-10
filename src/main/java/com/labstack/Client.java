@@ -15,7 +15,6 @@ import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("Duplicates")
 public class Client {
-    private String accountID;
     private String apiKey;
     private OkHttpClient okHttp;
     private Moshi moshi = new Moshi.Builder()
@@ -27,38 +26,26 @@ public class Client {
 
     // JSON adapters
     private JsonAdapter<APIException> apiExceptionJsonAdapter = moshi.adapter(APIException.class);
-    private JsonAdapter<Barcode.GenerateRequest> barcodeGenerateRequestJsonAdapter = moshi.adapter(Barcode.GenerateRequest.class);
-    private JsonAdapter<Barcode.GenerateResponse> barcodeGenerateResponseJsonAdapter = moshi.adapter(Barcode.GenerateResponse.class);
-    private JsonAdapter<Barcode.ScanResponse> barcodeScanResponseJsonAdapter = moshi.adapter(Barcode.ScanResponse.class);
     private JsonAdapter<Currency.ConvertRequest> currencyConvertRequestJsonAdapter = moshi.adapter(Currency.ConvertRequest.class);
     private JsonAdapter<Currency.ConvertResponse> currencyConvertResponseJsonAdapter = moshi.adapter(Currency.ConvertResponse.class);
-    private JsonAdapter<DNS.LookupRequest> dnsLookupRequestJsonAdapter = moshi.adapter(DNS.LookupRequest.class);
-    private JsonAdapter<DNS.LookupResponse> dnsLookupResponseJsonAdapter = moshi.adapter(DNS.LookupResponse.class);
     private JsonAdapter<Email.VerifyRequest> emailVerifyRequestJsonAdapter = moshi.adapter(Email.VerifyRequest.class);
     private JsonAdapter<Email.VerifyResponse> emailVerifyResponseJsonAdapter = moshi.adapter(Email.VerifyResponse.class);
     private JsonAdapter<Geocode.AddressRequest> geocodeAddressRequestJsonAdapter = moshi.adapter(Geocode.AddressRequest.class);
     private JsonAdapter<Geocode.IPRequest> geocodeIPRequestJsonAdapter = moshi.adapter(Geocode.IPRequest.class);
     private JsonAdapter<Geocode.ReverseRequest> geocodeReverseRequestJsonAdapter = moshi.adapter(Geocode.ReverseRequest.class);
     private JsonAdapter<Geocode.Response> geocodeResponseJsonAdapter = moshi.adapter(Geocode.Response.class);
-    private JsonAdapter<Image.CompressResponse> imageCompressResponseJsonAdapter = moshi.adapter(Image.CompressResponse.class);
-    private JsonAdapter<Image.ResizeResponse> imageResizeResponseJsonAdapter = moshi.adapter(Image.ResizeResponse.class);
-    private JsonAdapter<Image.WatermarkResponse> imageWatermarkResponseJsonAdapter = moshi.adapter(Image.WatermarkResponse.class);
-    private JsonAdapter<PDF.CompressResponse> pdfCompressResponseJsonAdapter = moshi.adapter(PDF.CompressResponse.class);
-    private JsonAdapter<PDF.ImageResponse> pdfImageResponseJsonAdapter = moshi.adapter(PDF.ImageResponse.class);
-    private JsonAdapter<PDF.SplitResponse> pdfSplitResponseJsonAdapter = moshi.adapter(PDF.SplitResponse.class);
-    private JsonAdapter<Text.SentimentRequest> textSentimentRequestJsonAdapter = moshi.adapter(Text.SentimentRequest.class);
-    private JsonAdapter<Text.SentimentResponse> textSentimentResponseJsonAdapter = moshi.adapter(Text.SentimentResponse.class);
-    private JsonAdapter<Text.SpellcheckRequest> textSpellcheckRequestJsonAdapter = moshi.adapter(Text.SpellcheckRequest.class);
-    private JsonAdapter<Text.SpellcheckResponse> textSpellcheckResponseJsonAdapter = moshi.adapter(Text.SpellcheckResponse.class);
-    private JsonAdapter<Text.SummaryRequest> textSummaryRequestJsonAdapter = moshi.adapter(Text.SummaryRequest.class);
-    private JsonAdapter<Text.SummaryResponse> textSummaryResponseJsonAdapter = moshi.adapter(Text.SummaryResponse.class);
-    private JsonAdapter<Webpage.PDFRequest> webpagePDFRequestJsonAdapter = moshi.adapter(Webpage.PDFRequest.class);
+    private JsonAdapter<Compress.ImageResponse> compressImageResponseJsonAdapter = moshi.adapter(Compress.ImageResponse.class);
+    private JsonAdapter<Compress.PDFResponse> compressPDFResponseJsonAdapter = moshi.adapter(Compress.PDFResponse.class);
+    private JsonAdapter<Watermark.ImageResponse> watermarkImageResponseJsonAdapter = moshi.adapter(Watermark.ImageResponse.class);
+    private JsonAdapter<NLP.SentimentRequest> textSentimentRequestJsonAdapter = moshi.adapter(NLP.SentimentRequest.class);
+    private JsonAdapter<NLP.SentimentResponse> textSentimentResponseJsonAdapter = moshi.adapter(NLP.SentimentResponse.class);
+    private JsonAdapter<NLP.SpellcheckRequest> textSpellcheckRequestJsonAdapter = moshi.adapter(NLP.SpellcheckRequest.class);
+    private JsonAdapter<NLP.SpellcheckResponse> textSpellcheckResponseJsonAdapter = moshi.adapter(NLP.SpellcheckResponse.class);
+    private JsonAdapter<NLP.SummaryRequest> textSummaryRequestJsonAdapter = moshi.adapter(NLP.SummaryRequest.class);
+    private JsonAdapter<NLP.SummaryResponse> textSummaryResponseJsonAdapter = moshi.adapter(NLP.SummaryResponse.class);
     private JsonAdapter<Webpage.PDFResponse> webpagePDFResponseJsonAdapter = moshi.adapter(Webpage.PDFResponse.class);
-    private JsonAdapter<Word.LookupRequest> wordLookupRequestJsonAdapter = moshi.adapter(Word.LookupRequest.class);
-    private JsonAdapter<Word.LookupResponse> wordLookupResponseJsonAdapter = moshi.adapter(Word.LookupResponse.class);
 
     public Client(String accountID, String apiKey) {
-        this.accountID = accountID;
         this.apiKey = apiKey;
         okHttp = new OkHttpClient.Builder()
                 .connectTimeout(20, TimeUnit.SECONDS)
@@ -83,44 +70,6 @@ public class Client {
         }
     }
 
-    public Barcode.GenerateResponse barcodeGenerate(Barcode.GenerateRequest request) {
-        String json = barcodeGenerateRequestJsonAdapter.toJson(request);
-        Request req = new Request.Builder()
-                .url(API_URL + "/barcode/generate")
-                .post(RequestBody.create(MEDIA_TYPE_JSON, json))
-                .build();
-        try {
-            Response res = okHttp.newCall(req).execute();
-            if (res.isSuccessful()) {
-                return barcodeGenerateResponseJsonAdapter.fromJson(res.body().source());
-            }
-            throw apiExceptionJsonAdapter.fromJson(res.body().source());
-        } catch (IOException e) {
-            throw new APIException(0, e.getMessage());
-        }
-    }
-
-    public Barcode.ScanResponse barcodeScan(Barcode.ScanRequest request) {
-        try {
-            File file = new File(request.getFile());
-            RequestBody body = new MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-                    .addFormDataPart("file", file.getName(), RequestBody.create(null, file))
-                    .build();
-            Request req = new Request.Builder()
-                    .url(API_URL + "/barcode/scan")
-                    .post(body)
-                    .build();
-            Response res = okHttp.newCall(req).execute();
-            if (res.isSuccessful()) {
-                return barcodeScanResponseJsonAdapter.fromJson(res.body().source());
-            }
-            throw apiExceptionJsonAdapter.fromJson(res.body().source());
-        } catch (IOException e) {
-            throw new APIException(0, e.getMessage());
-        }
-    }
-
     public Currency.ConvertResponse currencyConvert(Currency.ConvertRequest request) {
         String json = currencyConvertRequestJsonAdapter.toJson(request);
         Request req = new Request.Builder()
@@ -131,23 +80,6 @@ public class Client {
             Response res = okHttp.newCall(req).execute();
             if (res.isSuccessful()) {
                 return currencyConvertResponseJsonAdapter.fromJson(res.body().source());
-            }
-            throw apiExceptionJsonAdapter.fromJson(res.body().source());
-        } catch (IOException e) {
-            throw new APIException(0, e.getMessage());
-        }
-    }
-
-    public DNS.LookupResponse dnsLookup(DNS.LookupRequest request) {
-        String json = dnsLookupRequestJsonAdapter.toJson(request);
-        Request req = new Request.Builder()
-                .url(API_URL + "/dns/lookup")
-                .post(RequestBody.create(MEDIA_TYPE_JSON, json))
-                .build();
-        try {
-            Response res = okHttp.newCall(req).execute();
-            if (res.isSuccessful()) {
-                return dnsLookupResponseJsonAdapter.fromJson(res.body().source());
             }
             throw apiExceptionJsonAdapter.fromJson(res.body().source());
         } catch (IOException e) {
@@ -223,7 +155,7 @@ public class Client {
         }
     }
 
-    public Image.CompressResponse imageCompress(Image.CompressRequest request) {
+    public Compress.ImageResponse compressImage(Compress.ImageRequest request) {
         try {
             File file = new File(request.getFile());
             RequestBody body = new MultipartBody.Builder()
@@ -231,12 +163,12 @@ public class Client {
                     .addFormDataPart("file", file.getName(), RequestBody.create(null, file))
                     .build();
             Request req = new Request.Builder()
-                    .url(API_URL + "/image/compress")
+                    .url(API_URL + "/compress/image")
                     .post(body)
                     .build();
             Response res = okHttp.newCall(req).execute();
             if (res.isSuccessful()) {
-                return imageCompressResponseJsonAdapter.fromJson(res.body().source());
+                return compressImageResponseJsonAdapter.fromJson(res.body().source());
             }
             throw apiExceptionJsonAdapter.fromJson(res.body().source());
         } catch (IOException e) {
@@ -244,7 +176,7 @@ public class Client {
         }
     }
 
-    public PDF.CompressResponse pdfCompress(PDF.CompressRequest request) {
+    public Compress.PDFResponse compressPDF(Compress.PDFRequest request) {
         try {
             File file = new File(request.getFile());
             RequestBody body = new MultipartBody.Builder()
@@ -252,12 +184,12 @@ public class Client {
                     .addFormDataPart("file", file.getName(), RequestBody.create(null, file))
                     .build();
             Request req = new Request.Builder()
-                    .url(API_URL + "/pdf/compress")
+                    .url(API_URL + "/compress/pdf")
                     .post(body)
                     .build();
             Response res = okHttp.newCall(req).execute();
             if (res.isSuccessful()) {
-                return pdfCompressResponseJsonAdapter.fromJson(res.body().source());
+                return compressPDFResponseJsonAdapter.fromJson(res.body().source());
             }
             throw apiExceptionJsonAdapter.fromJson(res.body().source());
         } catch (IOException e) {
@@ -265,50 +197,7 @@ public class Client {
         }
     }
 
-    public PDF.ImageResponse pdfImage(PDF.ImageRequest request) {
-        try {
-            File file = new File(request.getFile());
-            RequestBody body = new MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-                    .addFormDataPart("file", file.getName(), RequestBody.create(null, file))
-                    .build();
-            Request req = new Request.Builder()
-                    .url(API_URL + "/pdf/image")
-                    .post(body)
-                    .build();
-            Response res = okHttp.newCall(req).execute();
-            if (res.isSuccessful()) {
-                return pdfImageResponseJsonAdapter.fromJson(res.body().source());
-            }
-            throw apiExceptionJsonAdapter.fromJson(res.body().source());
-        } catch (IOException e) {
-            throw new APIException(0, e.getMessage());
-        }
-    }
-
-    public PDF.SplitResponse pdfSplit(PDF.SplitRequest request) {
-        try {
-            File file = new File(request.getFile());
-            RequestBody body = new MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-                    .addFormDataPart("file", file.getName(), RequestBody.create(null, file))
-                    .addFormDataPart("pages", request.getPages())
-                    .build();
-            Request req = new Request.Builder()
-                    .url(API_URL + "/pdf/split")
-                    .post(body)
-                    .build();
-            Response res = okHttp.newCall(req).execute();
-            if (res.isSuccessful()) {
-                return pdfSplitResponseJsonAdapter.fromJson(res.body().source());
-            }
-            throw apiExceptionJsonAdapter.fromJson(res.body().source());
-        } catch (IOException e) {
-            throw new APIException(0, e.getMessage());
-        }
-    }
-
-    public Image.WatermarkResponse imageResize(Image.WatermarkRequest request) {
+    public Watermark.ImageResponse watermarkImage(Watermark.ImageRequest request) {
         try {
             File file = new File(request.getFile());
             RequestBody body = new MultipartBody.Builder()
@@ -323,12 +212,12 @@ public class Client {
                     .addFormDataPart("margin", String.valueOf(request.getMargin()))
                     .build();
             Request req = new Request.Builder()
-                    .url(API_URL + "/image/watermark")
+                    .url(API_URL + "/watermark/image")
                     .post(body)
                     .build();
             Response res = okHttp.newCall(req).execute();
             if (res.isSuccessful()) {
-                return imageWatermarkResponseJsonAdapter.fromJson(res.body().source());
+                return watermarkImageResponseJsonAdapter.fromJson(res.body().source());
             }
             throw apiExceptionJsonAdapter.fromJson(res.body().source());
         } catch (IOException e) {
@@ -336,31 +225,7 @@ public class Client {
         }
     }
 
-    public Image.ResizeResponse imageResize(Image.ResizeRequest request) {
-        try {
-            File file = new File(request.getFile());
-            RequestBody body = new MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-                    .addFormDataPart("file", file.getName(), RequestBody.create(null, file))
-                    .addFormDataPart("width", String.valueOf(request.getWidth()))
-                    .addFormDataPart("height", String.valueOf(request.getHeight()))
-                    .addFormDataPart("format", String.valueOf(request.getFormat()))
-                    .build();
-            Request req = new Request.Builder()
-                    .url(API_URL + "/image/resize")
-                    .post(body)
-                    .build();
-            Response res = okHttp.newCall(req).execute();
-            if (res.isSuccessful()) {
-                return imageResizeResponseJsonAdapter.fromJson(res.body().source());
-            }
-            throw apiExceptionJsonAdapter.fromJson(res.body().source());
-        } catch (IOException e) {
-            throw new APIException(0, e.getMessage());
-        }
-    }
-
-    public Text.SentimentResponse textSentiment(Text.SentimentRequest request) {
+    public NLP.SentimentResponse nlpSentiment(NLP.SentimentRequest request) {
         String json = textSentimentRequestJsonAdapter.toJson(request);
         Request req = new Request.Builder()
                 .url(API_URL + "/text/sentiment")
@@ -377,7 +242,7 @@ public class Client {
         }
     }
 
-    public Text.SpellcheckResponse textSpellcheck(Text.SpellcheckRequest request) {
+    public NLP.SpellcheckResponse nlpSpellcheck(NLP.SpellcheckRequest request) {
         String json = textSpellcheckRequestJsonAdapter.toJson(request);
         Request req = new Request.Builder()
                 .url(API_URL + "/text/spellcheck")
@@ -394,7 +259,7 @@ public class Client {
         }
     }
 
-    public Text.SummaryResponse textSummary(Text.SummaryRequest request) {
+    public NLP.SummaryResponse nlpSummary(NLP.SummaryRequest request) {
         String json = textSummaryRequestJsonAdapter.toJson(request);
         Request req = new Request.Builder()
                 .url(API_URL + "/text/summary")
@@ -412,32 +277,15 @@ public class Client {
     }
 
     public Webpage.PDFResponse webpagePDF(Webpage.PDFRequest request) {
-        String json = webpagePDFRequestJsonAdapter.toJson(request);
-        Request req = new Request.Builder()
-                .url(API_URL + "/webpage/pdf")
-                .post(RequestBody.create(MEDIA_TYPE_JSON, json))
-                .build();
+        HttpUrl.Builder httpBuider = HttpUrl.parse(API_URL + "/webpage/pdf").newBuilder();
+        httpBuider.addQueryParameter("url", request.getUrl());
+        httpBuider.addQueryParameter("layout", request.getLayout());
+        httpBuider.addQueryParameter("format", request.getFormat());
+        Request req = new Request.Builder().url(httpBuider.build()).build();
         try {
             Response res = okHttp.newCall(req).execute();
             if (res.isSuccessful()) {
                 return webpagePDFResponseJsonAdapter.fromJson(res.body().source());
-            }
-            throw apiExceptionJsonAdapter.fromJson(res.body().source());
-        } catch (IOException e) {
-            throw new APIException(0, e.getMessage());
-        }
-    }
-
-    public Word.LookupResponse wordLookup(Word.LookupRequest request) {
-        String json = wordLookupRequestJsonAdapter.toJson(request);
-        Request req = new Request.Builder()
-                .url(API_URL + "/word/lookup")
-                .post(RequestBody.create(MEDIA_TYPE_JSON, json))
-                .build();
-        try {
-            Response res = okHttp.newCall(req).execute();
-            if (res.isSuccessful()) {
-                return wordLookupResponseJsonAdapter.fromJson(res.body().source());
             }
             throw apiExceptionJsonAdapter.fromJson(res.body().source());
         } catch (IOException e) {

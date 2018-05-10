@@ -1,25 +1,24 @@
 package com.labstack;
 
-public class PDF {
-    public static class CompressRequest {
+public class Compress {
+    public static class AudioRequest {
         private String file;
 
         public String getFile() {
             return file;
         }
 
-        public CompressRequest setFile(String file) {
+        public AudioRequest setFile(String file) {
             this.file = file;
             return this;
         }
     }
 
-    public static class CompressResponse extends Download {
+    public static class AudioResponse extends Download {
     }
 
     public static class ImageRequest {
         private String file;
-        private boolean extract;
 
         public String getFile() {
             return file;
@@ -29,43 +28,40 @@ public class PDF {
             this.file = file;
             return this;
         }
-
-        public boolean isExtract() {
-            return extract;
-        }
-
-        public ImageRequest setExtract(boolean extract) {
-            this.extract = extract;
-            return this;
-        }
     }
 
     public static class ImageResponse extends Download {
     }
 
-    public static class SplitRequest {
+    public static class PDFRequest {
         private String file;
-        private String pages;
 
         public String getFile() {
             return file;
         }
 
-        public SplitRequest setFile(String file) {
+        public PDFRequest setFile(String file) {
             this.file = file;
-            return this;
-        }
-
-        public String getPages() {
-            return pages;
-        }
-
-        public SplitRequest setPages(String pages) {
-            this.pages = pages;
             return this;
         }
     }
 
-    public static class SplitResponse extends Download {
+    public static class PDFResponse extends Download {
+    }
+
+    public static class VideoRequest {
+        private String file;
+
+        public String getFile() {
+            return file;
+        }
+
+        public VideoRequest setFile(String file) {
+            this.file = file;
+            return this;
+        }
+    }
+
+    public static class VideoResponse extends Download {
     }
 }

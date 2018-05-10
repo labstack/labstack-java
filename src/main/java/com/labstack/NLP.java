@@ -2,7 +2,7 @@ package com.labstack;
 
 import java.util.List;
 
-public class Text {
+public class NLP {
     public static class SentimentRequest {
         private String text;
 

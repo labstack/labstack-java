@@ -33,7 +33,7 @@ public class Properties {
     }
 
     public Long getLong(String key) {
-       return getDouble(key).longValue();
+        return getDouble(key).longValue();
     }
 
     public String getString(String key) {

@@ -30,10 +30,10 @@ import com.labstack.Client;
 public class Main {
     public static void main(String[] args) throws Exception {
         Client client = new Client("<API_KEY>");
+        Geocode geocode = client.Geocode();
         try {
-            Barcode.GenerateResponse response = client.barcodeGenerate(new Barcode.GenerateRequest()
-                .setFormat("qr_code")
-                .setContent("https://labstack.com"));
+            Geocode.Response response = geocode.address(new Geocode.AddressRequest()
+                .setLocation("eiffel tower"));
             client.download(response.getId(), "/tmp/" + response.getName());
         } catch (APIException e) {
             e.printStackTrace();

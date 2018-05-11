@@ -1,6 +1,25 @@
 package com.labstack;
 
+import com.squareup.moshi.JsonAdapter;
+import okhttp3.MultipartBody;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
+import java.io.File;
+import java.io.IOException;
+
+import static com.labstack.Client.API_URL;
+import static com.labstack.Client.MOSHI;
+
 public class Watermark {
+    private Client client;
+    private JsonAdapter<ImageResponse> imageResponseJsonAdapter = MOSHI.adapter(ImageResponse.class);
+
+    public Watermark(Client client) {
+        this.client = client;
+    }
+
     public static class ImageRequest {
         private String file;
         private String text;
@@ -85,5 +104,33 @@ public class Watermark {
     }
 
     public static class ImageResponse extends Download {
+    }
+
+    public ImageResponse image(ImageRequest request) {
+        try {
+            File file = new File(request.getFile());
+            RequestBody body = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("file", file.getName(), RequestBody.create(null, file))
+                    .addFormDataPart("text", request.getText())
+                    .addFormDataPart("font", request.getFont())
+                    .addFormDataPart("size", String.valueOf(request.getSize()))
+                    .addFormDataPart("color", request.getColor())
+                    .addFormDataPart("opacity", String.valueOf(request.getOpacity()))
+                    .addFormDataPart("position", request.getPosition())
+                    .addFormDataPart("margin", String.valueOf(request.getMargin()))
+                    .build();
+            Request req = new Request.Builder()
+                    .url(API_URL + "/watermark/image")
+                    .post(body)
+                    .build();
+            Response res = client.okHttp.newCall(req).execute();
+            if (res.isSuccessful()) {
+                return imageResponseJsonAdapter.fromJson(res.body().source());
+            }
+            throw client.apiExceptionJsonAdapter.fromJson(res.body().source());
+        } catch (IOException e) {
+            throw new APIException(0, e.getMessage());
+        }
     }
 }

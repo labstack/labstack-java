@@ -32,8 +32,7 @@ public class Main {
         Client client = new Client("<API_KEY>");
         Geocode geocode = client.Geocode();
         try {
-            Geocode.Response response = geocode.address("eiffel tower", Geocode.AddressOptions);
-            client.download(response.getId(), "/tmp/" + response.getName());
+            Geocode.Response response = geocode.address("eiffel tower");
         } catch (APIException e) {
             e.printStackTrace();
         }
@@ -43,4 +42,4 @@ public class Main {
 
 From IntelliJ run Main.main()
 
-## [API](https://labstack.com/api) | [Forum](https://forum.labstack.com)
+## [Docs](https://labstack.com/docs/api) | [Forum](https://forum.labstack.com)

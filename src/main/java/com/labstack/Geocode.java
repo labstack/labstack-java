@@ -20,13 +20,15 @@ public class Geocode {
     }
 
     public static class AddressOptions {
-        private double longitude;
         private double latitude;
+        private double longitude;
         private String osmTag;
+        private String format;
         private int limit;
 
-        public double getLongitude() {
-            return longitude;
+        public AddressOptions setLatitude(double latitude) {
+            this.latitude = latitude;
+            return this;
         }
 
         public AddressOptions setLongitude(double longitude) {
@@ -34,26 +36,14 @@ public class Geocode {
             return this;
         }
 
-        public double getLatitude() {
-            return latitude;
-        }
-
-        public AddressOptions setLatitude(double latitude) {
-            this.latitude = latitude;
-            return this;
-        }
-
-        public String getOsmTag() {
-            return osmTag;
-        }
-
         public AddressOptions setOsmTag(String osmTag) {
             this.osmTag = osmTag;
             return this;
         }
 
-        public int getLimit() {
-            return limit;
+        public AddressOptions setFormat(String format) {
+            this.format = format;
+            return this;
         }
 
         public AddressOptions setLimit(int limit) {
@@ -63,14 +53,25 @@ public class Geocode {
     }
 
     public static class ReverseOptions {
+        private String format;
         private int limit;
 
-        public int getLimit() {
-            return limit;
+        public ReverseOptions setFormat(String format) {
+            this.format = format;
+            return this;
         }
 
         public ReverseOptions setLimit(int limit) {
             this.limit = limit;
+            return this;
+        }
+    }
+
+    public static class IPOptions {
+        private String format;
+
+        public IPOptions setFormat(String format) {
+            this.format = format;
             return this;
         }
     }
@@ -120,13 +121,18 @@ public class Geocode {
         }
     }
 
+    public Response address(String location) {
+        return address(location, new AddressOptions());
+    }
+
     public Response address(String location, AddressOptions options) {
         HttpUrl.Builder httpBuider = HttpUrl.parse(API_URL + "/geocode/address").newBuilder();
         httpBuider.addQueryParameter("location", location);
-        httpBuider.addQueryParameter("longitude", String.valueOf(options.getLongitude()));
-        httpBuider.addQueryParameter("latitude", String.valueOf(options.getLatitude()));
+        httpBuider.addQueryParameter("latitude", String.valueOf(options.latitude));
+        httpBuider.addQueryParameter("longitude", String.valueOf(options.longitude));
         httpBuider.addQueryParameter("osm_tag", options.osmTag);
-        httpBuider.addQueryParameter("limit", String.valueOf(options.getLimit()));
+        httpBuider.addQueryParameter("format", options.format);
+        httpBuider.addQueryParameter("limit", String.valueOf(options.limit));
         Request req = new Request.Builder().url(httpBuider.build()).build();
         try {
             okhttp3.Response res = client.okHttp.newCall(req).execute();
@@ -140,8 +146,13 @@ public class Geocode {
     }
 
     public Response ip(String ip) {
+        return ip(ip, new IPOptions());
+    }
+
+    public Response ip(String ip, IPOptions options) {
         HttpUrl.Builder httpBuider = HttpUrl.parse(API_URL + "/geocode/ip").newBuilder();
         httpBuider.addQueryParameter("ip", ip);
+        httpBuider.addQueryParameter("format", options.format);
         Request req = new Request.Builder().url(httpBuider.build()).build();
         try {
             okhttp3.Response res = client.okHttp.newCall(req).execute();
@@ -154,11 +165,16 @@ public class Geocode {
         }
     }
 
-    public Response reverse(double longitude, double latitude, ReverseOptions options) {
+    public Response reverse(double latitude, double longitude) {
+       return reverse(latitude, longitude, new ReverseOptions());
+    }
+
+    public Response reverse(double latitude, double longitude, ReverseOptions options) {
         HttpUrl.Builder httpBuider = HttpUrl.parse(API_URL + "/geocode/address").newBuilder();
-        httpBuider.addQueryParameter("longitude", String.valueOf(longitude));
         httpBuider.addQueryParameter("latitude", String.valueOf(latitude));
-        httpBuider.addQueryParameter("limit", String.valueOf(options.getLimit()));
+        httpBuider.addQueryParameter("longitude", String.valueOf(longitude));
+        httpBuider.addQueryParameter("format", options.format);
+        httpBuider.addQueryParameter("limit", String.valueOf(options.limit));
         Request req = new Request.Builder().url(httpBuider.build()).build();
         try {
             okhttp3.Response res = client.okHttp.newCall(req).execute();

@@ -23,17 +23,9 @@ public class Webpage {
         private String layout;
         private String format;
 
-        public String getLayout() {
-            return layout;
-        }
-
         public PDFOptions setLayout(String layout) {
             this.layout = layout;
             return this;
-        }
-
-        public String getFormat() {
-            return format;
         }
 
         public PDFOptions setFormat(String format) {
@@ -45,11 +37,15 @@ public class Webpage {
     public static class PDFResponse extends Download {
     }
 
+    public PDFResponse webpagePDF(String url) {
+        return webpagePDF(url, new PDFOptions());
+    }
+
     public PDFResponse webpagePDF(String url, PDFOptions options) {
         HttpUrl.Builder httpBuider = HttpUrl.parse(API_URL + "/webpage/pdf").newBuilder();
         httpBuider.addQueryParameter("url", url);
-        httpBuider.addQueryParameter("layout", options.getLayout());
-        httpBuider.addQueryParameter("format", options.getFormat());
+        httpBuider.addQueryParameter("layout", options.layout);
+        httpBuider.addQueryParameter("format", options.format);
         Request req = new Request.Builder().url(httpBuider.build()).build();
         try {
             Response res = client.okHttp.newCall(req).execute();

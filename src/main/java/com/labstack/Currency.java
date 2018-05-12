@@ -4,7 +4,6 @@ import com.squareup.moshi.Json;
 import com.squareup.moshi.JsonAdapter;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import java.io.IOException;
@@ -24,12 +23,12 @@ public class Currency {
     }
 
     public static class ConvertResponse {
-        private double value;
+        private double amount;
         @Json(name = "updated_at")
         private Date updatedAt;
 
-        public double getValue() {
-            return value;
+        public double getAmount() {
+            return amount;
         }
 
         public Date getUpdatedAt() {
@@ -51,11 +50,11 @@ public class Currency {
         }
     }
 
-    public ConvertResponse convert(String from, String to, double value) {
+    public ConvertResponse convert(String from, String to, double amount) {
         HttpUrl.Builder httpBuider = HttpUrl.parse(API_URL + "/currency/convert").newBuilder();
         httpBuider.addQueryParameter("from", from);
         httpBuider.addQueryParameter("to", to);
-        httpBuider.addQueryParameter("value", String.valueOf(value));
+        httpBuider.addQueryParameter("amount", String.valueOf(amount));
         Request req = new Request.Builder().url(httpBuider.build()).build();
         try {
             Response res = client.okHttp.newCall(req).execute();

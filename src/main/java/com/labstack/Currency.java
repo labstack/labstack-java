@@ -23,39 +23,6 @@ public class Currency {
         this.client = client;
     }
 
-    public static class ConvertRequest {
-        private String from;
-        private String to;
-        private double value;
-
-        public String getFrom() {
-            return from;
-        }
-
-        public ConvertRequest setFrom(String from) {
-            this.from = from;
-            return this;
-        }
-
-        public String getTo() {
-            return to;
-        }
-
-        public ConvertRequest setTo(String to) {
-            this.to = to;
-            return this;
-        }
-
-        public double getValue() {
-            return value;
-        }
-
-        public ConvertRequest setValue(double value) {
-            this.value = value;
-            return this;
-        }
-    }
-
     public static class ConvertResponse {
         private double value;
         @Json(name = "updated_at")
@@ -67,19 +34,6 @@ public class Currency {
 
         public Date getUpdatedAt() {
             return updatedAt;
-        }
-    }
-
-    public static class RatesRequest {
-        private String base;
-
-        public String getBase() {
-            return base;
-        }
-
-        public RatesRequest setBase(String base) {
-            this.base = base;
-            return this;
         }
     }
 
@@ -97,11 +51,11 @@ public class Currency {
         }
     }
 
-    public ConvertResponse convert(ConvertRequest request) {
+    public ConvertResponse convert(String from, String to, double value) {
         HttpUrl.Builder httpBuider = HttpUrl.parse(API_URL + "/currency/convert").newBuilder();
-        httpBuider.addQueryParameter("from", request.getFrom());
-        httpBuider.addQueryParameter("to", String.valueOf(request.getTo()));
-        httpBuider.addQueryParameter("value", String.valueOf(request.getValue()));
+        httpBuider.addQueryParameter("from", from);
+        httpBuider.addQueryParameter("to", to);
+        httpBuider.addQueryParameter("value", String.valueOf(value));
         Request req = new Request.Builder().url(httpBuider.build()).build();
         try {
             Response res = client.okHttp.newCall(req).execute();
@@ -114,9 +68,9 @@ public class Currency {
         }
     }
 
-    public RatesResponse rates(RatesRequest request) {
+    public RatesResponse rates(String base) {
         HttpUrl.Builder httpBuider = HttpUrl.parse(API_URL + "/currency/rates").newBuilder();
-        httpBuider.addQueryParameter("base", request.getBase());
+        httpBuider.addQueryParameter("base", base);
         Request req = new Request.Builder().url(httpBuider.build()).build();
         try {
             Response res = client.okHttp.newCall(req).execute();

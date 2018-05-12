@@ -19,25 +19,15 @@ public class Webpage {
         this.client = client;
     }
 
-    public static class PDFRequest {
-        private String url;
+    public static class PDFOptions {
         private String layout;
         private String format;
-
-        public String getUrl() {
-            return url;
-        }
-
-        public PDFRequest setUrl(String url) {
-            this.url = url;
-            return this;
-        }
 
         public String getLayout() {
             return layout;
         }
 
-        public PDFRequest setLayout(String layout) {
+        public PDFOptions setLayout(String layout) {
             this.layout = layout;
             return this;
         }
@@ -46,7 +36,7 @@ public class Webpage {
             return format;
         }
 
-        public PDFRequest setFormat(String format) {
+        public PDFOptions setFormat(String format) {
             this.format = format;
             return this;
         }
@@ -55,11 +45,11 @@ public class Webpage {
     public static class PDFResponse extends Download {
     }
 
-    public PDFResponse webpagePDF(PDFRequest request) {
+    public PDFResponse webpagePDF(String url, PDFOptions options) {
         HttpUrl.Builder httpBuider = HttpUrl.parse(API_URL + "/webpage/pdf").newBuilder();
-        httpBuider.addQueryParameter("url", request.getUrl());
-        httpBuider.addQueryParameter("layout", request.getLayout());
-        httpBuider.addQueryParameter("format", request.getFormat());
+        httpBuider.addQueryParameter("url", url);
+        httpBuider.addQueryParameter("layout", options.getLayout());
+        httpBuider.addQueryParameter("format", options.getFormat());
         Request req = new Request.Builder().url(httpBuider.build()).build();
         try {
             Response res = client.okHttp.newCall(req).execute();

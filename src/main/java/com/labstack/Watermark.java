@@ -20,9 +20,7 @@ public class Watermark {
         this.client = client;
     }
 
-    public static class ImageRequest {
-        private String file;
-        private String text;
+    public static class ImageOptions {
         private String font;
         private int size;
         private String color;
@@ -30,29 +28,11 @@ public class Watermark {
         private String position;
         private int margin;
 
-        public String getFile() {
-            return file;
-        }
-
-        public ImageRequest setFile(String file) {
-            this.file = file;
-            return this;
-        }
-
-        public String getText() {
-            return text;
-        }
-
-        public ImageRequest setText(String text) {
-            this.text = text;
-            return this;
-        }
-
         public String getFont() {
             return font;
         }
 
-        public ImageRequest setFont(String font) {
+        public ImageOptions setFont(String font) {
             this.font = font;
             return this;
         }
@@ -61,7 +41,7 @@ public class Watermark {
             return size;
         }
 
-        public ImageRequest setSize(int size) {
+        public ImageOptions setSize(int size) {
             this.size = size;
             return this;
         }
@@ -70,7 +50,7 @@ public class Watermark {
             return color;
         }
 
-        public ImageRequest setColor(String color) {
+        public ImageOptions setColor(String color) {
             this.color = color;
             return this;
         }
@@ -79,7 +59,7 @@ public class Watermark {
             return opacity;
         }
 
-        public ImageRequest setOpacity(int opacity) {
+        public ImageOptions setOpacity(int opacity) {
             this.opacity = opacity;
             return this;
         }
@@ -88,7 +68,7 @@ public class Watermark {
             return position;
         }
 
-        public ImageRequest setPosition(String position) {
+        public ImageOptions setPosition(String position) {
             this.position = position;
             return this;
         }
@@ -97,7 +77,7 @@ public class Watermark {
             return margin;
         }
 
-        public ImageRequest setMargin(int margin) {
+        public ImageOptions setMargin(int margin) {
             this.margin = margin;
             return this;
         }
@@ -106,19 +86,19 @@ public class Watermark {
     public static class ImageResponse extends Download {
     }
 
-    public ImageResponse image(ImageRequest request) {
+    public ImageResponse image(String file, String text, ImageOptions options) {
         try {
-            File file = new File(request.getFile());
+            File f = new File(file);
             RequestBody body = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
-                    .addFormDataPart("file", file.getName(), RequestBody.create(null, file))
-                    .addFormDataPart("text", request.getText())
-                    .addFormDataPart("font", request.getFont())
-                    .addFormDataPart("size", String.valueOf(request.getSize()))
-                    .addFormDataPart("color", request.getColor())
-                    .addFormDataPart("opacity", String.valueOf(request.getOpacity()))
-                    .addFormDataPart("position", request.getPosition())
-                    .addFormDataPart("margin", String.valueOf(request.getMargin()))
+                    .addFormDataPart("file", f.getName(), RequestBody.create(null, file))
+                    .addFormDataPart("text", text)
+                    .addFormDataPart("font", options.getFont())
+                    .addFormDataPart("size", String.valueOf(options.getSize()))
+                    .addFormDataPart("color", options.getColor())
+                    .addFormDataPart("opacity", String.valueOf(options.getOpacity()))
+                    .addFormDataPart("position", options.getPosition())
+                    .addFormDataPart("margin", String.valueOf(options.getMargin()))
                     .build();
             Request req = new Request.Builder()
                     .url(API_URL + "/watermark/image")

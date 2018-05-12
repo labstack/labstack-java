@@ -20,19 +20,6 @@ public class Post {
         this.client = client;
     }
 
-    public static class VerifyRequest {
-        private String email;
-
-        public String getEmail() {
-            return email;
-        }
-
-        public VerifyRequest setEmail(String email) {
-            this.email = email;
-            return this;
-        }
-    }
-
     public static class VerifyResponse {
         @Json(name = "valid_syntax")
         private Boolean validSyntax;
@@ -70,9 +57,9 @@ public class Post {
         }
     }
 
-    public VerifyResponse verify(VerifyRequest request) {
+    public VerifyResponse verify(String email) {
         HttpUrl.Builder httpBuider = HttpUrl.parse(API_URL + "/post/verify").newBuilder();
-        httpBuider.addQueryParameter("email", request.getEmail());
+        httpBuider.addQueryParameter("email", email);
         Request req = new Request.Builder().url(httpBuider.build()).build();
         try {
             Response res = client.okHttp.newCall(req).execute();

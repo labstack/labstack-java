@@ -19,27 +19,17 @@ public class Geocode {
         this.client = client;
     }
 
-    public static class AddressRequest {
-        private String location;
+    public static class AddressOptions {
         private double longitude;
         private double latitude;
         private String osmTag;
         private int limit;
 
-        public String getLocation() {
-            return location;
-        }
-
-        public AddressRequest setLocation(String location) {
-            this.location = location;
-            return this;
-        }
-
         public double getLongitude() {
             return longitude;
         }
 
-        public AddressRequest setLongitude(double longitude) {
+        public AddressOptions setLongitude(double longitude) {
             this.longitude = longitude;
             return this;
         }
@@ -48,7 +38,7 @@ public class Geocode {
             return latitude;
         }
 
-        public AddressRequest setLatitude(double latitude) {
+        public AddressOptions setLatitude(double latitude) {
             this.latitude = latitude;
             return this;
         }
@@ -57,7 +47,7 @@ public class Geocode {
             return osmTag;
         }
 
-        public AddressRequest setOsmTag(String osmTag) {
+        public AddressOptions setOsmTag(String osmTag) {
             this.osmTag = osmTag;
             return this;
         }
@@ -66,53 +56,20 @@ public class Geocode {
             return limit;
         }
 
-        public AddressRequest setLimit(int limit) {
+        public AddressOptions setLimit(int limit) {
             this.limit = limit;
             return this;
         }
     }
 
-    public static class IPRequest {
-        private String ip;
-
-        public String getIp() {
-            return ip;
-        }
-
-        public IPRequest setIp(String ip) {
-            this.ip = ip;
-            return this;
-        }
-    }
-
-    public static class ReverseRequest {
-        private double longitude;
-        private double latitude;
+    public static class ReverseOptions {
         private int limit;
-
-        public double getLongitude() {
-            return longitude;
-        }
-
-        public ReverseRequest setLongitude(double longitude) {
-            this.longitude = longitude;
-            return this;
-        }
-
-        public double getLatitude() {
-            return latitude;
-        }
-
-        public ReverseRequest setLatitude(double latitude) {
-            this.latitude = latitude;
-            return this;
-        }
 
         public int getLimit() {
             return limit;
         }
 
-        public ReverseRequest setLimit(int limit) {
+        public ReverseOptions setLimit(int limit) {
             this.limit = limit;
             return this;
         }
@@ -163,13 +120,13 @@ public class Geocode {
         }
     }
 
-    public Response address(AddressRequest request) {
+    public Response address(String location, AddressOptions options) {
         HttpUrl.Builder httpBuider = HttpUrl.parse(API_URL + "/geocode/address").newBuilder();
-        httpBuider.addQueryParameter("location", request.getLocation());
-        httpBuider.addQueryParameter("longitude", String.valueOf(request.getLongitude()));
-        httpBuider.addQueryParameter("latitude", String.valueOf(request.getLatitude()));
-        httpBuider.addQueryParameter("osm_tag", request.getOsmTag());
-        httpBuider.addQueryParameter("limit", String.valueOf(request.getLimit()));
+        httpBuider.addQueryParameter("location", location);
+        httpBuider.addQueryParameter("longitude", String.valueOf(options.getLongitude()));
+        httpBuider.addQueryParameter("latitude", String.valueOf(options.getLatitude()));
+        httpBuider.addQueryParameter("osm_tag", options.osmTag);
+        httpBuider.addQueryParameter("limit", String.valueOf(options.getLimit()));
         Request req = new Request.Builder().url(httpBuider.build()).build();
         try {
             okhttp3.Response res = client.okHttp.newCall(req).execute();
@@ -182,9 +139,9 @@ public class Geocode {
         }
     }
 
-    public Response ip(IPRequest request) {
+    public Response ip(String ip) {
         HttpUrl.Builder httpBuider = HttpUrl.parse(API_URL + "/geocode/ip").newBuilder();
-        httpBuider.addQueryParameter("ip", request.getIp());
+        httpBuider.addQueryParameter("ip", ip);
         Request req = new Request.Builder().url(httpBuider.build()).build();
         try {
             okhttp3.Response res = client.okHttp.newCall(req).execute();
@@ -197,11 +154,11 @@ public class Geocode {
         }
     }
 
-    public Response reverse(ReverseRequest request) {
+    public Response reverse(double longitude, double latitude, ReverseOptions options) {
         HttpUrl.Builder httpBuider = HttpUrl.parse(API_URL + "/geocode/address").newBuilder();
-        httpBuider.addQueryParameter("longitude", String.valueOf(request.getLongitude()));
-        httpBuider.addQueryParameter("latitude", String.valueOf(request.getLatitude()));
-        httpBuider.addQueryParameter("limit", String.valueOf(request.getLimit()));
+        httpBuider.addQueryParameter("longitude", String.valueOf(longitude));
+        httpBuider.addQueryParameter("latitude", String.valueOf(latitude));
+        httpBuider.addQueryParameter("limit", String.valueOf(options.getLimit()));
         Request req = new Request.Builder().url(httpBuider.build()).build();
         try {
             okhttp3.Response res = client.okHttp.newCall(req).execute();

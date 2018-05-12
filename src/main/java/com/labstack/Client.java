@@ -101,7 +101,7 @@ public class Client {
 //        }
 //    }
 
-//    public Compress.PDFResponse compressPDF(Compress.PDFRequest request) {
+//    public Compress.PDFResponse compressPDF(Compress.PDFOptions request) {
 //        try {
 //            File file = new File(request.getFile());
 //            RequestBody body = new MultipartBody.Builder()

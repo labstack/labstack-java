@@ -32,8 +32,7 @@ public class Main {
         Client client = new Client("<API_KEY>");
         Geocode geocode = client.Geocode();
         try {
-            Geocode.Response response = geocode.address(new Geocode.AddressRequest()
-                .setLocation("eiffel tower"));
+            Geocode.Response response = geocode.address("eiffel tower");
             client.download(response.getId(), "/tmp/" + response.getName());
         } catch (APIException e) {
             e.printStackTrace();

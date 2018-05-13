@@ -50,11 +50,11 @@ public class Currency {
         }
     }
 
-    public ConvertResponse convert(String from, String to, double amount) {
+    public ConvertResponse convert(double amount, String from, String to) {
         HttpUrl.Builder httpBuider = HttpUrl.parse(API_URL + "/currency/convert").newBuilder();
+        httpBuider.addQueryParameter("amount", String.valueOf(amount));
         httpBuider.addQueryParameter("from", from);
         httpBuider.addQueryParameter("to", to);
-        httpBuider.addQueryParameter("amount", String.valueOf(amount));
         Request req = new Request.Builder().url(httpBuider.build()).build();
         try {
             Response res = client.okHttp.newCall(req).execute();

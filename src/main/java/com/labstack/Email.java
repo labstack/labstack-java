@@ -12,11 +12,11 @@ import static com.labstack.Client.API_URL;
 import static com.labstack.Client.MOSHI;
 
 @SuppressWarnings("Duplicates")
-public class Post {
+public class Email {
     private Client client;
     private JsonAdapter<VerifyResponse> verifyResponseJsonAdapter = MOSHI.adapter(VerifyResponse.class);
 
-    public Post(Client client) {
+    public Email(Client client) {
         this.client = client;
     }
 
@@ -58,7 +58,7 @@ public class Post {
     }
 
     public VerifyResponse verify(String email) {
-        HttpUrl.Builder httpBuider = HttpUrl.parse(API_URL + "/post/verify").newBuilder();
+        HttpUrl.Builder httpBuider = HttpUrl.parse(API_URL + "/email/verify").newBuilder();
         httpBuider.addQueryParameter("email", email);
         Request req = new Request.Builder().url(httpBuider.build()).build();
         try {

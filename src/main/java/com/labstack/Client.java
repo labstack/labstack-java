@@ -53,8 +53,8 @@ public class Client {
         return new Geocode(this);
     }
 
-    public Post post() {
-        return new Post(this);
+    public Email email() {
+        return new Email(this);
     }
 
     public Watermark watermark() {

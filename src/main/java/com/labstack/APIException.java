@@ -1,9 +1,8 @@
 package com.labstack;
 
-/**
- * Defines the api exception.
- */
 public class APIException extends RuntimeException {
+    public static final com.squareup.moshi.JsonAdapter<APIException> JsonAdapter = Client.MOSHI.adapter(
+            APIException.class);
     private int code;
 
     public APIException(int code, String message) {

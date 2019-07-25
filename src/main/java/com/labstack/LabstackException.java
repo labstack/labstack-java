@@ -1,14 +1,15 @@
 package com.labstack;
 
 public class LabstackException extends Exception {
-    private int code;
+    private Integer statusCode;
+    private Integer code;
 
-    public LabstackException(int code, String message) {
+    public LabstackException(Integer code, String message) {
         super(message);
         this.code = code;
     }
 
-    public int getCode() {
+    public Integer getCode() {
         return code;
     }
 }

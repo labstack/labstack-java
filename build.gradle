@@ -1,83 +1,25 @@
-group 'com.labstack'
-
-apply plugin: 'java'
-apply plugin: 'com.novoda.bintray-release'
-//apply plugin: 'maven-publish'
-
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
-
-repositories {
-    jcenter()
+plugins {
+    id 'java'
+    id 'io.freefair.lombok' version '3.8.1'
 }
 
-buildscript {
-    repositories {
-        jcenter()
-    }
+group 'com.labstack'
+version '1.0-SNAPSHOT'
 
-    dependencies {
-        classpath 'com.novoda:bintray-release:0.5.0'
-    }
+sourceCompatibility = 1.8
+
+test {
+    useJUnitPlatform()
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
 }
 
 dependencies {
     compile 'com.squareup.okhttp3:okhttp:4.0.1'
     compile 'com.squareup.moshi:moshi:1.8.0'
-    compile 'com.squareup.moshi:moshi-adapters:1.5.0'
-    testCompile 'junit:junit:4.12'
+    compile 'com.squareup.moshi:moshi-adapters:1.8.0'
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter', version: '5.5.1'
 }
-
-task sourceJar(type: Jar, dependsOn: classes) {
-    classifier 'sources'
-    from sourceSets.main.allJava
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier 'javadoc'
-    from javadoc.destinationDir
-}
-
-//publishing {
-//    publications {
-//        mavenJava(MavenPublication) {
-//            from components.java
-//            artifact sourceJar
-//            artifact javadocJar
-//
-//            pom.withXml {
-//                asNode().with() {
-//                    appendNode('name', 'labstack-java')
-//                    appendNode('description', 'Official Java client library for the LabStack platform')
-//                    appendNode('url', 'https://labstack.com')
-//                    appendNode('scm').with {
-//                        appendNode('url', 'https://github.com/labstack/labstack-java.git')
-//                    }
-//                    appendNode('developers').with {
-//                        appendNode('developer').with {
-//                            appendNode('id', 'vishr')
-//                            appendNode('name', 'Vishal Rana')
-//                        }
-//                    }
-//                    appendNode('licenses').with {
-//                        appendNode('license').with {
-//                            appendNode('name', 'MIT License')
-//                            appendNode('url', 'https://github.com/labstack/labstack-java/blob/master/LICENSE')
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
-
-publish {
-    userOrg = 'labstack'
-    groupId = 'com.labstack'
-    artifactId = 'labstack-java'
-    publishVersion = '0.31.5'
-    desc = 'Official Java client library for the LabStack API'
-    website = 'https://github.com/labstack/labstack-java'
-    licences = ['MIT']
-}
-

@@ -1,15 +1,13 @@
 package com.labstack;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
+
+@Builder @Getter @Setter
 public class LabstackException extends Exception {
     private Integer statusCode;
     private Integer code;
-
-    public LabstackException(Integer code, String message) {
-        super(message);
-        this.code = code;
-    }
-
-    public Integer getCode() {
-        return code;
-    }
+    private String message;
 }

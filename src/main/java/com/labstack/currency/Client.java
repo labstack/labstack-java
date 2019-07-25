@@ -26,7 +26,7 @@ public class Client extends AbstractClient {
             }
             return convertResponseJsonAdapter.fromJson(res.body().source());
         } catch (IOException e) {
-            throw new LabstackException(0, e.getMessage());
+            throw LabstackException.builder().message(e.getMessage()).build();
         }
     }
 }

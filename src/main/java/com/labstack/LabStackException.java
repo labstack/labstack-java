@@ -6,7 +6,7 @@ import lombok.Setter;
 
 
 @Builder @Getter @Setter
-public class LabstackException extends Exception {
+public class LabStackException extends Exception {
     private Integer statusCode;
     private Integer code;
     private String message;

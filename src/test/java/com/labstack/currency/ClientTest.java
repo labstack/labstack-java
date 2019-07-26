@@ -1,6 +1,8 @@
 package com.labstack.currency;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import org.junit.jupiter.api.Test;
 
 
@@ -12,7 +14,15 @@ class ClientTest {
         assertDoesNotThrow(() -> {
             ConvertRequest request = ConvertRequest.builder().amount(10D).from("USD").to("INR").build();
             ConvertResponse response = client.convert(request);
-            // assertNotEquals(0, response.getAmount());
+            assertNotEquals(0, response.getAmount());
+        });
+    }
+
+    @Test
+    void list() {
+        assertDoesNotThrow(() -> {
+            ListResponse response = client.list(new ListRequest());
+            assertNotEquals(0, response.getCurrencies());
         });
     }
 }

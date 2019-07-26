@@ -4,16 +4,16 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
-import com.squareup.moshi.Rfc3339DateJsonAdapter;
+import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter;
 import okhttp3.OkHttpClient;
 
 
 public abstract class AbstractClient {
     protected OkHttpClient okHttp;
-    protected final Moshi moshi = new Moshi.Builder()
+    protected final Moshi MOSHI = new Moshi.Builder()
             .add(Date.class, new Rfc3339DateJsonAdapter().nullSafe())
             .build();
-    protected final JsonAdapter<LabstackException> exceptionJsonAdapter = moshi.adapter(LabstackException.class);
+    protected final JsonAdapter<LabStackException> EXCEPTION_JSON_ADAPTER = MOSHI.adapter(LabStackException.class);
 
     protected AbstractClient(String key) {
         okHttp = new OkHttpClient.Builder()

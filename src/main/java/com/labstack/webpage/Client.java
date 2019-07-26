@@ -1,4 +1,4 @@
-package com.labstack.ip;
+package com.labstack.webpage;
 
 import java.io.IOException;
 import com.labstack.AbstractClient;
@@ -10,16 +10,17 @@ import okhttp3.Response;
 
 
 public class Client extends AbstractClient {
-    private final String URL = "https://ip.labstack.com/api/v1";
-    private final JsonAdapter<LookupResponse> LOOKUP_RESPONSE_JSON_ADAPTER = MOSHI.adapter(LookupResponse.class);
+    private final String URL = "https://webpage.labstack.com/api/v1";
+    private final JsonAdapter<ImageResponse> IMAGE_RESPONSE_JSON_ADAPTER = MOSHI.adapter(ImageResponse.class);
 
     public Client(String key) {
         super(key);
     }
 
-    public LookupResponse lookup(LookupRequest request) throws LabStackException {
+    public ImageResponse image(ImageRequest request) throws LabStackException {
         HttpUrl url = HttpUrl.parse(URL).newBuilder()
-                .addPathSegment(request.getIp())
+                .addPathSegment("image")
+                .addQueryParameter("url", request.getUrl())
                 .build();
         Request req = new Request.Builder()
                 .url(url)
@@ -28,7 +29,7 @@ public class Client extends AbstractClient {
             if (!res.isSuccessful()) {
                 throw EXCEPTION_JSON_ADAPTER.fromJson(res.body().source());
             }
-            return LOOKUP_RESPONSE_JSON_ADAPTER.fromJson(res.body().source());
+            return IMAGE_RESPONSE_JSON_ADAPTER.fromJson(res.body().source());
         } catch (IOException e) {
             throw LabStackException.builder().message(e.getMessage()).build();
         }

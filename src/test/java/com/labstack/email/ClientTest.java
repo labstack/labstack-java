@@ -11,7 +11,7 @@ class ClientTest {
     @Test
     void verify() {
         assertDoesNotThrow(() -> {
-            VerifyRequest request = VerifyRequest.builder().build().builder().email("jon@labstack.com").build();
+            VerifyRequest request = VerifyRequest.builder().email("jon@labstack.com").build();
             VerifyResponse response = client.verify(request);
             assertEquals("deliverable", response.getResult());
         });

@@ -4,12 +4,13 @@ import java.io.IOException;
 import com.labstack.AbstractClient;
 import com.labstack.LabStackException;
 import com.squareup.moshi.JsonAdapter;
+import okhttp3.HttpUrl;
 import okhttp3.Request;
 import okhttp3.Response;
 
 
 public class Client extends AbstractClient {
-    private static final String URL = "https://currency.labstack.com/api/v1";
+    private final String URL = "https://currency.labstack.com/api/v1";
     private final JsonAdapter<ConvertResponse> convertResponseJsonAdapter = MOSHI.adapter(ConvertResponse.class);
     private final JsonAdapter<ListResponse> listResponseJsonAdapter = MOSHI.adapter(ListResponse.class);
 
@@ -18,8 +19,14 @@ public class Client extends AbstractClient {
     }
 
     public ConvertResponse convert(ConvertRequest request) throws LabStackException {
+        HttpUrl url = HttpUrl.parse(URL).newBuilder()
+                .addPathSegment("convert")
+                .addPathSegment(request.getAmount().toString())
+                .addPathSegment(request.getFrom())
+                .addPathSegment(request.getTo())
+                .build();
         Request req = new Request.Builder()
-                .url(String.format("%s/convert/%s/%s/%s", URL, request.getAmount(), request.getFrom(), request.getTo()))
+                .url(url)
                 .build();
         try (Response res = okHttp.newCall(req).execute()) {
             if (!res.isSuccessful()) {
@@ -32,8 +39,11 @@ public class Client extends AbstractClient {
     }
 
     public ListResponse list(ListRequest request) throws LabStackException {
+        HttpUrl url = HttpUrl.parse(URL).newBuilder()
+                .addPathSegment("list")
+                .build();
         Request req = new Request.Builder()
-                .url(String.format("%s/list", URL))
+                .url(url)
                 .build();
         try (Response res = okHttp.newCall(req).execute()) {
             if (!res.isSuccessful()) {

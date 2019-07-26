@@ -7,4 +7,12 @@ import lombok.Setter;
 
 @Builder @Getter @Setter
 public class PDFRequest {
+    private String url;
+    private String language;
+    private Integer ttl;
+    private String size;
+    private Integer width;
+    private Integer height;
+    private String orientation;
+    private Integer delay;
 }

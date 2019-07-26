@@ -1,4 +1,4 @@
-package com.labstack.currency;
+package com.labstack.domain;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -6,6 +6,6 @@ import lombok.Setter;
 
 
 @Builder @Getter @Setter
-public class ListResponse {
-    private Currency[] currencies;
+public class WhoisRequest {
+    private String domain;
 }

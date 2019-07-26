@@ -1,5 +1,7 @@
 package com.labstack.ip;
 
+import java.util.List;
+import com.squareup.moshi.Json;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,20 +11,22 @@ public class LookupResponse {
     private String ip;
     private String hostname;
     private String version;
-    //    City         string        `json:"city"`
-    //    Region       string        `json:"region"`
-    //    RegionCode   string        `json:"region_code"`
-    //    Postal       string        `json:"postal"`
-    //    Country      string        `json:"country"`
-    //    CountryCode  string        `json:"country_code"`
-    //    Latitude     float64       `json:"latitude"`
-    //    Longitude    float64       `json:"longitude"`
-    //    Organization *Organization `json:"organization"`
-    //    Flag         *Flag         `json:"flag"`
-    //    Currency     *Currency     `json:"currency"`
-    //    TimeZone     *TimeZone     `json:"time_zone"`
-    //    Language     []*Language   `json:"languages"`
-    //    AS           *AS           `json:"as"`
-    //    Flags        []string      `json:"flags"`
-
+    private String city;
+    private String region;
+    @Json(name = "region_code")
+    private String regionCode;
+    private String postal;
+    private String country;
+    @Json(name = "country_code")
+    private String countryCode;
+    private Double latitude;
+    private Double longitude;
+    private Organization organization;
+    private Flag flag;
+    private Currency currency;
+    @Json(name = "time_zone")
+    private TimeZone timeZone;
+    private Language[] languages;
+    private AS as;
+    private String[] flags;
 }

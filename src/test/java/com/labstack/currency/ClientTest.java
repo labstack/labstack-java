@@ -22,7 +22,7 @@ class ClientTest {
     void list() {
         assertDoesNotThrow(() -> {
             ListResponse response = client.list(new ListRequest());
-            assertNotEquals(0, response.getCurrencies());
+            assertNotEquals(0, response.getCurrencies().length);
         });
     }
 }

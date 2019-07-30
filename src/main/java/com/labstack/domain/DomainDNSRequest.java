@@ -6,6 +6,7 @@ import lombok.Setter;
 
 
 @Builder @Getter @Setter
-public class StatusRequest {
+public class DomainDNSRequest {
+    private String type;
     private String domain;
 }

@@ -6,6 +6,6 @@ import lombok.Setter;
 
 
 @Builder @Getter @Setter
-public class WhoisRequest {
+public class DomainWhoisRequest {
     private String domain;
 }

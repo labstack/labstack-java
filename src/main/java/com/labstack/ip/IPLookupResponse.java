@@ -1,13 +1,12 @@
 package com.labstack.ip;
 
-import java.util.List;
 import com.squareup.moshi.Json;
 import lombok.Getter;
 import lombok.Setter;
 
 
 @Getter @Setter
-public class LookupResponse {
+public class IPLookupResponse {
     private String ip;
     private String hostname;
     private String version;
@@ -23,10 +22,10 @@ public class LookupResponse {
     private Double longitude;
     private Organization organization;
     private Flag flag;
-    private Currency currency;
+    private String currency;
     @Json(name = "time_zone")
     private TimeZone timeZone;
-    private Language[] languages;
+    private String[] languages;
     private AS as;
     private String[] flags;
 }

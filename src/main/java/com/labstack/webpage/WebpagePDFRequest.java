@@ -6,7 +6,7 @@ import lombok.Setter;
 
 
 @Builder @Getter @Setter
-public class PDFRequest {
+public class WebpagePDFRequest {
     private String url;
     private String language;
     private Integer ttl;

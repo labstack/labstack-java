@@ -5,6 +5,6 @@ import lombok.Setter;
 
 
 @Getter @Setter
-public class DNSResponse {
+public class DomainDNSResponse {
     private Record[] records;
 }

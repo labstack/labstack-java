@@ -5,7 +5,7 @@ import lombok.Setter;
 
 
 @Getter @Setter
-public class VerifyResponse {
+public class EmailVerifyResponse {
     private String email;
     private String username;
     private String domain;

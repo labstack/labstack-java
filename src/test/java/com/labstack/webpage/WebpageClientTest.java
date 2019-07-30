@@ -5,14 +5,14 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import org.junit.jupiter.api.Test;
 
 
-class ClientTest {
-    private final Client client = new Client(System.getenv("KEY"));
+class WebpageClientTest {
+    private final WebpageClient client = new WebpageClient(System.getenv("KEY"));
 
     @Test
     void lookup() {
         assertDoesNotThrow(() -> {
-            ImageRequest request = ImageRequest.builder().url("http://amazon.com").build();
-            ImageResponse response = client.image(request);
+            WebpageImageRequest request = WebpageImageRequest.builder().url("http://amazon.com").build();
+            WebpageImageResponse response = client.image(request);
             assertNotEquals("", response.getImage());
         });
     }
@@ -20,8 +20,8 @@ class ClientTest {
     @Test
     void pdf() {
         assertDoesNotThrow(() -> {
-            PDFRequest request = PDFRequest.builder().url("http://amazon.com").build();
-            PDFResponse response = client.pdf(request);
+            WebpagePDFRequest request = WebpagePDFRequest.builder().url("http://amazon.com").build();
+            WebpagePDFResponse response = client.pdf(request);
             assertNotEquals("", response.getPdf());
         });
     }

@@ -1,4 +1,4 @@
-package com.labstack.domain;
+package com.labstack.ip;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -6,6 +6,6 @@ import lombok.Setter;
 
 
 @Builder @Getter @Setter
-public class SearchRequest {
-    private String domain;
+public class IPLookupRequest {
+    private String ip;
 }

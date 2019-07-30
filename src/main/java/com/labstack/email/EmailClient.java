@@ -1,4 +1,4 @@
-package com.labstack.ip;
+package com.labstack.email;
 
 import java.io.IOException;
 import com.labstack.AbstractClient;
@@ -9,17 +9,18 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 
-public class Client extends AbstractClient {
-    private final String URL = "https://ip.labstack.com/api/v1";
-    private final JsonAdapter<LookupResponse> LOOKUP_RESPONSE_JSON_ADAPTER = MOSHI.adapter(LookupResponse.class);
+public class EmailClient extends AbstractClient {
+    private final String URL = "https://email.labstack.com/api/v1";
+    private final JsonAdapter<EmailVerifyResponse> VERIFY_RESPONSE_JSON_ADAPTER = MOSHI.adapter(EmailVerifyResponse.class);
 
-    public Client(String key) {
+    public EmailClient(String key) {
         super(key);
     }
 
-    public LookupResponse lookup(LookupRequest request) throws LabStackException {
+    public EmailVerifyResponse verify(EmailVerifyRequest request) throws LabStackException {
         HttpUrl url = HttpUrl.parse(URL).newBuilder()
-                .addPathSegment(request.getIp())
+                .addPathSegment("verify")
+                .addPathSegment(request.getEmail())
                 .build();
         Request req = new Request.Builder()
                 .url(url)
@@ -28,7 +29,7 @@ public class Client extends AbstractClient {
             if (!res.isSuccessful()) {
                 throw EXCEPTION_JSON_ADAPTER.fromJson(res.body().source());
             }
-            return LOOKUP_RESPONSE_JSON_ADAPTER.fromJson(res.body().source());
+            return VERIFY_RESPONSE_JSON_ADAPTER.fromJson(res.body().source());
         } catch (IOException e) {
             throw LabStackException.builder().message(e.getMessage()).build();
         }

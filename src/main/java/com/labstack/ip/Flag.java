@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter @Setter
 public class Flag {
-    private String image;
+    private String svg;
+    private String png;
     private String emoji;
-    private String emoji_unicode;
 }

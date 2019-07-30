@@ -7,8 +7,8 @@ import lombok.Setter;
 
 
 @Getter @Setter
-public class PDFResponse {
-    private String pdf;
+public class WebpageImageResponse {
+    private String image;
     private Boolean cached;
     private Integer took;
     @Json(name = "generated_at")

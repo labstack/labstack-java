@@ -7,7 +7,7 @@ import lombok.Setter;
 
 
 @Getter @Setter
-public class WhoisResponse {
+public class DomainWhoisResponse {
     private String domain;
     private String id;
     private String status;

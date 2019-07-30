@@ -9,16 +9,17 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 
-public class Client extends AbstractClient {
+public class CurrencyClient extends AbstractClient {
     private final String URL = "https://currency.labstack.com/api/v1";
-    private final JsonAdapter<ConvertResponse> convertResponseJsonAdapter = MOSHI.adapter(ConvertResponse.class);
-    private final JsonAdapter<ListResponse> listResponseJsonAdapter = MOSHI.adapter(ListResponse.class);
+    private final JsonAdapter<CurrencyConvertResponse> convertResponseJsonAdapter = MOSHI.adapter(
+            CurrencyConvertResponse.class);
+    private final JsonAdapter<CurrencyListResponse> listResponseJsonAdapter = MOSHI.adapter(CurrencyListResponse.class);
 
-    public Client(String key) {
+    public CurrencyClient(String key) {
         super(key);
     }
 
-    public ConvertResponse convert(ConvertRequest request) throws LabStackException {
+    public CurrencyConvertResponse convert(CurrencyConvertRequest request) throws LabStackException {
         HttpUrl url = HttpUrl.parse(URL).newBuilder()
                 .addPathSegment("convert")
                 .addPathSegment(request.getAmount().toString())
@@ -38,7 +39,7 @@ public class Client extends AbstractClient {
         }
     }
 
-    public ListResponse list(ListRequest request) throws LabStackException {
+    public CurrencyListResponse list(CurrencyListRequest request) throws LabStackException {
         HttpUrl url = HttpUrl.parse(URL).newBuilder()
                 .addPathSegment("list")
                 .build();

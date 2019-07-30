@@ -6,7 +6,7 @@ import lombok.Setter;
 
 
 @Getter @Setter
-public class CurrencyConvertResponse {
+public class ConvertResponse {
     private Date time;
     private Double amount;
 }

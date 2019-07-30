@@ -6,5 +6,8 @@ import lombok.Setter;
 
 
 @Builder @Getter @Setter
-public class CurrencyListRequest {
+public class ConvertRequest {
+    private Double amount;
+    private String from;
+    private String to;
 }

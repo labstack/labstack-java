@@ -1,20 +1,10 @@
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.novoda:bintray-release:0.9.1'
-    }
-}
-
 plugins {
     id 'java'
     id 'io.freefair.lombok' version '3.8.1'
 }
-apply plugin: 'com.novoda.bintray-release'
 
 group 'com.labstack'
-version '1.0.0'
+version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
@@ -23,17 +13,8 @@ test {
 }
 
 repositories {
+    mavenCentral()
     jcenter()
-}
-
-publish {
-    userOrg = 'labstack'
-    groupId = 'com.labstack'
-    artifactId = 'labstack-java'
-    publishVersion = '1.0.0'
-    desc = 'Official Java client library for the LabStack API'
-    website = 'https://github.com/labstack/labstack-java'
-    licences = ['MIT']
 }
 
 dependencies {

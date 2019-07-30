@@ -6,6 +6,6 @@ import lombok.Setter;
 
 
 @Builder @Getter @Setter
-public class CurrencyListResponse {
+public class ListResponse {
     private Currency[] currencies;
 }

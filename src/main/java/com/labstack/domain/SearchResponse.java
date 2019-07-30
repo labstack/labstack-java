@@ -5,6 +5,6 @@ import lombok.Setter;
 
 
 @Getter @Setter
-public class DomainSearchResponse {
+public class SearchResponse {
     private Result[] results;
 }

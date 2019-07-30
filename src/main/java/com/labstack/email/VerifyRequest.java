@@ -6,6 +6,6 @@ import lombok.Setter;
 
 
 @Builder @Getter @Setter
-public class EmailVerifyRequest {
+public class VerifyRequest {
     private String email;
 }

@@ -9,16 +9,16 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 
-public class WebpageClient extends AbstractClient {
+public class Client extends AbstractClient {
     private final String URL = "https://webpage.labstack.com/api/v1";
-    private final JsonAdapter<WebpageImageResponse> IMAGE_RESPONSE_JSON_ADAPTER = MOSHI.adapter(WebpageImageResponse.class);
-    private final JsonAdapter<WebpagePDFResponse> PDF_RESPONSE_JSON_ADAPTER = MOSHI.adapter(WebpagePDFResponse.class);
+    private final JsonAdapter<ImageResponse> IMAGE_RESPONSE_JSON_ADAPTER = MOSHI.adapter(ImageResponse.class);
+    private final JsonAdapter<PDFResponse> PDF_RESPONSE_JSON_ADAPTER = MOSHI.adapter(PDFResponse.class);
 
-    public WebpageClient(String key) {
+    public Client(String key) {
         super(key);
     }
 
-    public WebpageImageResponse image(WebpageImageRequest request) throws LabStackException {
+    public ImageResponse image(ImageRequest request) throws LabStackException {
         HttpUrl url = HttpUrl.parse(URL).newBuilder()
                 .addPathSegment("image")
                 .addQueryParameter("url", request.getUrl())
@@ -36,7 +36,7 @@ public class WebpageClient extends AbstractClient {
         }
     }
 
-    public WebpagePDFResponse pdf(WebpagePDFRequest request) throws LabStackException {
+    public PDFResponse pdf(PDFRequest request) throws LabStackException {
         HttpUrl url = HttpUrl.parse(URL).newBuilder()
                 .addPathSegment("pdf")
                 .addQueryParameter("url", request.getUrl())

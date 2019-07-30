@@ -5,7 +5,7 @@ import lombok.Setter;
 
 
 @Getter @Setter
-public class DomainStatusResponse {
+public class StatusResponse {
     private String domain;
     private String zone;
     private String result;

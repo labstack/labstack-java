@@ -6,7 +6,7 @@ import lombok.Setter;
 
 
 @Builder @Getter @Setter
-public class WebpageImageRequest {
+public class ImageRequest {
     private String url;
     private String language;
     private Integer ttl;

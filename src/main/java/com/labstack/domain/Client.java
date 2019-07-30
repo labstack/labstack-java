@@ -9,18 +9,18 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 
-public class DomainClient extends AbstractClient {
+public class Client extends AbstractClient {
     private final String URL = "https://domain.labstack.com/api/v1";
-    private final JsonAdapter<DomainDNSResponse> DNS_RESPONSE_JSON_ADAPTER = MOSHI.adapter(DomainDNSResponse.class);
-    private final JsonAdapter<DomainSearchResponse> SEARCH_RESPONSE_JSON_ADAPTER = MOSHI.adapter(DomainSearchResponse.class);
-    private final JsonAdapter<DomainStatusResponse> STATUS_RESPONSE_JSON_ADAPTER = MOSHI.adapter(DomainStatusResponse.class);
-    private final JsonAdapter<DomainWhoisResponse> WHOIS_RESPONSE_JSON_ADAPTER = MOSHI.adapter(DomainWhoisResponse.class);
+    private final JsonAdapter<DNSResponse> DNS_RESPONSE_JSON_ADAPTER = MOSHI.adapter(DNSResponse.class);
+    private final JsonAdapter<SearchResponse> SEARCH_RESPONSE_JSON_ADAPTER = MOSHI.adapter(SearchResponse.class);
+    private final JsonAdapter<StatusResponse> STATUS_RESPONSE_JSON_ADAPTER = MOSHI.adapter(StatusResponse.class);
+    private final JsonAdapter<WhoisResponse> WHOIS_RESPONSE_JSON_ADAPTER = MOSHI.adapter(WhoisResponse.class);
 
-    public DomainClient(String key) {
+    public Client(String key) {
         super(key);
     }
 
-    public DomainDNSResponse dns(DomainDNSRequest request) throws LabStackException {
+    public DNSResponse dns(DNSRequest request) throws LabStackException {
         HttpUrl url = HttpUrl.parse(URL).newBuilder()
                 .addPathSegment(request.getType())
                 .addPathSegment(request.getDomain())
@@ -38,7 +38,7 @@ public class DomainClient extends AbstractClient {
         }
     }
 
-    public DomainSearchResponse search(DomainSearchRequest request) throws LabStackException {
+    public SearchResponse search(SearchRequest request) throws LabStackException {
         HttpUrl url = HttpUrl.parse(URL).newBuilder()
                 .addPathSegment("search")
                 .addPathSegment(request.getDomain())
@@ -56,7 +56,7 @@ public class DomainClient extends AbstractClient {
         }
     }
 
-    public DomainStatusResponse status(DomainStatusRequest request) throws LabStackException {
+    public StatusResponse status(StatusRequest request) throws LabStackException {
         HttpUrl url = HttpUrl.parse(URL).newBuilder()
                 .addPathSegment("status")
                 .addPathSegment(request.getDomain())
@@ -74,7 +74,7 @@ public class DomainClient extends AbstractClient {
         }
     }
 
-    public DomainWhoisResponse whois(DomainWhoisRequest request) throws LabStackException {
+    public WhoisResponse whois(WhoisRequest request) throws LabStackException {
         HttpUrl url = HttpUrl.parse(URL).newBuilder()
                 .addPathSegment("whois")
                 .addPathSegment(request.getDomain())

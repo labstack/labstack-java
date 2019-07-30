@@ -1,20 +1,22 @@
-package com.labstack.email;
+package com.labstack;
 
+import static com.labstack.Client.EXCEPTION_JSON_ADAPTER;
+import static com.labstack.Client.MOSHI;
+import static com.labstack.Client.okHttp;
 import java.io.IOException;
-import com.labstack.AbstractClient;
-import com.labstack.LabStackException;
+import com.labstack.email.VerifyRequest;
+import com.labstack.email.VerifyResponse;
 import com.squareup.moshi.JsonAdapter;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
 import okhttp3.Response;
 
 
-public class Client extends AbstractClient {
+public class EmailService {
     private final String URL = "https://email.labstack.com/api/v1";
     private final JsonAdapter<VerifyResponse> VERIFY_RESPONSE_JSON_ADAPTER = MOSHI.adapter(VerifyResponse.class);
 
-    public Client(String key) {
-        super(key);
+    EmailService() {
     }
 
     public VerifyResponse verify(VerifyRequest request) throws LabStackException {

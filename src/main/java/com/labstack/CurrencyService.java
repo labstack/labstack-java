@@ -1,21 +1,25 @@
-package com.labstack.currency;
+package com.labstack;
 
+import static com.labstack.Client.MOSHI;
+import static com.labstack.Client.okHttp;
+import static com.labstack.Client.EXCEPTION_JSON_ADAPTER;
 import java.io.IOException;
-import com.labstack.AbstractClient;
-import com.labstack.LabStackException;
+import com.labstack.currency.ConvertRequest;
+import com.labstack.currency.ConvertResponse;
+import com.labstack.currency.ListRequest;
+import com.labstack.currency.ListResponse;
 import com.squareup.moshi.JsonAdapter;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
 import okhttp3.Response;
 
 
-public class Client extends AbstractClient {
+public class CurrencyService {
     private final String URL = "https://currency.labstack.com/api/v1";
-    private final JsonAdapter<ConvertResponse> convertResponseJsonAdapter = MOSHI.adapter(ConvertResponse.class);
-    private final JsonAdapter<ListResponse> listResponseJsonAdapter = MOSHI.adapter(ListResponse.class);
+    private final JsonAdapter<ConvertResponse> CONVERT_RESPONSE_JSON_ADAPTER = MOSHI.adapter(ConvertResponse.class);
+    private final JsonAdapter<ListResponse> LIST_RESPONSE_JSON_ADAPTER = MOSHI.adapter(ListResponse.class);
 
-    public Client(String key) {
-        super(key);
+    CurrencyService() {
     }
 
     public ConvertResponse convert(ConvertRequest request) throws LabStackException {
@@ -32,7 +36,7 @@ public class Client extends AbstractClient {
             if (!res.isSuccessful()) {
                 throw EXCEPTION_JSON_ADAPTER.fromJson(res.body().source());
             }
-            return convertResponseJsonAdapter.fromJson(res.body().source());
+            return CONVERT_RESPONSE_JSON_ADAPTER.fromJson(res.body().source());
         } catch (IOException e) {
             throw LabStackException.builder().message(e.getMessage()).build();
         }
@@ -49,7 +53,7 @@ public class Client extends AbstractClient {
             if (!res.isSuccessful()) {
                 throw EXCEPTION_JSON_ADAPTER.fromJson(res.body().source());
             }
-            return listResponseJsonAdapter.fromJson(res.body().source());
+            return LIST_RESPONSE_JSON_ADAPTER.fromJson(res.body().source());
         } catch (IOException e) {
             throw LabStackException.builder().message(e.getMessage()).build();
         }

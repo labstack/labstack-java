@@ -1,23 +1,31 @@
-package com.labstack.domain;
+package com.labstack;
 
+import static com.labstack.Client.EXCEPTION_JSON_ADAPTER;
+import static com.labstack.Client.MOSHI;
+import static com.labstack.Client.okHttp;
 import java.io.IOException;
-import com.labstack.AbstractClient;
-import com.labstack.LabStackException;
+import com.labstack.domain.DNSRequest;
+import com.labstack.domain.DNSResponse;
+import com.labstack.domain.SearchRequest;
+import com.labstack.domain.SearchResponse;
+import com.labstack.domain.StatusRequest;
+import com.labstack.domain.StatusResponse;
+import com.labstack.domain.WhoisRequest;
+import com.labstack.domain.WhoisResponse;
 import com.squareup.moshi.JsonAdapter;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
 import okhttp3.Response;
 
 
-public class Client extends AbstractClient {
+public class DomainService {
     private final String URL = "https://domain.labstack.com/api/v1";
     private final JsonAdapter<DNSResponse> DNS_RESPONSE_JSON_ADAPTER = MOSHI.adapter(DNSResponse.class);
     private final JsonAdapter<SearchResponse> SEARCH_RESPONSE_JSON_ADAPTER = MOSHI.adapter(SearchResponse.class);
     private final JsonAdapter<StatusResponse> STATUS_RESPONSE_JSON_ADAPTER = MOSHI.adapter(StatusResponse.class);
     private final JsonAdapter<WhoisResponse> WHOIS_RESPONSE_JSON_ADAPTER = MOSHI.adapter(WhoisResponse.class);
 
-    public Client(String key) {
-        super(key);
+    DomainService() {
     }
 
     public DNSResponse dns(DNSRequest request) throws LabStackException {

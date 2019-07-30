@@ -1,20 +1,22 @@
-package com.labstack.ip;
+package com.labstack;
 
+import static com.labstack.Client.EXCEPTION_JSON_ADAPTER;
+import static com.labstack.Client.MOSHI;
+import static com.labstack.Client.okHttp;
 import java.io.IOException;
-import com.labstack.AbstractClient;
-import com.labstack.LabStackException;
+import com.labstack.ip.LookupRequest;
+import com.labstack.ip.LookupResponse;
 import com.squareup.moshi.JsonAdapter;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
 import okhttp3.Response;
 
 
-public class Client extends AbstractClient {
+public class IPService {
     private final String URL = "https://ip.labstack.com/api/v1";
     private final JsonAdapter<LookupResponse> LOOKUP_RESPONSE_JSON_ADAPTER = MOSHI.adapter(LookupResponse.class);
 
-    public Client(String key) {
-        super(key);
+    IPService() {
     }
 
     public LookupResponse lookup(LookupRequest request) throws LabStackException {

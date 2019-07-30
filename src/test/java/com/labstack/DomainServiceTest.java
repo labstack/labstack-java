@@ -1,18 +1,24 @@
-package com.labstack.domain;
+package com.labstack;
 
+import static com.labstack.ClientTest.DOMAIN_SERVICE;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import org.junit.jupiter.api.Test;
+import com.labstack.domain.SearchRequest;
+import com.labstack.domain.SearchResponse;
+import com.labstack.domain.StatusRequest;
+import com.labstack.domain.StatusResponse;
+import com.labstack.domain.WhoisRequest;
+import com.labstack.domain.WhoisResponse;
 
 
-class ClientTest {
-    private final Client client = new Client(System.getenv("KEY"));
+class DomainServiceTest {
 
     @Test
     void dns() {
         assertDoesNotThrow(() -> {
             SearchRequest request = SearchRequest.builder().domain("twilio.com").build();
-            SearchResponse response = client.search(request);
+            SearchResponse response = DOMAIN_SERVICE.search(request);
             assertNotEquals(0, response.getResults().length);
         });
     }
@@ -21,7 +27,7 @@ class ClientTest {
     void search() {
         assertDoesNotThrow(() -> {
             SearchRequest request = SearchRequest.builder().domain("twilio.com").build();
-            SearchResponse response = client.search(request);
+            SearchResponse response = DOMAIN_SERVICE.search(request);
             assertNotEquals(0, response.getResults().length);
         });
     }
@@ -30,7 +36,7 @@ class ClientTest {
     void status() {
         assertDoesNotThrow(() -> {
             StatusRequest request = StatusRequest.builder().domain("twilio.com").build();
-            StatusResponse response = client.status(request);
+            StatusResponse response = DOMAIN_SERVICE.status(request);
             assertNotEquals("", response.getResult());
         });
     }
@@ -39,7 +45,7 @@ class ClientTest {
     void whois() {
         assertDoesNotThrow(() -> {
             WhoisRequest request = WhoisRequest.builder().domain("twilio.com").build();
-            WhoisResponse response = client.whois(request);
+            WhoisResponse response = DOMAIN_SERVICE.whois(request);
             assertNotEquals("", response.getRaw());
         });
     }

@@ -12,11 +12,11 @@ public class WhoisResponse {
     private String id;
     private String status;
     @Json(name = "created_date")
-    private Date createdDate;
+    private String createdDate;
     @Json(name = "updated_date")
-    private Date updatedDate;
+    private String updatedDate;
     @Json(name = "expiry_date")
-    private Date expiryDate;
+    private String expiryDate;
     @Json(name = "name_servers")
     private String[] nameServers;
     private String dnssec;

@@ -1,6 +1,5 @@
 package com.labstack.domain;
 
-import java.util.Date;
 import com.squareup.moshi.Json;
 import lombok.Getter;
 import lombok.Setter;

@@ -7,5 +7,5 @@ import lombok.Setter;
 
 @Builder @Getter @Setter
 public class SearchRequest {
-    private String domain;
+    private String q;
 }

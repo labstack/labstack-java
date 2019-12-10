@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import org.junit.jupiter.api.Test;
 import com.labstack.currency.ConvertRequest;
 import com.labstack.currency.ConvertResponse;
-import com.labstack.currency.ListRequest;
 import com.labstack.currency.ListResponse;
 
 

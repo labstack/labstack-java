@@ -49,7 +49,7 @@ public class DomainService {
     public SearchResponse search(SearchRequest request) throws LabStackException {
         HttpUrl url = HttpUrl.parse(URL).newBuilder()
                 .addPathSegment("search")
-                .addPathSegment(request.getDomain())
+                .addQueryParameter("q", request.getQ())
                 .build();
         Request req = new Request.Builder()
                 .url(url)

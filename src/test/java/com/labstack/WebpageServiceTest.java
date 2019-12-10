@@ -1,7 +1,8 @@
 package com.labstack;
 
 import static com.labstack.ClientTest.WEBPAGE_SERVICE;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import org.junit.jupiter.api.Test;
 import com.labstack.webpage.ImageRequest;
 import com.labstack.webpage.ImageResponse;

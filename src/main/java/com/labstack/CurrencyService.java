@@ -1,8 +1,8 @@
 package com.labstack;
 
+import static com.labstack.Client.EXCEPTION_JSON_ADAPTER;
 import static com.labstack.Client.MOSHI;
 import static com.labstack.Client.okHttp;
-import static com.labstack.Client.EXCEPTION_JSON_ADAPTER;
 import java.io.IOException;
 import com.labstack.currency.ConvertRequest;
 import com.labstack.currency.ConvertResponse;

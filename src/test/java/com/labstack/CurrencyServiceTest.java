@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import com.labstack.currency.ConvertRequest;
 import com.labstack.currency.ConvertResponse;
 import com.labstack.currency.ListResponse;
+import com.labstack.currency.RatesResponse;
 
 
 class CurrencyServiceTest {
@@ -24,6 +25,14 @@ class CurrencyServiceTest {
         assertDoesNotThrow(() -> {
             ListResponse response = CURRENCY_SERVICE.list(null);
             assertNotEquals(0, response.getCurrencies().length);
+        });
+    }
+
+    @Test
+    void rates() {
+        assertDoesNotThrow(() -> {
+            RatesResponse response = CURRENCY_SERVICE.rates(null);
+            assertNotEquals(0, response.getRates().size());
         });
     }
 }

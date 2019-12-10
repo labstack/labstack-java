@@ -14,7 +14,7 @@ plugins {
 apply plugin: 'com.novoda.bintray-release'
 
 group 'com.labstack'
-version '1.0.0'
+version '1.0.1'
 
 sourceCompatibility = 1.8
 
@@ -30,7 +30,7 @@ publish {
     userOrg = 'labstack'
     groupId = 'com.labstack'
     artifactId = 'labstack-java'
-    publishVersion = '1.0.0'
+    publishVersion = '1.0.1'
     desc = 'Official Java client library for the LabStack API'
     website = 'https://github.com/labstack/labstack-java'
     licences = ['MIT']
